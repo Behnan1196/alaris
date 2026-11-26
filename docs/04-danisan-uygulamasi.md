@@ -63,3 +63,5 @@ Widget'ın kenarına / başlığına dokununca açılır:
 - Beslenme: kalori ve makro çubukları (makrolar yenen kaloriyle orantılı yaklaşık), öğünleri "Yedim" ile işaretleme, su sayacı. Fotoğraf ve alternatif öğün yok.
 - Ölçüm: seçilen ölçüleri girme, son değer gösterimi. Fotoğraf yok.
 - Alışkanlıklarım: ana ekranda bugünün alışkanlıkları (sayaçlı veya tek dokunuş), seri, "haftada 3" için haftalık sayaç; ayrı ekranda yeni alışkanlık (öneriler, sıklık, hedef, hatırlatma saati, "Koçlarım görebilsin"). Hatırlatma bildirimi yok.
+- (7. adım) İlerleme sekmesi: alan seçici; Fitness için bu hafta antrenman (yapılan / planlanan), kilo ve değişim, kilo çubuk grafiği; Beslenme için tüm öğünleri tamamlanan gün, ortalama kalori, günlük kalori grafiği; koçun alan başına yorumu.
+- (7. adım) Öğün fotoğrafı (koç istediyse, öğün başına), ölçümde önden ve yandan fotoğraf; fotoğraflar gizli depoda, süreli bağlantıyla açılır. Hareket ekranında koçun videosu (döngüde, sessiz), çalışan kaslar ve "Nasıl yapılır" adımları. Açı seçimi ve yavaş çekim yok.

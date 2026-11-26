@@ -178,3 +178,12 @@ export async function saveNote(coachingId: string, body: string): Promise<Result
   if (error) return { error: error.message };
   return { ok: true };
 }
+
+export async function saveProgressComment(coachingId: string, domain: string, body: string): Promise<Result> {
+  const { supabase } = await requireUser();
+  const { error } = await supabase
+    .from("progress_comments")
+    .upsert({ coaching_id: coachingId, domain_key: domain, body, updated_at: new Date().toISOString() });
+  if (error) return { error: error.message };
+  return { ok: true };
+}

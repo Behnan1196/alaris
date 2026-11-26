@@ -39,7 +39,16 @@
           "imageWidth": 76
         }
       ],
-      "expo-notifications"
+      "expo-notifications",
+      "expo-video",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Öğün ve ilerleme fotoğraflarını koçunla paylaşmak için fotoğraflarına erişim gerekiyor.",
+          "cameraPermission": "Öğün ve ilerleme fotoğrafı çekmek için kameraya erişim gerekiyor.",
+          "microphonePermission": false
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

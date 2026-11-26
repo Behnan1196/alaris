@@ -1,11 +1,13 @@
 import type { MealOptions, MealPayload, MealProgress } from '@alaris/shared';
-import { useState } from 'react';
+import { Image } from 'expo-image';
+import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Message } from '@/components/form';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { Spacing } from '@/constants/theme';
+import { addPhoto, photosOfInstance } from '@/lib/media';
 import { addLog, ensureInstance, saveProgress, type Instance } from '@/lib/tasks';
 
 import { CoachNote, DoneBanner, Panel, type TaskProps } from './common';
@@ -28,7 +30,9 @@ function Bar({ label, value, target, color }: { label: string; value: number; ta
   );
 }
 
-export function MealDay({ task, instance: initial, color }: TaskProps) {
+type Photo = { id: string; url: string | null; meta: unknown };
+
+export function MealDay({ task, instance: initial, color, clientId }: TaskProps & { clientId: string }) {
   const payload = task.payload as unknown as MealPayload;
   const options = task.options as unknown as MealOptions;
   const meals = payload.meals ?? [];
@@ -38,6 +42,33 @@ export function MealDay({ task, instance: initial, color }: TaskProps) {
     (initial?.progress as unknown as MealProgress)?.eaten ? (initial!.progress as unknown as MealProgress) : { eaten: [] },
   );
   const [error, setError] = useState<string | null>(null);
+  const [photos, setPhotos] = useState<Photo[]>([]);
+  const [uploading, setUploading] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (initial) photosOfInstance(initial.id).then(setPhotos).catch(() => {});
+  }, [initial]);
+
+  async function photo(i: number) {
+    setError(null);
+    setUploading(i);
+    try {
+      const inst = instance ?? (await ensureInstance(task.id));
+      setInstance(inst);
+      const p = await addPhoto({
+        clientId,
+        coachingId: task.program?.coaching_id ?? null,
+        kind: 'meal',
+        taskInstanceId: inst.id,
+        meta: { meal_index: i, meal_name: meals[i]?.name },
+      });
+      if (p) setPhotos((ps) => [...ps, p]);
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setUploading(null);
+    }
+  }
 
   const eatenKcal = progress.eaten.reduce((s, i) => s + (meals[i]?.kcal ?? 0), 0);
   const plannedKcal = meals.reduce((s, m) => s + (m.kcal ?? 0), 0);
@@ -109,6 +140,18 @@ export function MealDay({ task, instance: initial, color }: TaskProps) {
               </Pressable>
             </View>
             {m.items ? <ThemedText type="small">{m.items}</ThemedText> : null}
+            {options.ask_photo && (
+              <View style={styles.photoRow}>
+                {photos
+                  .filter((p) => (p.meta as { meal_index?: number })?.meal_index === i)
+                  .map((p) => (p.url ? <Image key={p.id} source={{ uri: p.url }} style={styles.thumb} /> : null))}
+                <Pressable onPress={() => photo(i)} style={[styles.eatBtn, { borderColor: color }]}>
+                  <ThemedText type="smallBold" style={{ color }}>
+                    {uploading === i ? 'Yükleniyor…' : '+ Fotoğraf'}
+                  </ThemedText>
+                </Pressable>
+              </View>
+            )}
           </Panel>
         );
       })}
@@ -129,9 +172,9 @@ export function MealDay({ task, instance: initial, color }: TaskProps) {
         </Panel>
       )}
 
-      {(options.ask_photo || options.allow_alternative) && (
+      {options.allow_alternative && (
         <ThemedText type="small" themeColor="textSecondary">
-          Öğün fotoğrafı ve alternatif öğün yakında eklenecek.
+          Alternatif öğün seçimi yakında eklenecek. Şimdilik koçuna mesajla sorabilirsin.
         </ThemedText>
       )}
     </Screen>
@@ -145,5 +188,7 @@ const styles = StyleSheet.create({
   barTrack: { height: 6, borderRadius: 3, backgroundColor: 'rgba(127,127,127,0.25)', overflow: 'hidden' },
   barFill: { height: 6, borderRadius: 3 },
   mealHead: { flexDirection: 'row', alignItems: 'center', gap: Spacing.two },
+  photoRow: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two, alignItems: 'center' },
+  thumb: { width: 56, height: 56, borderRadius: 8 },
   eatBtn: { borderWidth: 1.5, borderRadius: 999, paddingHorizontal: 14, paddingVertical: 6 },
 });

@@ -17,6 +17,7 @@ import { useTheme } from '@/hooks/use-theme';
 import { addLog, ensureInstance, previousSets, saveProgress, type Instance } from '@/lib/tasks';
 
 import { Chip, CoachNote, DoneBanner, Panel, type TaskProps } from './common';
+import { ExerciseMedia } from './exercise-media';
 
 type Phase = 'summary' | 'exercise' | 'rpe' | 'done';
 
@@ -206,6 +207,7 @@ function ExerciseStep({
         Hareket {index + 1} / {exercises.length}
       </ThemedText>
       <ThemedText type="subtitle">{e.name || `Hareket ${index + 1}`}</ThemedText>
+      <ExerciseMedia exerciseId={e.exercise_id} />
       {e.note ? <CoachNote text={e.note} /> : null}
 
       {rest !== null && (

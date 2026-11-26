@@ -5,7 +5,9 @@ import { Suspense } from "react";
 import { Card } from "@/components/ui";
 import { requireCoach } from "@/lib/coach";
 import { currentWeekDays, loadWeek } from "@/lib/tracking";
+import { CommentForm } from "./comment-form";
 import { NoteForm } from "./note-form";
+import { Photos } from "./photos";
 import { Progress, RecentLogs, ThisWeek } from "./sections";
 
 const PROGRAM_STATUS: Record<string, string> = {
@@ -74,6 +76,19 @@ async function Content({ params }: { params: PageProps<"/panel/danisan/[coaching
     supabase.from("coaching_notes").select("body").eq("coaching_id", coaching.id).maybeSingle(),
   ]);
   const week = weekMap.get(coaching.id)!;
+  const [{ data: comments }, { data: photoRows }] = await Promise.all([
+    supabase.from("progress_comments").select("domain_key, body").eq("coaching_id", coaching.id),
+    supabase
+      .from("photos")
+      .select("id, kind, path, meta, taken_on")
+      .eq("coaching_id", coaching.id)
+      .order("created_at", { ascending: false })
+      .limit(24),
+  ]);
+  const signed = photoRows?.length
+    ? (await supabase.storage.from("media").createSignedUrls(photoRows.map((p) => p.path), 3600)).data ?? []
+    : [];
+  const photos = (photoRows ?? []).map((p, i) => ({ ...p, url: signed[i]?.signedUrl ?? null }));
   const { data: thread } = await supabase
     .from("threads")
     .select("id")
@@ -127,6 +142,11 @@ async function Content({ params }: { params: PageProps<"/panel/danisan/[coaching
               >
                 {current ? "Programı düzenle" : "Program oluştur"}
               </Link>
+              <CommentForm
+                coachingId={coaching.id}
+                domain={domain_key}
+                initial={comments?.find((c) => c.domain_key === domain_key)?.body ?? ""}
+              />
             </section>
           );
         })}
@@ -142,6 +162,8 @@ async function Content({ params }: { params: PageProps<"/panel/danisan/[coaching
       </div>
 
       <RecentLogs logs={logs ?? []} />
+
+      <Photos photos={photos} />
 
       <Card title="Alışkanlıklar · son 7 gün">
         {visibleHabits.length === 0 ? (

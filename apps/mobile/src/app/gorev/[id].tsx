@@ -62,7 +62,7 @@ export default function GorevScreen() {
     <>
       {header}
       {task.task_type_key === 'workout' && <WorkoutFlow {...props} />}
-      {task.task_type_key === 'meal' && <MealDay {...props} />}
+      {task.task_type_key === 'meal' && <MealDay {...props} clientId={session.user.id} />}
       {task.task_type_key === 'measure' && <MeasureEntry {...props} clientId={session.user.id} />}
     </>
   );

@@ -191,6 +191,9 @@ async function Content() {
           </div>
         </div>
         <div className="flex items-center gap-4">
+          <Link href="/panel/kutuphane" className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-medium hover:bg-zinc-50">
+            Kütüphane
+          </Link>
           <Link href="/panel/mesajlar" className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-medium hover:bg-zinc-50">
             Mesajlar
             {unreadTotal > 0 && <span className="ml-1.5 rounded-full bg-red-600 px-1.5 text-xs text-white">{unreadTotal}</span>}

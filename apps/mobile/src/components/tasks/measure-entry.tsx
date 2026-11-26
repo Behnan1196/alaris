@@ -1,10 +1,13 @@
 import { MEASURE_METRIC_LABELS, localDate, type MeasureOptions, type MeasurePayload } from '@alaris/shared';
 import { router } from 'expo-router';
+import { Image } from 'expo-image';
 import { useEffect, useState } from 'react';
+import { Pressable, View } from 'react-native';
 
 import { Message, PrimaryButton, TextField } from '@/components/form';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
+import { addPhoto } from '@/lib/media';
 import { supabase } from '@/lib/supabase';
 import { ensureInstance, saveProgress } from '@/lib/tasks';
 
@@ -19,6 +22,18 @@ export function MeasureEntry({ task, instance, color, clientId }: TaskProps & { 
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(instance?.status === 'done');
+  const [shots, setShots] = useState<Record<string, string | null>>({});
+
+  async function shoot(kind: 'front' | 'side') {
+    setError(null);
+    try {
+      const inst = await ensureInstance(task.id);
+      const p = await addPhoto({ clientId, coachingId: task.program?.coaching_id ?? null, kind, taskInstanceId: inst.id });
+      if (p) setShots((s) => ({ ...s, [kind]: p.url }));
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  }
 
   useEffect(() => {
     supabase
@@ -89,9 +104,24 @@ export function MeasureEntry({ task, instance, color, clientId }: TaskProps & { 
         ))}
       </Panel>
       {options.ask_photos && (
-        <ThemedText type="small" themeColor="textSecondary">
-          Fotoğraf ekleme yakında.
-        </ThemedText>
+        <Panel>
+          <ThemedText type="smallBold">Fotoğraflar</ThemedText>
+          <View style={{ flexDirection: 'row', gap: 12 }}>
+            {(['front', 'side'] as const).map((k) => (
+              <Pressable key={k} onPress={() => shoot(k)} style={{ flex: 1, alignItems: 'center', gap: 6 }}>
+                {shots[k] ? (
+                  <Image source={{ uri: shots[k]! }} style={{ width: '100%', aspectRatio: 3 / 4, borderRadius: 12 }} />
+                ) : (
+                  <View style={{ width: '100%', aspectRatio: 3 / 4, borderRadius: 12, borderWidth: 2, borderStyle: 'dashed', borderColor: color, alignItems: 'center', justifyContent: 'center' }}>
+                    <ThemedText style={{ color, fontWeight: '700' }}>+</ThemedText>
+                  </View>
+                )}
+                <ThemedText type="small">{k === 'front' ? 'Önden' : 'Yandan'}</ThemedText>
+              </Pressable>
+            ))}
+          </View>
+          <ThemedText type="small" themeColor="textSecondary">Fotoğraflar yalnızca koçunla paylaşılır.</ThemedText>
+        </Panel>
       )}
       {error && <Message kind="error" text={error} />}
       <PrimaryButton title="Kaydet" color={color} loading={busy} onPress={save} />
