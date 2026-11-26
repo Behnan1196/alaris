@@ -1,4 +1,4 @@
-import { DOMAINS, type DomainKey } from "@alaris/shared";
+import { DOMAINS, localDate, type DomainKey } from "@alaris/shared";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -11,6 +11,18 @@ const PROGRAM_STATUS: Record<string, string> = {
   completed: "Tamamlandı",
   archived: "Arşiv",
 };
+
+const dayLabel = new Intl.DateTimeFormat("tr-TR", { weekday: "short" });
+
+function lastSevenDays() {
+  const out: { key: string; label: string }[] = [];
+  const now = new Date();
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
+    out.push({ key: localDate(d), label: dayLabel.format(d) });
+  }
+  return out;
+}
 
 async function Content({ params }: { params: PageProps<"/panel/danisan/[coachingId]">["params"] }) {
   const { coachingId } = await params;
@@ -29,6 +41,17 @@ async function Content({ params }: { params: PageProps<"/panel/danisan/[coaching
   const { data: otherDomains } = await supabase.rpc("client_other_domains", {
     p_client_id: coaching.client_id,
   });
+
+  // RLS: bu koçun atadıkları + danışanın "Koçlarım görebilsin" dediği kendi alışkanlıkları.
+  const days = lastSevenDays();
+  const { data: habits } = await supabase
+    .from("habits")
+    .select("id, title, coaching_id, frequency, target, unit, habit_logs(date, value)")
+    .eq("client_id", coaching.client_id)
+    .eq("active", true)
+    .gte("habit_logs.date", days[0].key)
+    .order("created_at");
+  const visibleHabits = (habits ?? []).filter((h) => h.coaching_id === null || h.coaching_id === coaching.id);
 
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-6 py-10">
@@ -72,6 +95,60 @@ async function Content({ params }: { params: PageProps<"/panel/danisan/[coaching
           );
         })}
       </div>
+
+      <Card title="Alışkanlıklar · son 7 gün">
+        {visibleHabits.length === 0 ? (
+          <p className="text-sm text-zinc-500">
+            Görebileceğin alışkanlık yok. Program oluşturucudan alışkanlık atayabilirsin; danışanın kendi
+            alışkanlıkları yalnızca &quot;Koçlarım görebilsin&quot; derse burada görünür.
+          </p>
+        ) : (
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left text-xs text-zinc-500">
+                <th className="pb-2 font-medium">Alışkanlık</th>
+                {days.map((d) => (
+                  <th key={d.key} className="pb-2 text-center font-medium">
+                    {d.label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {visibleHabits.map((h) => {
+                const goal = h.target ?? 1;
+                return (
+                  <tr key={h.id} className="border-t border-zinc-100">
+                    <td className="py-2">
+                      <span className="font-medium">{h.title}</span>
+                      <span className="block text-xs text-zinc-500">
+                        {h.coaching_id ? "Senin atadığın" : "Danışanın kendi alışkanlığı"}
+                        {h.target ? ` · hedef ${h.target}${h.unit ? " " + h.unit : ""}` : ""}
+                      </span>
+                    </td>
+                    {days.map((d) => {
+                      const v = Number(h.habit_logs.find((l) => l.date === d.key)?.value ?? 0);
+                      const ok = v >= goal;
+                      return (
+                        <td key={d.key} className="py-2 text-center">
+                          <span
+                            title={h.target ? `${v} / ${h.target}` : ok ? "Yapıldı" : "Yapılmadı"}
+                            className={`inline-flex h-6 min-w-6 items-center justify-center rounded-full px-1 text-xs ${
+                              ok ? "bg-emerald-600 text-white" : v > 0 ? "bg-amber-200" : "bg-zinc-100 text-zinc-400"
+                            }`}
+                          >
+                            {h.target ? v : ok ? "✓" : "·"}
+                          </span>
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        )}
+      </Card>
 
       <Card title="Başka koçlardan aldığı">
         {otherDomains?.length ? (
