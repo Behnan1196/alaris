@@ -1,9 +1,12 @@
 import type { Database } from "@alaris/shared";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { connection } from "next/server";
 
 /** Sunucu tarafı (Server Component, Route Handler, Server Action) Supabase istemcisi. */
 export async function createClient() {
+  // Oturum doğrulaması saat (Date.now) kullanır; ön render ve runtime prefetch burada durmalı.
+  await connection();
   const cookieStore = await cookies();
   return createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
