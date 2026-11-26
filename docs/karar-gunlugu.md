@@ -20,3 +20,5 @@ Yeni kararı en alta, tarihiyle ekle.
 | 2026-11-26 | Kod deposu GitHub'da: `Behnan1196/alaris`. Tek depo (npm workspaces): `apps/web`, `apps/mobile`, `packages/shared`, `supabase/`. |
 | 2026-11-26 | Program alan başına: aynı koçtan iki alan alan danışana her alan için ayrı program gider; builder alanları birlikte gösterir. |
 | 2026-11-26 | Uyum = tamamlanan / planlanan (görevler + koçun atadığı alışkanlıklar). Koç kendi atadığı alışkanlıkları takip eder; danışanın kendi alışkanlıkları uyuma girmez. |
+| 2026-11-26 | İlk sürümde hareket kütüphanesi videosuz: ad, kas grubu, ekipman, adımlar. Video yükleme 7. adımda. |
+| 2026-11-26 | İlk sürümde besin veritabanı yok: koç öğünleri elle girer (ad, içerik, kcal, makrolar); kaydedilen besinler kütüphanede birikir, arama sonra. |

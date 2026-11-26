@@ -35,7 +35,7 @@ Sol menü: **Genel bakış · Danışanlar · Program oluşturucu · Kütüphane
 
 Birden çok haftalık programın düzenlenmesi (hafta 1..12 arası geçiş, hafta kopyalama) mockup'ta yok. [AÇIK SORU]
 
-**Uygulama (26 Kasım 2026) [VARSAYIM]:** Koç tek bir haftalık şablon hazırlar. Gönderirken seçilen tekrar biçimi şablonun kaç hafta uygulanacağını belirler: yalnızca 1 hafta, 4 hafta ya da program süresi boyunca. Haftalar, başlangıç gününün bulunduğu haftanın pazartesisinden sayılır. Hareketler kütüphaneden adla seçilir ya da serbest yazılır, video yok. Öğünler elle girilir, besin veritabanı yok (açık soru 7 ve 8 için öneri). Şablon olarak kaydetme henüz yok.
+**Uygulama (26 Kasım 2026) [VARSAYIM]:** Koç tek bir haftalık şablon hazırlar. Gönderirken seçilen tekrar biçimi şablonun kaç hafta uygulanacağını belirler: yalnızca 1 hafta, 4 hafta ya da program süresi boyunca. Haftalar, başlangıç gününün bulunduğu haftanın pazartesisinden sayılır. Hareketler kütüphaneden adla seçilir ya da serbest yazılır, video yok; öğünler elle girilir, besin veritabanı yok [KARAR 2026-11-26]. Şablon olarak kaydetme henüz yok.
 
 ## 5.4 Kütüphane
 
