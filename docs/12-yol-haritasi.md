@@ -10,7 +10,7 @@ Durum: **öneri** [VARSAYIM], 26 Kasım 2026. Onaylanınca `karar-gunlugu.md` do
 | 3 | Program oluşturucu (koç) ✓ | Haftalık takvim, Antrenman / Beslenme planı / Ölçüm / Alışkanlık düzenleyicileri, hareket ve öğün kütüphanesi (ilk hali), gönderme, şablon | Koç bir danışana 1 haftalık Fitness + Beslenme programı gönderir |
 | 4 | Danışan günlük akışı (mobil) ✓ | Koçluklarım widget'ları, alan ayrıntısı, antrenman akışı (set tablosu, dinlenme sayacı), beslenme günü (makrolar, "Yedim", fotoğraf), ölçüm girişi, Alışkanlıklarım | Danışan bugünün işini bitirir, koç panelinde görünür |
 | 5 | Koç takibi ✓ | Genel bakış (ilgilenmen gerekenler, akış, uyum), danışan ayrıntısı (Bu hafta, İlerleme, Son kayıtlar, koç notu) | Uyum ve kaçırılan görevler doğru hesaplanıyor |
-| 6 | Mesajlar ve bildirimler | Koç başına sohbet (Realtime), bildirimler (yeni program, mesaj, alışkanlık hatırlatması) | Mesaj iki yönlü anlık gidiyor, bildirim geliyor |
+| 6 | Mesajlar ve bildirimler ✓ | Koç başına sohbet (Realtime), bildirimler (yeni program, mesaj, alışkanlık hatırlatması) | Mesaj iki yönlü anlık gidiyor, bildirim geliyor |
 | 7 | İlerleme ve medya | İlerleme ekranları ve grafikler, hareket videoları, öğün ve ölçüm fotoğrafları (imzalı bağlantılar) | Kilo grafiği ve fotoğraflar iki tarafta görünüyor |
 | 8 | Abonelik ve yayın hazırlığı | Koç aboneliği ve ödeme, EAS derlemeleri, gizlilik metinleri, hata izleme | TestFlight / iç test dağıtımı |
 

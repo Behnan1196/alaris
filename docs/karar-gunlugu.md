@@ -22,3 +22,4 @@ Yeni kararı en alta, tarihiyle ekle.
 | 2026-11-26 | Uyum = tamamlanan / planlanan (görevler + koçun atadığı alışkanlıklar). Koç kendi atadığı alışkanlıkları takip eder; danışanın kendi alışkanlıkları uyuma girmez. |
 | 2026-11-26 | İlk sürümde hareket kütüphanesi videosuz: ad, kas grubu, ekipman, adımlar. Video yükleme 7. adımda. |
 | 2026-11-26 | İlk sürümde besin veritabanı yok: koç öğünleri elle girer (ad, içerik, kcal, makrolar); kaydedilen besinler kütüphanede birikir, arama sonra. |
+| 2026-11-26 | Bildirimler: danışana yeni mesaj ve yeni program için uzaktan bildirim (Supabase tetikleyici → notify Edge Function → Expo Push); alışkanlık hatırlatmaları telefonda yerel. Koçlara bildirim yok (web paneli). iPhone geliştirme derlemesi EAS ile, paket kimliği com.behnan.alaris. |
