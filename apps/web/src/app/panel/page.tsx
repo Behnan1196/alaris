@@ -87,7 +87,11 @@ async function Content() {
               <tbody>
                 {coachings.map((c) => (
                   <tr key={c.id} className="border-t border-zinc-100">
-                    <td className="py-2.5 font-medium">{c.client?.full_name || "İsimsiz"}</td>
+                    <td className="py-2.5 font-medium">
+                      <Link href={`/panel/danisan/${c.id}`} className="hover:underline">
+                        {c.client?.full_name || "İsimsiz"}
+                      </Link>
+                    </td>
                     <td className="py-2.5">
                       <div className="flex gap-1">
                         {c.coaching_domains.map((d) => (
