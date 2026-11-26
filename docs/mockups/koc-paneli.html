@@ -1,0 +1,1437 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Alaris koç paneli</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F6F5F2}
+*{box-sizing:border-box}
+button{font:inherit;cursor:pointer;color:inherit}
+input,select,textarea{font:inherit;color:#16181D}
+a{color:#1D4ED8}a:hover{color:#1E3A8A}
+.card{background:#FFFFFF;border:1px solid #E6E3DD;border-radius:16px}
+.muted{color:#5B5F66}
+.disp{font-family:'Space Grotesk',Inter,sans-serif}
+.lbl{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#5B5F66}
+.pbtn{height:44px;border-radius:12px;border:none;background:#16181D;color:#FFFFFF;font-weight:600;font-size:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 18px;white-space:nowrap}
+.pbtn:hover{background:#2B2E35}
+.sbtn{height:44px;border-radius:12px;border:1px solid #E6E3DD;background:#FFFFFF;font-weight:600;font-size:14px;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:0 14px;white-space:nowrap}
+.sbtn:hover{background:#F1EFEA}
+.ibtn{width:36px;height:36px;border-radius:10px;border:1px solid #E6E3DD;background:#FFFFFF;display:inline-flex;align-items:center;justify-content:center;padding:0;flex:none}
+.ibtn:hover{background:#F1EFEA}
+.nav{height:44px;border:none;border-radius:12px;display:flex;align-items:center;gap:12px;padding:0 12px;font-size:14px;font-weight:500;width:100%;text-align:left}
+.inp{height:40px;border-radius:10px;border:1px solid #D6D3CC;background:#FFFFFF;padding:0 12px;font-size:14px;width:100%;min-width:0}
+.inp:focus,.ta:focus{outline:2px solid #16181D;outline-offset:1px}
+.ta{border-radius:10px;border:1px solid #D6D3CC;background:#FFFFFF;padding:10px 12px;font-size:14px;width:100%;min-height:68px;resize:vertical}
+.tcard{text-align:left;width:100%;background:#FFFFFF;border:1.5px solid #E6E3DD;border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px}
+.tcard:hover{border-color:#9A968E}
+.row:hover{background:#FAF9F6}
+.chip{height:32px;border-radius:16px;border:1px solid #E6E3DD;background:#FFFFFF;padding:0 12px;font-size:13px;font-weight:500;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.tab{height:40px;border:none;background:transparent;padding:0 4px;font-size:14px;font-weight:600}
+.step{width:28px;height:28px;border-radius:8px;border:1px solid #D6D3CC;background:#FFFFFF;display:inline-flex;align-items:center;justify-content:center;padding:0;font-size:16px;line-height:1}
+.step:hover{background:#F1EFEA}
+.scrollx{overflow-x:auto}
+</style>
+</helmet>
+
+<div style="min-height:100vh;width:100%;display:flex;flex-wrap:wrap;background:#F6F5F2;color:#16181D;font-family:Inter, system-ui, sans-serif">
+
+<!-- ================= SIDEBAR ================= -->
+<aside style="flex:1 1 248px;background:#FFFFFF;border-right:1px solid #E6E3DD;padding:20px 14px;display:flex;flex-direction:column;gap:20px">
+  <div style="display:flex;align-items:center;gap:10px;padding:0 6px">
+    <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#16181D"></rect><path d="M9 23 16 8l7 15M12 18h8" stroke="#FFFFFF" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    <div>
+      <div class="disp" style="font-size:18px;font-weight:700;line-height:1">Alaris</div>
+      <div class="muted" style="font-size:12px;margin-top:2px">Koç paneli</div>
+    </div>
+  </div>
+
+  <nav aria-label="Ana menü" style="display:flex;flex-direction:column;gap:4px">
+    <sc-for list="{{nav}}" as="n" hint-placeholder-count="5">
+      <button class="nav" onClick="{{n.go}}" style="{{n.style}}" aria-current="{{n.current}}">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{n.icon}}"></path></svg>
+        <span style="flex:1">{{n.label}}</span>
+        <sc-if value="{{n.hasBadge}}"><span style="min-width:22px;height:22px;border-radius:11px;background:#C2410C;color:#FFFFFF;font-size:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;padding:0 6px">{{n.badge}}</span></sc-if>
+      </button>
+    </sc-for>
+  </nav>
+
+  <div style="flex:1"></div>
+
+  <div style="border:1px dashed #C9C5BD;border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px">
+    <span class="lbl">Prototip: koç görünümü</span>
+    <sc-for list="{{coachChips}}" as="c" hint-placeholder-count="3">
+      <button onClick="{{c.pick}}" style="{{c.style}}" aria-pressed="{{c.on}}">
+        <span style="width:10px;height:10px;border-radius:50%;background:{{c.color}};flex:none"></span>
+        <span style="flex:1;text-align:left">{{c.domain}}</span>
+      </button>
+    </sc-for>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:10px;padding:0 6px">
+    <div aria-hidden="true" style="width:40px;height:40px;border-radius:50%;background:{{coach.color}};color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex:none">{{coach.ini}}</div>
+    <div style="min-width:0">
+      <div style="font-weight:600;font-size:14px">{{coach.name}}</div>
+      <div class="muted" style="font-size:12px">{{coach.domain}} {{coach.role}}</div>
+    </div>
+  </div>
+</aside>
+
+<!-- ================= CONTENT ================= -->
+<main style="flex:999 1 640px;min-width:0;padding:24px 28px 48px;display:flex;flex-direction:column;gap:20px">
+
+  <header style="display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px">
+    <div style="flex:1 1 280px;min-width:0">
+      <p class="muted" style="margin:0;font-size:13px">{{crumb}}</p>
+      <h1 class="disp" style="margin:2px 0 0;font-size:28px;font-weight:600">{{pageTitle}}</h1>
+    </div>
+    <label for="gsearch" style="position:relative;flex:0 1 280px;min-width:180px">
+      <span class="sr" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Danışan ara</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5B5F66" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" style="position:absolute;left:12px;top:13px"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14ZM20 20l-4-4"></path></svg>
+      <input id="gsearch" class="inp" value="{{search}}" onChange="{{onSearch}}" placeholder="Danışan ara" style="height:44px;padding-left:38px">
+    </label>
+    <button class="pbtn" onClick="{{newProgram}}">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+      Program oluştur
+    </button>
+  </header>
+
+  <!-- ================= GENEL BAKIŞ ================= -->
+  <sc-if value="{{scr.overview}}" hint-placeholder-val="{{ true }}">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
+      <sc-for list="{{kpis}}" as="k" hint-placeholder-count="4">
+        <div class="card" style="padding:16px 18px;display:flex;flex-direction:column;gap:6px">
+          <span class="muted" style="font-size:13px;font-weight:500">{{k.label}}</span>
+          <span class="disp" style="font-size:30px;font-weight:600;line-height:1.1">{{k.value}}</span>
+          <span class="muted" style="font-size:12px">{{k.sub}}</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start">
+      <section class="card" style="flex:3 1 460px;min-width:0;padding:18px 20px;display:flex;flex-direction:column;gap:4px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <h2 class="disp" style="margin:0;font-size:18px;font-weight:600">İlgilenmen gerekenler</h2>
+          <span class="muted" style="font-size:13px">{{attnCount}} danışan</span>
+        </div>
+        <sc-for list="{{attention}}" as="a" hint-placeholder-count="4">
+          <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid #EFEDE8;flex-wrap:wrap">
+            <div aria-hidden="true" style="width:40px;height:40px;border-radius:50%;background:#EFEDE8;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;flex:none">{{a.ini}}</div>
+            <div style="flex:1 1 220px;min-width:0">
+              <div style="font-weight:600;font-size:14px">{{a.name}}</div>
+              <div style="font-size:13px;color:{{a.toneColor}};margin-top:2px">{{a.text}}</div>
+            </div>
+            <button class="sbtn" onClick="{{a.act}}" style="height:38px">{{a.cta}}</button>
+          </div>
+        </sc-for>
+      </section>
+
+      <section class="card" style="flex:2 1 320px;min-width:0;padding:18px 20px;display:flex;flex-direction:column;gap:4px">
+        <h2 class="disp" style="margin:0 0 8px;font-size:18px;font-weight:600">Bugün olanlar</h2>
+        <sc-for list="{{feed}}" as="f" hint-placeholder-count="5">
+          <div style="display:flex;gap:12px;padding:10px 0;border-top:1px solid #EFEDE8">
+            <span aria-hidden="true" style="width:32px;height:32px;border-radius:9px;background:{{f.bg}};color:{{f.color}};display:flex;align-items:center;justify-content:center;flex:none">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="{{f.icon}}"></path></svg>
+            </span>
+            <div style="flex:1;min-width:0;font-size:13px;line-height:1.45"><b>{{f.who}}</b> {{f.text}}<div class="muted" style="font-size:12px">{{f.time}}</div></div>
+          </div>
+        </sc-for>
+      </section>
+    </div>
+
+    <section class="card" style="padding:18px 20px;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <h2 class="disp" style="margin:0;font-size:18px;font-weight:600">Bu hafta uyum</h2>
+        <span class="muted" style="font-size:13px">Tamamlanan görev / planlanan görev, 23–29 Kasım</span>
+      </div>
+      <sc-for list="{{adhList}}" as="c" hint-placeholder-count="5">
+        <button class="row" onClick="{{c.open}}" style="display:grid;grid-template-columns:minmax(120px,180px) 1fr 48px;gap:14px;align-items:center;border:none;background:transparent;padding:6px 4px;border-radius:8px;text-align:left">
+          <span style="font-size:14px;font-weight:500">{{c.name}}</span>
+          <span style="height:10px;border-radius:5px;background:#EFEDE8;overflow:hidden;display:block"><span style="display:block;height:10px;border-radius:5px;background:{{c.barColor}};width:{{c.adh}}%"></span></span>
+          <span style="font-size:13px;font-weight:600;text-align:right">%{{c.adh}}</span>
+        </button>
+      </sc-for>
+    </section>
+  </sc-if>
+
+  <!-- ================= DANIŞANLAR ================= -->
+  <sc-if value="{{scr.clients}}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;gap:8px;flex-wrap:wrap" role="group" aria-label="Filtre">
+      <sc-for list="{{filters}}" as="fl" hint-placeholder-count="4">
+        <button class="chip" onClick="{{fl.pick}}" style="{{fl.style}}" aria-pressed="{{fl.on}}">{{fl.label}} <span style="opacity:.7">{{fl.count}}</span></button>
+      </sc-for>
+    </div>
+    <div class="card scrollx" style="padding:6px 0">
+      <div style="min-width:760px">
+        <div style="display:grid;grid-template-columns:2.2fr 1.6fr 1fr 1.3fr 1.8fr 1.2fr;gap:12px;padding:10px 20px" class="lbl">
+          <span>Danışan</span><span>Hedef</span><span>Hafta</span><span>Uyum</span><span>Son aktivite</span><span>Durum</span>
+        </div>
+        <sc-for list="{{clientRows}}" as="c" hint-placeholder-count="6">
+          <button class="row" onClick="{{c.open}}" style="display:grid;grid-template-columns:2.2fr 1.6fr 1fr 1.3fr 1.8fr 1.2fr;gap:12px;align-items:center;padding:12px 20px;border:none;border-top:1px solid #EFEDE8;background:transparent;width:100%;text-align:left;font-size:14px">
+            <span style="display:flex;align-items:center;gap:10px;min-width:0">
+              <span aria-hidden="true" style="width:36px;height:36px;border-radius:50%;background:#EFEDE8;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px;flex:none">{{c.ini}}</span>
+              <span style="font-weight:600">{{c.name}}</span>
+            </span>
+            <span style="display:flex;flex-direction:column;gap:4px;min-width:0"><span class="muted">{{c.goal}}</span><span style="display:flex;gap:4px;flex-wrap:wrap"><sc-for list="{{c.domChips}}" as="dc"><span style="font-size:11px;font-weight:700;border-radius:6px;padding:2px 7px;background:{{dc.bg}};color:{{dc.color}}">{{dc.label}}</span></sc-for></span></span>
+            <span>{{c.weekText}}</span>
+            <span style="display:flex;align-items:center;gap:8px"><span style="flex:1;height:6px;border-radius:3px;background:#EFEDE8;overflow:hidden;display:block"><span style="display:block;height:6px;background:{{c.barColor}};width:{{c.adhW}}%"></span></span><span style="font-weight:600;font-size:13px;width:36px">{{c.adhText}}</span></span>
+            <span class="muted" style="font-size:13px">{{c.last}}</span>
+            <span><span style="display:inline-flex;align-items:center;height:26px;border-radius:13px;padding:0 10px;font-size:12px;font-weight:600;background:{{c.pillBg}};color:{{c.pillColor}}">{{c.status}}</span></span>
+          </button>
+        </sc-for>
+        <sc-if value="{{noClients}}"><p class="muted" style="padding:16px 20px;margin:0">Bu filtreyle eşleşen danışan yok.</p></sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ================= DANIŞAN DETAYI ================= -->
+  <sc-if value="{{scr.client}}" hint-placeholder-val="{{ false }}">
+    <div class="card" style="padding:18px 20px;display:flex;flex-wrap:wrap;align-items:center;gap:16px">
+      <button class="ibtn" aria-label="Danışan listesine dön" onClick="{{goClients}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+      <div aria-hidden="true" style="width:56px;height:56px;border-radius:50%;background:#16181D;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:18px;flex:none">{{cl.ini}}</div>
+      <div style="flex:1 1 220px;min-width:0">
+        <div class="disp" style="font-size:22px;font-weight:600">{{cl.name}}</div>
+        <div class="muted" style="font-size:14px;margin-top:2px">{{cl.goal}} · {{cl.weekText}} · Uyum {{cl.adhText}}</div>
+        <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;align-items:center"><span class="muted" style="font-size:12px">Senden aldığı:</span><sc-for list="{{cl.domChips}}" as="dc"><span style="font-size:12px;font-weight:700;border-radius:6px;padding:2px 8px;background:{{dc.bg}};color:{{dc.color}}">{{dc.label}}</span></sc-for></div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="sbtn" onClick="{{cl.msg}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H8l-4 4z"></path></svg>Mesaj</button>
+        <button class="pbtn" onClick="{{cl.edit}}">Programı düzenle</button>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start">
+      <div style="flex:3 1 560px;min-width:0;display:flex;flex-direction:column;gap:14px">
+        <div role="tablist" aria-label="Danışan sekmeleri" style="display:flex;gap:22px;border-bottom:1px solid #E6E3DD">
+          <sc-for list="{{clTabs}}" as="t" hint-placeholder-count="3">
+            <button class="tab" role="tab" aria-selected="{{t.on}}" onClick="{{t.pick}}" style="{{t.style}}">{{t.label}}</button>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{clTab.week}}" hint-placeholder-val="{{ true }}">
+          <div class="card scrollx" style="padding:14px">
+            <div style="display:grid;grid-template-columns:repeat(7,minmax(120px,1fr));gap:8px;min-width:860px">
+              <sc-for list="{{clWeek}}" as="d" hint-placeholder-count="7">
+                <div style="display:flex;flex-direction:column;gap:8px;background:{{d.colBg}};border-radius:12px;padding:10px;min-height:220px">
+                  <div style="display:flex;align-items:baseline;gap:6px"><span style="font-weight:700;font-size:13px">{{d.d}}</span><span class="muted" style="font-size:12px">{{d.n}}</span><sc-if value="{{d.isToday}}"><span style="margin-left:auto;font-size:11px;font-weight:700;color:#FFFFFF;background:#16181D;border-radius:6px;padding:2px 6px">Bugün</span></sc-if></div>
+                  <sc-for list="{{d.tasks}}" as="t">
+                    <div style="background:#FFFFFF;border:1px solid #E6E3DD;border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:4px">
+                      <span style="font-size:11px;font-weight:700;color:{{t.color}}">{{t.typeLabel}}</span>
+                      <span style="font-size:13px;font-weight:600;line-height:1.3">{{t.title}}</span>
+                      <span style="font-size:12px;font-weight:600;color:{{t.stColor}};display:flex;align-items:center;gap:4px">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{t.stIcon}}"></path></svg>{{t.stLabel}}
+                      </span>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-for>
+            </div>
+            <div style="margin-top:14px;display:flex;flex-direction:column;gap:8px;min-width:860px">
+              <span class="lbl">Alışkanlıklar</span>
+              <sc-for list="{{clHabits}}" as="h" hint-placeholder-count="2">
+                <div style="display:grid;grid-template-columns:180px repeat(7,minmax(0,1fr));gap:8px;align-items:center">
+                  <span style="font-size:13px;font-weight:600">{{h.title}}</span>
+                  <sc-for list="{{h.dots}}" as="dot">
+                    <span style="height:26px;border-radius:8px;background:{{dot.bg}};color:{{dot.color}};font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center">{{dot.label}}</span>
+                  </sc-for>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{clTab.progress}}" hint-placeholder-val="{{ false }}">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px">
+            <sc-for list="{{prog.tiles}}" as="k" hint-placeholder-count="3">
+              <div class="card" style="padding:14px 16px">
+                <div class="muted" style="font-size:13px">{{k.label}}</div>
+                <div class="disp" style="font-size:26px;font-weight:600;margin-top:4px">{{k.value}}</div>
+                <div class="muted" style="font-size:12px;margin-top:2px">{{k.sub}}</div>
+              </div>
+            </sc-for>
+          </div>
+          <div class="card" style="padding:18px 20px">
+            <div style="font-weight:600;font-size:15px">{{prog.title}}</div>
+            <div class="muted" style="font-size:13px;margin-top:2px">{{prog.sub}}</div>
+            <svg viewBox="0 0 640 220" role="img" aria-label="{{prog.aria}}" style="width:100%;height:auto;margin-top:12px;display:block">
+              <path d="M40 30H620M40 85H620M40 140H620M40 195H620" stroke="#EFEDE8" stroke-width="1"></path>
+              <text x="32" y="34" text-anchor="end" font-size="11" fill="#5B5F66">{{prog.yMax}}</text>
+              <text x="32" y="199" text-anchor="end" font-size="11" fill="#5B5F66">{{prog.yMin}}</text>
+              <path d="{{prog.line}}" stroke="{{coach.color}}" stroke-width="3" fill="none" stroke-linejoin="round" stroke-linecap="round"></path>
+              <path d="{{prog.dots}}" stroke="{{coach.color}}" stroke-width="10" fill="none" stroke-linecap="round"></path>
+              <text x="40" y="216" font-size="11" fill="#5B5F66">{{prog.x0}}</text>
+              <text x="620" y="216" text-anchor="end" font-size="11" fill="#5B5F66">{{prog.x1}}</text>
+              <text x="{{prog.lastX}}" y="{{prog.lastY}}" text-anchor="end" font-size="13" font-weight="700" fill="#16181D">{{prog.lastLabel}}</text>
+            </svg>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{clTab.logs}}" hint-placeholder-val="{{ false }}">
+          <sc-for list="{{logs}}" as="l" hint-placeholder-count="3">
+            <div class="card" style="padding:16px 18px;display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start">
+              <span aria-hidden="true" style="width:38px;height:38px;border-radius:10px;background:{{l.bg}};color:{{l.color}};display:flex;align-items:center;justify-content:center;flex:none">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="{{l.icon}}"></path></svg>
+              </span>
+              <div style="flex:1 1 260px;min-width:0">
+                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span style="font-weight:600;font-size:15px">{{l.t}}</span><span style="font-size:11px;font-weight:700;border-radius:6px;padding:2px 7px;background:#EFEDE8">{{l.tag}}</span><span class="muted" style="font-size:12px">{{l.when}}</span></div>
+                <div style="font-size:14px;line-height:1.5;margin-top:4px">{{l.d}}</div>
+                <sc-if value="{{l.audio}}">
+                  <div style="margin-top:10px;display:flex;align-items:center;gap:10px;background:#F6F5F2;border-radius:12px;padding:8px 12px;max-width:380px">
+                    <button class="ibtn" aria-label="Kaydı dinle" onClick="{{l.play}}" style="border-radius:50%;background:#16181D;color:#FFFFFF;border:none"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"></path></svg></button>
+                    <svg viewBox="0 0 200 30" aria-hidden="true" style="flex:1;height:30px"><path d="M4 15v0M12 10v10M20 6v18M28 12v6M36 4v22M44 9v12M52 13v4M60 7v16M68 11v8M76 5v20M84 12v6M92 8v14M100 14v2M108 6v18M116 10v10M124 4v22M132 12v6M140 8v14M148 13v4M156 7v16M164 11v8M172 9v12M180 13v4M188 10v10M196 14v2" stroke="#5B5F66" stroke-width="3" stroke-linecap="round"></path></svg>
+                    <span class="muted" style="font-size:12px">0:48</span>
+                  </div>
+                </sc-if>
+              </div>
+              <button class="sbtn" onClick="{{l.reply}}" style="height:38px">Yorum yaz</button>
+            </div>
+          </sc-for>
+        </sc-if>
+      </div>
+
+      <aside style="flex:1 1 260px;min-width:0;display:flex;flex-direction:column;gap:14px">
+        <div class="card" style="padding:16px 18px;display:flex;flex-direction:column;gap:10px">
+          <span class="lbl">Aktif program</span>
+          <div style="font-weight:600;font-size:15px">{{progName}}</div>
+          <div class="muted" style="font-size:13px">{{cl.weekText}} · {{progStatus}}</div>
+          <button class="sbtn" onClick="{{cl.edit}}" style="height:38px">Takvimde aç</button>
+        </div>
+        <div class="card" style="padding:16px 18px;display:flex;flex-direction:column;gap:8px">
+          <span class="lbl">Başka koçlardan aldığı</span>
+          <sc-if value="{{cl.multi}}" hint-placeholder-val="{{ true }}">
+            <sc-for list="{{cl.others}}" as="o">
+              <div style="display:flex;align-items:center;gap:8px;font-size:14px"><span style="width:10px;height:10px;border-radius:50%;background:{{o.color}}"></span>{{o.domain}}</div>
+            </sc-for>
+            <p class="muted" style="margin:4px 0 0;font-size:12px;line-height:1.5">Diğer koçların programları ve sonuçları yalnızca danışan izin verirse görünür.</p>
+          </sc-if>
+          <sc-if value="{{cl.single}}" hint-placeholder-val="{{ false }}"><p class="muted" style="margin:0;font-size:13px">Yalnızca seninle çalışıyor.</p></sc-if>
+        </div>
+        <div class="card" style="padding:16px 18px;display:flex;flex-direction:column;gap:8px">
+          <label for="cnote" class="lbl">Koç notu (danışan görmez)</label>
+          <textarea id="cnote" class="ta" value="{{cl.note}}" onChange="{{cl.onNote}}"></textarea>
+        </div>
+      </aside>
+    </div>
+  </sc-if>
+
+  <!-- ================= PROGRAM OLUŞTURUCU ================= -->
+  <sc-if value="{{scr.builder}}" hint-placeholder-val="{{ false }}">
+    <div class="card" style="padding:14px 18px;display:flex;flex-wrap:wrap;align-items:center;gap:12px">
+      <div style="flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:4px">
+        <label for="pname" class="lbl">Program adı</label>
+        <input id="pname" class="inp disp" value="{{progName}}" onChange="{{onProgName}}" style="font-size:18px;font-weight:600;border-color:transparent;padding-left:0;height:34px">
+      </div>
+      <label for="pfor" style="display:flex;flex-direction:column;gap:4px;flex:0 1 220px">
+        <span class="lbl">Danışan</span>
+        <select id="pfor" class="inp" value="{{builderFor}}" onChange="{{onBuilderFor}}">
+          <sc-for list="{{clientOpts}}" as="o"><option value="{{o.id}}">{{o.name}}</option></sc-for>
+        </select>
+      </label>
+      <span style="display:inline-flex;align-items:center;height:28px;border-radius:14px;padding:0 12px;font-size:12px;font-weight:700;background:{{statusBg}};color:{{statusColor}}">{{progStatus}}</span>
+      <button class="sbtn" onClick="{{saveTemplate}}">Şablon olarak kaydet</button>
+      <button class="pbtn" onClick="{{openSend}}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l16-8-6 16-2-7z"></path></svg>Gönder</button>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start">
+      <!-- takvim -->
+      <section style="flex:999 1 620px;min-width:0;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span style="font-size:13px;font-weight:600">{{bName}} için alanlar:</span>
+          <sc-for list="{{bDoms}}" as="dc"><span style="font-size:12px;font-weight:700;border-radius:6px;padding:3px 8px;background:{{dc.bg}};color:{{dc.color}}">{{dc.label}}</span></sc-for>
+          <sc-if value="{{hasDomTabs}}">
+            <span style="display:flex;gap:6px;flex-wrap:wrap;margin-left:auto" role="group" aria-label="Alan filtresi">
+              <sc-for list="{{domTabs}}" as="dt"><button class="chip" onClick="{{dt.pick}}" aria-pressed="{{dt.on}}" style="{{dt.style}}">{{dt.label}}</button></sc-for>
+            </span>
+          </sc-if>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <button class="ibtn" aria-label="Önceki hafta" onClick="{{noop}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+          <span style="font-weight:600;font-size:15px">Hafta 4 · 23–29 Kasım</span>
+          <button class="ibtn" aria-label="Sonraki hafta" onClick="{{noop}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button>
+          <span class="muted" style="font-size:13px;margin-left:auto">{{taskCount}} görev · kartı seçip sağda düzenle</span>
+        </div>
+        <div class="scrollx" style="padding-bottom:4px">
+          <div style="display:grid;grid-template-columns:repeat(7,minmax(128px,1fr));gap:8px;min-width:920px">
+            <sc-for list="{{week}}" as="day" hint-placeholder-count="7">
+              <div style="display:flex;flex-direction:column;gap:8px;background:{{day.colBg}};border-radius:14px;padding:10px;min-height:380px;position:relative">
+                <div style="display:flex;align-items:baseline;gap:6px"><span style="font-weight:700;font-size:13px">{{day.d}}</span><span class="muted" style="font-size:12px">{{day.n}}</span><sc-if value="{{day.isToday}}"><span style="margin-left:auto;font-size:11px;font-weight:700;color:#FFFFFF;background:#16181D;border-radius:6px;padding:2px 6px">Bugün</span></sc-if></div>
+                <sc-for list="{{day.tasks}}" as="t">
+                  <button class="tcard" onClick="{{t.pick}}" style="{{t.cardStyle}}" aria-pressed="{{t.sel}}">
+                    <span style="display:flex;align-items:center;gap:6px">
+                      <span aria-hidden="true" style="width:22px;height:22px;border-radius:6px;background:{{t.bg}};color:{{t.color}};display:flex;align-items:center;justify-content:center;flex:none"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{t.icon}}"></path></svg></span>
+                      <span style="font-size:11px;font-weight:700;color:{{t.color}}">{{t.typeLabel}}</span>
+                    </span>
+                    <span style="font-size:13px;font-weight:600;line-height:1.3">{{t.title}}</span>
+                    <span class="muted" style="font-size:12px;line-height:1.35">{{t.meta}}</span>
+                    <sc-if value="{{t.showDom}}"><span style="font-size:11px;font-weight:600;color:{{t.domColor}};display:flex;align-items:center;gap:4px"><span style="width:6px;height:6px;border-radius:50%;background:{{t.domColor}}"></span>{{t.domLabel}}</span></sc-if>
+                  </button>
+                </sc-for>
+                <button onClick="{{day.toggleMenu}}" aria-expanded="{{day.menuOpen}}" style="height:36px;border-radius:10px;border:1.5px dashed #C9C5BD;background:transparent;font-size:13px;font-weight:600;color:#5B5F66;display:flex;align-items:center;justify-content:center;gap:4px">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Görev ekle
+                </button>
+                <sc-if value="{{day.menuOpen}}">
+                  <div class="card" style="padding:6px;display:flex;flex-direction:column;gap:2px;box-shadow:0 8px 24px rgba(22,24,29,.12)">
+                    <sc-for list="{{day.addTypes}}" as="ty">
+                      <button onClick="{{ty.add}}" class="row" style="height:36px;border:none;background:transparent;border-radius:8px;display:flex;align-items:center;gap:8px;padding:0 8px;font-size:13px;font-weight:500;text-align:left">
+                        <span aria-hidden="true" style="width:22px;height:22px;border-radius:6px;background:{{ty.bg}};color:{{ty.color}};display:flex;align-items:center;justify-content:center;flex:none"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{ty.icon}}"></path></svg></span>{{ty.label}}
+                      </button>
+                    </sc-for>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div class="card" style="padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
+            <div><span style="font-weight:600;font-size:15px">Alışkanlıklar</span> <span class="muted" style="font-size:13px">· güne değil haftaya bağlı, danışanın Alışkanlıklarım modülünde görünür</span></div>
+            <button class="sbtn" onClick="{{addHabit}}" style="height:36px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Alışkanlık ekle</button>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <sc-for list="{{habits}}" as="t" hint-placeholder-count="2">
+              <button class="tcard" onClick="{{t.pick}}" style="{{t.habitStyle}}" aria-pressed="{{t.sel}}">
+                <span style="display:flex;align-items:center;gap:6px"><span aria-hidden="true" style="width:22px;height:22px;border-radius:6px;background:{{t.bg}};color:{{t.color}};display:flex;align-items:center;justify-content:center;flex:none"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{t.icon}}"></path></svg></span><span style="font-size:13px;font-weight:600">{{t.title}}</span></span>
+                <span class="muted" style="font-size:12px">{{t.meta}}</span>
+                <sc-if value="{{t.showDom}}"><span style="font-size:11px;font-weight:600;color:{{t.domColor}}">{{t.domLabel}}</span></sc-if>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+      </section>
+
+      <!-- editör -->
+      <section class="card" aria-label="Görev düzenleyici" style="flex:1 1 340px;min-width:0;padding:16px 18px;display:flex;flex-direction:column;gap:14px">
+        <sc-if value="{{noSel}}" hint-placeholder-val="{{ false }}">
+          <p class="muted" style="margin:0;font-size:14px">Düzenlemek için takvimden bir görev seç.</p>
+        </sc-if>
+        <sc-if value="{{hasSel}}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;align-items:center;gap:10px">
+            <span aria-hidden="true" style="width:34px;height:34px;border-radius:9px;background:{{sel.bg}};color:{{sel.color}};display:flex;align-items:center;justify-content:center;flex:none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="{{sel.icon}}"></path></svg></span>
+            <div style="flex:1;min-width:0"><div class="lbl" style="color:{{sel.color}}">{{sel.typeLabel}}</div><div style="font-weight:600;font-size:15px">{{sel.title}}</div></div>
+            <button class="ibtn" aria-label="Görevi kopyala" onClick="{{sel.dup}}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M8 8h12v12H8zM4 16V4h12"></path></svg></button>
+            <button class="ibtn" aria-label="Görevi sil" onClick="{{sel.del}}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"></path></svg></button>
+          </div>
+
+          <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+            <sc-if value="{{sel.hasDay}}">
+              <label for="f-day" style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600" class="muted">Gün
+                <select id="f-day" class="inp" value="{{sel.dayVal}}" onChange="{{sel.setDay}}">
+                  <sc-for list="{{dayOpts}}" as="o"><option value="{{o.v}}">{{o.label}}</option></sc-for>
+                </select>
+              </label>
+            </sc-if>
+            <sc-if value="{{sel.hasDomSel}}">
+              <label for="f-dom" style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600" class="muted">Alan
+                <select id="f-dom" class="inp" value="{{sel.domVal}}" onChange="{{sel.setDom}}">
+                  <sc-for list="{{sel.domOpts}}" as="o"><option value="{{o.v}}">{{o.label}}</option></sc-for>
+                </select>
+              </label>
+            </sc-if>
+            <sc-for list="{{sel.fields}}" as="fd">
+              <label for="f-{{fd.k}}" style="{{fd.wrapStyle}}" class="muted">{{fd.l}}
+                <sc-if value="{{fd.isText}}"><input id="f-{{fd.k}}" class="inp" value="{{fd.v}}" onChange="{{fd.set}}"></sc-if>
+                <sc-if value="{{fd.isNum}}"><span style="display:flex;align-items:center;gap:6px"><input id="f-{{fd.k}}" type="number" class="inp" value="{{fd.v}}" onChange="{{fd.set}}"><span style="font-size:13px;color:#5B5F66">{{fd.suf}}</span></span></sc-if>
+                <sc-if value="{{fd.isSel}}"><select id="f-{{fd.k}}" class="inp" value="{{fd.v}}" onChange="{{fd.set}}"><sc-for list="{{fd.opts}}" as="o"><option value="{{o}}">{{o}}</option></sc-for></select></sc-if>
+              </label>
+            </sc-for>
+          </div>
+
+          <!-- antrenman: hareketler -->
+          <sc-if value="{{sel.isWorkout}}">
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;align-items:center;justify-content:space-between"><span class="lbl">Hareketler</span><span class="muted" style="font-size:12px">{{sel.exSummary}}</span></div>
+              <sc-for list="{{sel.ex}}" as="e">
+                <div style="border:1px solid #E6E3DD;border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px">
+                  <div style="display:flex;align-items:center;gap:10px">
+                    <span aria-hidden="true" style="width:44px;height:34px;border-radius:8px;background:#2A2D33;color:#FFFFFF;display:flex;align-items:center;justify-content:center;flex:none"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4v16l13-8z"></path></svg></span>
+                    <div style="flex:1;min-width:0"><div style="font-weight:600;font-size:14px">{{e.n}}</div><div class="muted" style="font-size:12px">Video: {{e.video}}</div></div>
+                    <button class="ibtn" aria-label="Hareketi kaldır" onClick="{{e.remove}}" style="width:30px;height:30px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+                  </div>
+                  <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:#5B5F66;align-items:center">
+                    <span style="display:flex;align-items:center;gap:6px">Set <button class="step" aria-label="Set azalt" onClick="{{e.setsDown}}">−</button><b style="color:#16181D;font-size:14px;min-width:14px;text-align:center">{{e.sets}}</b><button class="step" aria-label="Set artır" onClick="{{e.setsUp}}">+</button></span>
+                    <label style="display:flex;align-items:center;gap:6px">Tekrar <input class="inp" value="{{e.reps}}" onChange="{{e.onReps}}" style="width:76px;height:30px;padding:0 8px;font-size:13px"></label>
+                    <span style="display:flex;align-items:center;gap:6px">Dinlenme <button class="step" aria-label="Dinlenmeyi azalt" onClick="{{e.restDown}}">−</button><b style="color:#16181D;font-size:14px">{{e.rest}} sn</b><button class="step" aria-label="Dinlenmeyi artır" onClick="{{e.restUp}}">+</button></span>
+                  </div>
+                </div>
+              </sc-for>
+              <button class="sbtn" onClick="{{sel.addEx}}" style="height:38px;border-style:dashed">Kütüphaneden hareket ekle</button>
+            </div>
+          </sc-if>
+
+          <!-- beslenme: öğünler -->
+          <sc-if value="{{sel.isMeal}}">
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;align-items:center;justify-content:space-between"><span class="lbl">Öğünler</span><span class="muted" style="font-size:12px">Toplam {{sel.mealTotal}} kcal</span></div>
+              <sc-for list="{{sel.meals}}" as="m">
+                <div style="border:1px solid #E6E3DD;border-radius:12px;padding:10px;display:grid;grid-template-columns:1fr 88px;gap:6px 10px;align-items:center">
+                  <span style="font-weight:600;font-size:13px">{{m.n}}</span>
+                  <label style="display:flex;align-items:center;gap:4px;font-size:12px;color:#5B5F66"><input class="inp" type="number" aria-label="{{m.n}} kalori" value="{{m.kcal}}" onChange="{{m.onKcal}}" style="height:30px;padding:0 6px;font-size:13px">kcal</label>
+                  <input class="inp" aria-label="{{m.n}} içerik" value="{{m.t}}" onChange="{{m.onText}}" style="grid-column:1 / -1;height:34px;font-size:13px">
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <!-- gitar: BPM -->
+          <sc-if value="{{sel.isGuitar}}">
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <span class="lbl">Metronom hedefi</span>
+              <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+                <div style="border:1px solid #E6E3DD;border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px;align-items:flex-start">
+                  <span class="muted" style="font-size:12px;font-weight:600">Başlangıç</span>
+                  <span style="display:flex;align-items:center;gap:8px"><button class="step" aria-label="Başlangıç BPM azalt" onClick="{{sel.b0Down}}">−</button><b class="disp" style="font-size:22px">{{sel.b0}}</b><button class="step" aria-label="Başlangıç BPM artır" onClick="{{sel.b0Up}}">+</button><span class="muted" style="font-size:12px">BPM</span></span>
+                </div>
+                <div style="border:1px solid #E6E3DD;border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px;align-items:flex-start">
+                  <span class="muted" style="font-size:12px;font-weight:600">Hedef</span>
+                  <span style="display:flex;align-items:center;gap:8px"><button class="step" aria-label="Hedef BPM azalt" onClick="{{sel.b1Down}}">−</button><b class="disp" style="font-size:22px">{{sel.b1}}</b><button class="step" aria-label="Hedef BPM artır" onClick="{{sel.b1Up}}">+</button><span class="muted" style="font-size:12px">BPM</span></span>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- deneme: net alanları -->
+          <sc-if value="{{sel.isExam}}">
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <span class="lbl">Danışandan istenecek netler</span>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <sc-for list="{{sel.nets}}" as="nt"><button class="chip" onClick="{{nt.flip}}" aria-pressed="{{nt.on}}" style="{{nt.style}}">{{nt.label}}</button></sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <span class="lbl">Danışandan istenenler</span>
+            <sc-for list="{{sel.toggles}}" as="tg">
+              <label style="display:flex;align-items:flex-start;gap:10px;font-size:14px;line-height:1.4;cursor:pointer"><input type="checkbox" checked="{{tg.on}}" onChange="{{tg.flip}}" style="width:18px;height:18px;margin:1px 0 0;flex:none">{{tg.label}}</label>
+            </sc-for>
+          </div>
+
+          <label for="tnote" style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600" class="muted">Danışana not
+            <textarea id="tnote" class="ta" value="{{sel.note}}" onChange="{{sel.onNote}}" placeholder="Örneğin: son sette tempo yavaş, 3 saniye iniş"></textarea>
+          </label>
+
+          <!-- mobil önizleme -->
+          <div style="background:#F6F5F2;border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px">
+            <span class="lbl">Danışan uygulamasında böyle görünür</span>
+            <div style="background:#FFFFFF;border:1px solid #E6E3DD;border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:12px;max-width:340px">
+              <div style="display:flex;align-items:center;gap:12px">
+                <span aria-hidden="true" style="width:44px;height:44px;border-radius:12px;background:{{sel.bg}};color:{{sel.color}};display:flex;align-items:center;justify-content:center;flex:none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="{{sel.icon}}"></path></svg></span>
+                <div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600;color:{{sel.color}}">{{sel.typeLabel}} · {{sel.domLabel}}</div><div style="font-weight:600;font-size:15px">{{sel.title}}</div><div class="muted" style="font-size:13px">{{sel.meta}}</div></div>
+              </div>
+              <sc-if value="{{sel.hasNote}}"><div style="font-size:13px;line-height:1.45;background:#F6F5F2;border-radius:10px;padding:8px 10px"><b>{{coach.first}}:</b> {{sel.note}}</div></sc-if>
+              <span style="height:44px;border-radius:14px;background:#16181D;color:#FFFFFF;font-weight:600;font-size:14px;display:flex;align-items:center;justify-content:center">{{sel.cta}}</span>
+              <sc-if value="{{sel.hasAsk}}"><span class="muted" style="font-size:12px">Bitince: {{sel.ask}}</span></sc-if>
+            </div>
+          </div>
+        </sc-if>
+      </section>
+    </div>
+  </sc-if>
+
+  <!-- ================= KÜTÜPHANE ================= -->
+  <sc-if value="{{scr.library}}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <div role="tablist" aria-label="Kütüphane sekmeleri" style="display:flex;gap:22px;border-bottom:1px solid #E6E3DD;flex:1 1 auto">
+        <sc-for list="{{libTabs}}" as="t" hint-placeholder-count="3">
+          <button class="tab" role="tab" aria-selected="{{t.on}}" onClick="{{t.pick}}" style="{{t.style}}">{{t.label}} <span class="muted" style="font-weight:500">{{t.count}}</span></button>
+        </sc-for>
+      </div>
+      <button class="sbtn" onClick="{{libAdd}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Yeni ekle</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px">
+      <sc-for list="{{libItems}}" as="it" hint-placeholder-count="8">
+        <div class="card" style="overflow:hidden;display:flex;flex-direction:column">
+          <div style="height:120px;background:{{coach.colorBg}};position:relative;display:flex;align-items:center;justify-content:center;color:{{coach.color}}">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{it.icon}}"></path></svg>
+            <sc-if value="{{it.video}}"><span style="position:absolute;left:10px;bottom:10px;height:24px;border-radius:12px;background:rgba(22,24,29,.85);color:#FFFFFF;font-size:11px;font-weight:600;display:inline-flex;align-items:center;gap:4px;padding:0 9px"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"></path></svg>Video</span></sc-if>
+          </div>
+          <div style="padding:12px 14px;display:flex;flex-direction:column;gap:3px;flex:1">
+            <span style="font-weight:600;font-size:14px">{{it.t}}</span>
+            <span class="muted" style="font-size:12px">{{it.m}}</span>
+          </div>
+          <button class="row" onClick="{{it.use}}" style="height:40px;border:none;border-top:1px solid #EFEDE8;background:transparent;font-size:13px;font-weight:600">Programa ekle</button>
+        </div>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <!-- ================= MESAJLAR ================= -->
+  <sc-if value="{{scr.messages}}" hint-placeholder-val="{{ false }}">
+    <div class="card" style="display:flex;flex-wrap:wrap;overflow:hidden;min-height:560px">
+      <div style="flex:1 1 260px;border-right:1px solid #E6E3DD;display:flex;flex-direction:column">
+        <sc-for list="{{threads}}" as="th" hint-placeholder-count="4">
+          <button class="row" onClick="{{th.open}}" style="{{th.style}}">
+            <span aria-hidden="true" style="width:40px;height:40px;border-radius:50%;background:#EFEDE8;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;flex:none">{{th.ini}}</span>
+            <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+              <span style="display:flex;gap:6px;align-items:baseline"><b style="font-size:14px;flex:1">{{th.name}}</b><span class="muted" style="font-size:12px">{{th.time}}</span></span>
+              <span class="muted" style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{th.last}}</span>
+            </span>
+            <sc-if value="{{th.unread}}"><span aria-label="Okunmamış" style="width:10px;height:10px;border-radius:50%;background:#C2410C;flex:none"></span></sc-if>
+          </button>
+        </sc-for>
+      </div>
+      <div style="flex:999 1 420px;min-width:0;display:flex;flex-direction:column">
+        <div style="padding:14px 18px;border-bottom:1px solid #E6E3DD;display:flex;align-items:center;gap:12px">
+          <div style="flex:1"><div style="font-weight:600">{{thread.name}}</div><div class="muted" style="font-size:12px">{{coach.domain}}</div></div>
+          <button class="sbtn" onClick="{{thread.profile}}" style="height:36px">Danışan profili</button>
+        </div>
+        <div style="flex:1;padding:18px;display:flex;flex-direction:column;gap:10px;background:#FAF9F6">
+          <sc-for list="{{thread.msgs}}" as="m" hint-placeholder-count="3">
+            <div style="{{m.wrap}}">
+              <div style="{{m.bubble}}">
+                {{m.t}}
+                <sc-if value="{{m.hasAtt}}"><div style="margin-top:8px;display:flex;align-items:center;gap:8px;border-radius:10px;padding:8px 10px;background:{{m.attBg}};font-size:12px;font-weight:600"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{m.attIcon}}"></path></svg>{{m.att}}</div></sc-if>
+              </div>
+              <span class="muted" style="font-size:11px">{{m.time}}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="padding:12px 18px;border-top:1px solid #E6E3DD;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <sc-for list="{{quick}}" as="q"><button class="chip" onClick="{{q.use}}">{{q.t}}</button></sc-for>
+          </div>
+          <div style="display:flex;gap:8px">
+            <label for="mdraft" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Mesaj</label>
+            <input id="mdraft" class="inp" value="{{draft}}" onChange="{{onDraft}}" onKeyDown="{{onDraftKey}}" placeholder="Mesaj yaz" style="height:44px">
+            <button class="pbtn" onClick="{{sendMsg}}" aria-label="Gönder" style="width:48px;padding:0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l16-8-6 16-2-7z"></path></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</main>
+
+<!-- ================= GÖNDER MODALI ================= -->
+<sc-if value="{{sendOpen}}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;inset:0;background:rgba(22,24,29,.45);display:flex;align-items:center;justify-content:center;padding:16px;z-index:20">
+    <div role="dialog" aria-modal="true" aria-labelledby="sendh" class="card" style="width:100%;max-width:480px;padding:22px;display:flex;flex-direction:column;gap:16px;max-height:90vh;overflow-y:auto">
+      <div style="display:flex;align-items:center;gap:10px">
+        <h2 id="sendh" class="disp" style="margin:0;font-size:20px;font-weight:600;flex:1">Programı gönder</h2>
+        <button class="ibtn" aria-label="Kapat" onClick="{{closeSend}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+      </div>
+      <div style="font-size:14px"><b>{{progName}}</b> · {{taskCount}} görev, {{habitCount}} alışkanlık</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <span class="lbl">Danışanlar</span>
+        <sc-for list="{{sendList}}" as="c">
+          <label style="display:flex;align-items:center;gap:10px;min-height:40px;font-size:14px;cursor:pointer"><input type="checkbox" checked="{{c.on}}" onChange="{{c.flip}}" style="width:18px;height:18px">{{c.name}} <span class="muted" style="font-size:12px">{{c.goal}}</span></label>
+        </sc-for>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+        <label for="sstart" class="muted" style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600">Başlangıç
+          <select id="sstart" class="inp" value="{{sendStart}}" onChange="{{onSendStart}}"><option>30 Kasım Pazartesi</option><option>Bugün, 26 Kasım</option><option>7 Aralık Pazartesi</option></select>
+        </label>
+        <label for="srep" class="muted" style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600">Tekrar
+          <select id="srep" class="inp" value="{{sendRep}}" onChange="{{onSendRep}}"><option>Yalnızca 1 hafta</option><option>4 hafta tekrarla</option><option>Program bitene kadar</option></select>
+        </label>
+      </div>
+      <label style="display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer"><input type="checkbox" checked="{{sendNotify}}" onChange="{{flipNotify}}" style="width:18px;height:18px">Danışana bildirim gönder</label>
+      <p class="muted" style="margin:0;font-size:13px;line-height:1.5">{{sendDomText}}</p>
+      <div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap">
+        <button class="sbtn" onClick="{{closeSend}}">Vazgeç</button>
+        <button class="pbtn" onClick="{{confirmSend}}">{{sendLabel}}</button>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{hasToast}}" hint-placeholder-val="{{ false }}">
+  <div role="status" style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#16181D;color:#FFFFFF;border-radius:14px;padding:12px 18px;font-size:14px;font-weight:500;max-width:min(560px,calc(100% - 32px));box-shadow:0 10px 30px rgba(22,24,29,.25);z-index:30">{{toast}}</div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+var IC = {
+  home: "M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z",
+  users: "M16 19v-1a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v1M9 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM22 19v-1a4 4 0 0 0-3-3.9M16 4.1a3 3 0 0 1 0 5.8",
+  cal: "M4 6h16v14H4zM4 10h16M8 3v4M16 3v4",
+  lib: "M5 4h4v16H5zM11 4h4v16h-4zM17 6l3-1 3 14-3 1z",
+  msg: "M4 5h16v11H8l-4 4z",
+  workout: "M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12",
+  meal: "M4 11h16a8 8 0 0 1-16 0ZM8 7c0-1.5 1-2 1-3M12 7c0-1.5 1-2 1-3M16 7c0-1.5 1-2 1-3",
+  habit: "M20 12a8 8 0 1 1-3-6.2M20 4v4h-4M8.5 12l2.5 2.5 4.5-5",
+  study: "M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2V5ZM4 19a2 2 0 0 1 2-2h13",
+  exam: "M9 3h6v3H9zM7 4.5H5V21h14V4.5h-2M8.5 13l2.5 2.5 4.5-5",
+  lesson: "M3 5h18v14H3zM10 9v6l5-3z",
+  guitar: "M9 18V5l11-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM20 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z",
+  check: "M5 12.5l4.5 4.5L19 7",
+  miss: "M6 6l12 12M18 6 6 18",
+  dot: "M12 8v4l3 2M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z",
+  photo: "M4 7h4l2-3h4l2 3h4v13H4zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z",
+  measure: "M4 20h16M6 20V9l6-5 6 5v11M10 20v-5h4v5",
+  mic: "M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3ZM5 11a7 7 0 0 0 14 0M12 18v3"
+};
+
+var TYPES = {
+  workout: { label: "Antrenman", color: "#C2410C", bg: "#FCEDE4", cta: "Antrenmanı başlat" },
+  meal:    { label: "Beslenme planı", color: "#985406", bg: "#FBF1DC", cta: "Öğünleri gör" },
+  habit:   { label: "Alışkanlık", color: "#6D28D9", bg: "#F0EAFC", cta: "Bugün yaptım" },
+  study:   { label: "Soru seti", color: "#1D4ED8", bg: "#E8EFFD", cta: "Sayacı başlat" },
+  exam:    { label: "Deneme", color: "#9D174D", bg: "#FCE8F0", cta: "Sonuçları gir" },
+  lesson:  { label: "Video ders", color: "#475569", bg: "#EBEEF2", cta: "Videoyu izle" },
+  guitar:  { label: "Gitar pratiği", color: "#0F766E", bg: "#E2F3F1", cta: "Metronomla başla" },
+  measure: { label: "Ölçüm", color: "#0369A1", bg: "#E5F1F8", cta: "Ölçümü gir" }
+};
+var DOMS = {
+  fit:    { label: "Fitness", color: "#C2410C", bg: "#FCEDE4", types: ["workout", "measure"] },
+  nut:    { label: "Beslenme", color: "#4D7C0F", bg: "#EEF5E3", types: ["meal", "measure"] },
+  study:  { label: "Sınav", color: "#1D4ED8", bg: "#E8EFFD", types: ["study", "exam", "lesson"] },
+  guitar: { label: "Gitar", color: "#0F766E", bg: "#E2F3F1", types: ["guitar", "lesson"] }
+};
+
+var FIELDS = {
+  workout: [{ k: "title", l: "Antrenman adı", kind: "text", wide: true }, { k: "dur", l: "Tahmini süre", kind: "num", suf: "dk" }, { k: "level", l: "Yoğunluk", kind: "sel", opts: ["Hafif", "Orta", "Yüksek"] }],
+  meal: [{ k: "title", l: "Plan adı", kind: "text", wide: true }, { k: "kcal", l: "Günlük hedef", kind: "num", suf: "kcal" }, { k: "p", l: "Protein", kind: "num", suf: "g" }, { k: "c", l: "Karbonhidrat", kind: "num", suf: "g" }, { k: "y", l: "Yağ", kind: "num", suf: "g" }],
+  habit: [{ k: "title", l: "Alışkanlık", kind: "text", wide: true }, { k: "freq", l: "Sıklık", kind: "sel", opts: ["Her gün", "Hafta içi", "Haftada 3"] }, { k: "target", l: "Günlük hedef", kind: "text" }, { k: "remind", l: "Hatırlatma", kind: "sel", opts: ["Yok", "Sabah 08:00", "Öğle 12:30", "Akşam 21:00"] }],
+  study: [{ k: "title", l: "Görev adı", kind: "text", wide: true }, { k: "ders", l: "Ders", kind: "sel", opts: ["AYT Matematik", "TYT Matematik", "TYT Türkçe", "AYT Fizik", "AYT Kimya"] }, { k: "konu", l: "Konu", kind: "text" }, { k: "q", l: "Soru sayısı", kind: "num", suf: "soru" }, { k: "dur", l: "Süre", kind: "num", suf: "dk" }],
+  exam: [{ k: "title", l: "Deneme adı", kind: "text", wide: true }, { k: "tur", l: "Tür", kind: "sel", opts: ["TYT", "AYT", "LGS"] }, { k: "dur", l: "Süre", kind: "num", suf: "dk" }],
+  lesson: [{ k: "title", l: "Ders adı", kind: "text", wide: true }, { k: "dur", l: "Süre", kind: "num", suf: "dk" }, { k: "src", l: "Kaynak", kind: "sel", opts: ["Kütüphaneden", "Yeni video yükle", "Bağlantı"] }],
+  guitar: [{ k: "title", l: "Egzersiz adı", kind: "text", wide: true }, { k: "chords", l: "Akorlar / parça", kind: "text" }, { k: "dur", l: "Süre", kind: "num", suf: "dk" }],
+  measure: [{ k: "title", l: "Görev adı", kind: "text", wide: true }, { k: "metrics", l: "Ölçülecekler", kind: "sel", opts: ["Kilo", "Kilo + bel çevresi", "Kilo + bel + kalça", "Vücut yağ oranı"] }, { k: "when", l: "Ne zaman", kind: "sel", opts: ["Sabah aç karnına", "Antrenman öncesi", "Serbest"] }]
+};
+
+var TOGGLES = {
+  workout: ["Her sette kilo ve tekrar girişi iste", "Dinlenme sayacı otomatik başlasın", "Antrenman sonunda zorluk puanı iste"],
+  meal: ["Öğün fotoğrafı iste", "Alternatif öğün seçebilsin", "Su takibini plana ekle"],
+  habit: ["Danışan hedefi değiştirebilsin", "Seri sayacını göster"],
+  study: ["Doğru / yanlış / boş girişi iste", "Yanlış soruların fotoğrafını iste", "Süre sayacı açık başlasın"],
+  exam: ["Ders bazında net girişi iste", "Ardından deneme analizi görevi oluştur"],
+  lesson: ["İzledikten sonra 3 soruluk kontrol", "Video bitmeden tamamlanamasın"],
+  guitar: ["Metronom açık başlasın", "Pratik sonunda ses kaydı iste", "Temiz çalarsa bir sonraki gün hedef BPM ile başlasın"],
+  measure: ["Ön / yan fotoğraf iste", "Değişimi danışana grafikle göster"]
+};
+var ASK = {
+  workout: ["set başına kilo ve tekrar", "", "zorluk puanı"],
+  meal: ["öğün fotoğrafı", "", ""],
+  habit: ["", ""],
+  study: ["doğru / yanlış / boş", "yanlış soru fotoğrafı", ""],
+  exam: ["ders bazında netler", ""],
+  lesson: ["3 soruluk kontrol", ""],
+  guitar: ["", "ses kaydı", ""],
+  measure: ["ön / yan fotoğraf", ""]
+};
+
+var DAYS = [
+  { d: "Pzt", n: "23", full: "Pazartesi" }, { d: "Sal", n: "24", full: "Salı" }, { d: "Çar", n: "25", full: "Çarşamba" },
+  { d: "Per", n: "26", full: "Perşembe" }, { d: "Cum", n: "27", full: "Cuma" }, { d: "Cmt", n: "28", full: "Cumartesi" }, { d: "Paz", n: "29", full: "Pazar" }
+];
+var TODAY = 3;
+
+var COACHES = {
+  deniz: { name: "Deniz Arslan", first: "Deniz", ini: "DA", doms: ["fit", "nut"], role: "koçu" },
+  zehra: { name: "Dyt. Zehra Ateş", first: "Zehra", ini: "ZA", doms: ["nut"], role: "diyetisyeni" },
+  elif:  { name: "Elif Kaya", first: "Elif", ini: "EK", doms: ["study"], role: "koçu" },
+  mert:  { name: "Mert Yıldız", first: "Mert", ini: "MY", doms: ["guitar"], role: "eğitmeni" }
+};
+Object.keys(COACHES).forEach(function (k) {
+  var c = COACHES[k];
+  c.domain = c.doms.map(function (d) { return DOMS[d].label; }).join(" + ");
+  c.color = DOMS[c.doms[0]].color; c.colorBg = DOMS[c.doms[0]].bg; c.multi = c.doms.length > 1;
+});
+
+var CLIENTS = {
+  deniz: [
+    { id: "can", name: "Can Demir", ini: "CD", doms: ["fit", "nut"], goal: "Kas kazanımı", week: 4, weeks: 8, adh: 86, last: "Bugün 07:40 · Üst Vücut A", status: "Yolunda", tone: "ok", missed: [], others: ["study", "guitar"] },
+    { id: "selin", name: "Selin Aydın", ini: "SA", doms: ["fit", "nut"], goal: "Yağ kaybı", week: 2, weeks: 12, adh: 58, last: "2 gün önce", status: "Dikkat", tone: "warn", missed: [1, 2] },
+    { id: "burak", name: "Burak Şahin", ini: "BŞ", doms: ["fit"], goal: "Kondisyon", week: 7, weeks: 8, adh: 92, last: "Bugün 06:55 · Alt Vücut B", status: "Yenileme yakın", tone: "info", missed: [] },
+    { id: "ayse", name: "Ayşe Yılmaz", ini: "AY", doms: ["fit"], goal: "Genel sağlık", week: 3, weeks: 10, adh: 78, last: "Dün 19:30", status: "Yolunda", tone: "ok", missed: [2], others: ["nut"] },
+    { id: "emre", name: "Emre Tok", ini: "ET", doms: ["fit", "nut"], goal: "Maraton hazırlığı", week: 5, weeks: 16, adh: 74, last: "Dün 21:10", status: "Mesaj bekliyor", tone: "info", missed: [0] },
+    { id: "zeynep", name: "Zeynep Çelik", ini: "ZÇ", doms: ["fit"], goal: "Kas kazanımı", week: 0, weeks: 8, adh: null, last: "Dün katıldı", status: "Program yok", tone: "new", missed: [] }
+  ],
+  zehra: [
+    { id: "ayse", name: "Ayşe Yılmaz", ini: "AY", doms: ["nut"], goal: "Kilo yönetimi · 1.650 kcal", week: 3, weeks: 12, adh: 83, last: "Bugün 08:15 · Kahvaltı fotoğrafı", status: "Yolunda", tone: "ok", missed: [], others: ["fit"] },
+    { id: "meltem", name: "Meltem Kara", ini: "MK", doms: ["nut"], goal: "İnsülin direnci", week: 6, weeks: 12, adh: 71, last: "Dün 20:40", status: "Ölçüm bekliyor", tone: "info", missed: [0] },
+    { id: "okan", name: "Okan Uçar", ini: "OU", doms: ["nut"], goal: "Sporcu beslenmesi", week: 2, weeks: 8, adh: 90, last: "Bugün 07:05", status: "Yolunda", tone: "ok", missed: [], others: ["fit"] },
+    { id: "hande", name: "Hande Er", ini: "HE", doms: ["nut"], goal: "Kilo alma", week: 4, weeks: 10, adh: 55, last: "3 gün önce", status: "Dikkat", tone: "warn", missed: [1, 2] }
+  ],
+  elif: [
+    { id: "can", name: "Can Demir", ini: "CD", doms: ["study"], goal: "YKS 2027 · Sayısal", week: 9, weeks: 36, adh: 81, last: "Dün 21:15 · Türev: 40 soru", status: "Yolunda", tone: "ok", missed: [2], others: ["fit", "nut", "guitar"] },
+    { id: "ece", name: "Ece Tunç", ini: "ET", doms: ["study"], goal: "LGS 2027", week: 12, weeks: 30, adh: 90, last: "Bugün 16:20", status: "Yolunda", tone: "ok", missed: [] },
+    { id: "kerem", name: "Kerem Aksoy", ini: "KA", doms: ["study"], goal: "YKS · Sayısal", week: 6, weeks: 36, adh: 52, last: "3 gün önce", status: "Dikkat", tone: "warn", missed: [0, 2] },
+    { id: "nil", name: "Nil Er", ini: "NE", doms: ["study"], goal: "KPSS", week: 3, weeks: 20, adh: 76, last: "Dün 22:05", status: "Mesaj bekliyor", tone: "info", missed: [1] }
+  ],
+  mert: [
+    { id: "can", name: "Can Demir", ini: "CD", doms: ["guitar"], goal: "Başlangıç · akor geçişleri", week: 6, weeks: 12, adh: 88, last: "Dün 20:05 · Ses kaydı", status: "Kayıt bekliyor", tone: "info", missed: [], others: ["fit", "nut", "study"] },
+    { id: "arda", name: "Arda Kurt", ini: "AK", doms: ["guitar"], goal: "Orta · fingerstyle", week: 10, weeks: 16, adh: 93, last: "Bugün 08:10", status: "Yolunda", tone: "ok", missed: [] },
+    { id: "defne", name: "Defne Özer", ini: "DÖ", doms: ["guitar"], goal: "Başlangıç", week: 2, weeks: 12, adh: 61, last: "2 gün önce", status: "Dikkat", tone: "warn", missed: [1] },
+    { id: "ozan", name: "Ozan Bal", ini: "OB", doms: ["guitar"], goal: "İleri · doğaçlama", week: 11, weeks: 12, adh: 95, last: "Dün 18:40", status: "Yenileme yakın", tone: "info", missed: [] }
+  ]
+};
+
+var TONE = {
+  ok: { bg: "#E9F2EC", color: "#1E5C34", bar: "#16181D" },
+  warn: { bg: "#FCEDE4", color: "#9A3412", bar: "#C2410C" },
+  info: { bg: "#E8EFFD", color: "#1E40AF", bar: "#16181D" },
+  "new": { bg: "#EFEDE8", color: "#3F4248", bar: "#9A968E" }
+};
+
+var ATTN = {
+  deniz: [
+    { cid: "selin", text: "Bu hafta 2 antrenmanı kaçırdı, programı hafifletmek istiyor.", tone: "warn", cta: "Mesaja yanıt ver", act: "msg" },
+    { cid: "zeynep", text: "Yeni katıldı, henüz program atanmadı.", tone: "new", cta: "Program oluştur", act: "prog" },
+    { cid: "burak", text: "Programı 4 gün sonra bitiyor. Yeni blok hazırlanmalı.", tone: "info", cta: "Programı aç", act: "prog" },
+    { cid: "can", text: "Göğüs preste son set zorladı, kilo ayarı sordu.", tone: "info", cta: "Kayıtları gör", act: "logs" }
+  ],
+  elif: [
+    { cid: "kerem", text: "3 gündür giriş yok, 2 soru seti tamamlanmadı.", tone: "warn", cta: "Mesaj at", act: "msg" },
+    { cid: "can", text: "Türevde zincir kuralı sorularında takılıyor, fotoğraf gönderdi.", tone: "info", cta: "Mesaja yanıt ver", act: "msg" },
+    { cid: "nil", text: "Okul sınavı nedeniyle programı kaydırmak istiyor.", tone: "info", cta: "Programı aç", act: "prog" }
+  ],
+  mert: [
+    { cid: "can", text: "Haftalık ses kaydını gönderdi, yorum bekliyor.", tone: "info", cta: "Kaydı dinle", act: "logs" },
+    { cid: "defne", text: "Parmak ucu ağrısından bahsetti, 2 pratik eksik.", tone: "warn", cta: "Mesaja yanıt ver", act: "msg" },
+    { cid: "ozan", text: "Program 1 hafta sonra bitiyor.", tone: "info", cta: "Programı aç", act: "prog" }
+  ]
+};
+
+var ATTN_Z = [
+    { cid: "hande", text: "3 gündür öğün fotoğrafı yok, kalori hedefinin altında kalıyor.", tone: "warn", cta: "Mesaj at", act: "msg" },
+    { cid: "meltem", text: "Pazartesi ölçümünü girmedi.", tone: "info", cta: "Kayıtları gör", act: "logs" },
+    { cid: "okan", text: "Fitness koçu antrenman yükünü artırdı, karbonhidrat ayarı sordu.", tone: "info", cta: "Programı aç", act: "prog" }
+];
+ATTN.zehra = ATTN_Z;
+var FEED = {
+  deniz: [
+    { who: "Can Demir", text: "Üst Vücut A antrenmanını bitirdi (17/17 set).", time: "07:40", type: "workout" },
+    { who: "Burak Şahin", text: "Alt Vücut B antrenmanını bitirdi.", time: "06:55", type: "workout" },
+    { who: "Ayşe Yılmaz", text: "kahvaltı fotoğrafı yükledi.", time: "08:15", type: "meal" },
+    { who: "Can Demir", text: "Su alışkanlığında 12 günlük seriye ulaştı.", time: "Dün", type: "habit" },
+    { who: "Emre Tok", text: "Cuma antrenmanını Pazar'a taşımak istedi.", time: "Dün", type: "msg" }
+  ],
+  elif: [
+    { who: "Can Demir", text: "Türev: 40 soru seti için sonuç girdi: 31 D, 6 Y, 3 B.", time: "Dün 21:15", type: "study" },
+    { who: "Ece Tunç", text: "LGS Deneme #4 netlerini girdi: 78 net.", time: "16:20", type: "exam" },
+    { who: "Nil Er", text: "Limit konu tekrarı videosunu izledi.", time: "Dün 22:05", type: "lesson" },
+    { who: "Kerem Aksoy", text: "Erken uyku alışkanlığını 3 gündür işaretlemedi.", time: "Bugün", type: "habit" }
+  ],
+  zehra: [
+    { who: "Ayşe Yılmaz", text: "kahvaltı fotoğrafı yükledi, plana uygun işaretledi.", time: "08:15", type: "meal" },
+    { who: "Okan Uçar", text: "Haftalık ölçümünü girdi: 74,2 kg.", time: "07:05", type: "measure" },
+    { who: "Meltem Kara", text: "Su alışkanlığında 9 günlük seriye ulaştı.", time: "Dün", type: "habit" },
+    { who: "Hande Er", text: "Öğle öğününü alternatifle değiştirdi.", time: "3 gün önce", type: "meal" }
+  ],
+  mert: [
+    { who: "Can Demir", text: "Akor geçişleri pratiği için ses kaydı gönderdi (75 BPM).", time: "Dün 20:05", type: "guitar" },
+    { who: "Arda Kurt", text: "Etüt 3'ü hedef tempoda (90 BPM) tamamladı.", time: "08:10", type: "guitar" },
+    { who: "Ozan Bal", text: "Ders 11: Modlar videosunu izledi.", time: "Dün 18:40", type: "lesson" },
+    { who: "Defne Özer", text: "Günde 15 dk pratik serisi bozuldu.", time: "Bugün", type: "habit" }
+  ]
+};
+
+var PROG = {
+  deniz: { title: "Dambıl Göğüs Pres, en iyi set (kg)", sub: "Son 6 hafta", unit: "kg", pts: [12, 12, 14, 14, 15, 16], x0: "19 Eki", x1: "Bu hafta",
+    tiles: [{ label: "Vücut ağırlığı", value: "78,4 kg", sub: "4 haftada −1,2 kg" }, { label: "Tamamlanan antrenman", value: "14 / 16", sub: "Son 4 hafta" }, { label: "Beslenme uyumu", value: "%81", sub: "Fotoğraflı öğün oranı" }] },
+  zehra: { title: "Vücut ağırlığı (kg)", sub: "Son 6 haftalık ölçüm", unit: "kg", pts: [72.4, 71.8, 71.5, 70.9, 70.6, 70.1], x0: "19 Eki", x1: "Bu hafta",
+    tiles: [{ label: "Toplam değişim", value: "−2,3 kg", sub: "6 haftada" }, { label: "Bel çevresi", value: "84 cm", sub: "Başlangıçtan −4 cm" }, { label: "Öğün uyumu", value: "%83", sub: "Fotoğraflı ve plana uygun öğün" }] },
+  elif: { title: "TYT deneme netleri", sub: "Son 6 deneme", unit: "net", pts: [62, 66, 65, 71, 74, 78], x0: "Deneme #0", x1: "Deneme #5",
+    tiles: [{ label: "Son TYT neti", value: "78", sub: "İlk denemeden +16" }, { label: "Bu hafta çözülen soru", value: "214", sub: "Hedef 240" }, { label: "Doğruluk oranı", value: "%77", sub: "Matematik soru setleri" }] },
+  mert: { title: "Temiz çalınan tempo: Am, C, G, D geçişi", sub: "Haftalık en iyi, BPM", unit: "BPM", pts: [50, 55, 60, 60, 65, 75], x0: "6 hafta önce", x1: "Bu hafta",
+    tiles: [{ label: "Haftalık pratik", value: "92 dk", sub: "Hedef 105 dk" }, { label: "Gönderilen kayıt", value: "5", sub: "Son 6 hafta" }, { label: "Öğrenilen akor", value: "9", sub: "Am, C, G, D, Em, F, Dm, E, A" }] }
+};
+
+var LOGS = {
+  deniz: [
+    { t: "Üst Vücut A", when: "Bugün 07:40", tag: "Tamamlandı", type: "workout", d: "Dambıl Göğüs Pres 3×10 · 16 kg (son set 8 tekrar) · Lat Pulldown 4×12 · 45 kg · Zorluk puanı 8/10. Not: \"Son sette 16 kg zorladı.\"" },
+    { t: "Öğle öğünü", when: "Dün 13:10", tag: "Fotoğraf", type: "meal", d: "Izgara tavuk, bulgur, salata · plana uygun olarak işaretledi, tahmini 640 kcal." },
+    { t: "Alt Vücut A", when: "Pzt 18:20", tag: "Not var", type: "workout", d: "Goblet Squat 4×10 · 20 kg · Bulgarian Split Squat son sette 6 tekrar (hedef 8). Not: \"Sol dizim biraz zorladı.\"" }
+  ],
+  zehra: [
+    { t: "Kahvaltı", when: "Bugün 08:15", tag: "Fotoğraf", type: "meal", d: "Haşlanmış yumurta, beyaz peynir, domates, salatalık · plana uygun, 380 kcal." },
+    { t: "Haftalık ölçüm", when: "Pzt 07:30", tag: "Ölçüm", type: "measure", d: "70,1 kg · bel 84 cm · ön ve yan fotoğraf eklendi." },
+    { t: "Akşam öğünü", when: "Dün 19:50", tag: "Alternatif", type: "meal", d: "Izgara balık yerine tavuk sote seçti (alternatif listesinden), 540 kcal." }
+  ],
+  elif: [
+    { t: "Türev: 40 soru", when: "Dün 21:15", tag: "Sonuç", type: "study", d: "31 doğru · 6 yanlış · 3 boş · 52 dk. 3 yanlış sorunun fotoğrafını ekledi (zincir kuralı)." },
+    { t: "TYT Deneme #5", when: "Cmt", tag: "Netler", type: "exam", d: "Türkçe 31 · Sosyal 14 · Matematik 22 · Fen 11 · Toplam 78 net." },
+    { t: "Paragraf: 20 soru", when: "Çar", tag: "Sonuç", type: "study", d: "17 doğru · 3 yanlış · 0 boş · 24 dk." }
+  ],
+  mert: [
+    { t: "Haftalık kayıt", when: "Dün 20:05", tag: "Ses kaydı", type: "guitar", audio: true, d: "Akor geçişleri Am, C, G, D · 75 BPM · 0:48. Not: \"G'den D'ye geçişte hâlâ takılıyorum.\"" },
+    { t: "Akor geçişleri", when: "Sal", tag: "Tamamlandı", type: "guitar", d: "15 dk · 70 BPM'de temiz çaldığını işaretledi." },
+    { t: "Ders 7: Ritim kalıpları", when: "Sal", tag: "İzlendi", type: "lesson", d: "Video tamamlandı · kontrol soruları 3/3." }
+  ]
+};
+
+var THREADS = {
+  deniz: [
+    { cid: "selin", time: "09:12", unread: true, msgs: [{ me: true, t: "Selin, bu hafta nasıl gidiyor?", time: "Pzt 10:00" }, { me: false, t: "Bu hafta iş çok yoğundu, iki antrenmanı kaçırdım. Programı biraz hafifletebilir miyiz?", time: "09:12" }] },
+    { cid: "can", time: "07:52", unread: true, msgs: [{ me: false, t: "Bugün Üst Vücut A bitti. Dambıl göğüs preste son sette 16 kg zorladı.", time: "07:52", att: "Antrenman özeti · 17/17 set", attType: "workout" }] },
+    { cid: "emre", time: "Dün", unread: true, msgs: [{ me: false, t: "Uzun koşuyu Cumartesi yerine Pazar yapsam olur mu?", time: "Dün 21:10" }] },
+    { cid: "burak", time: "Sal", unread: false, msgs: [{ me: false, t: "Kondisyon çok iyi gidiyor!", time: "Sal 08:00" }, { me: true, t: "Süpersin. Yeni bloğu bu hafta sonu hazırlıyorum.", time: "Sal 09:30" }] }
+  ],
+  zehra: [
+    { cid: "okan", time: "07:20", unread: true, msgs: [{ me: false, t: "Deniz Hoca bu hafta antrenman hacmini artırdı. Antrenman günlerinde karbonhidratı artıralım mı?", time: "07:20" }] },
+    { cid: "hande", time: "Pzt", unread: false, msgs: [{ me: true, t: "Hande, öğün fotoğraflarını görmeyince plana uyup uymadığını anlayamıyorum. Zorlandığın bir şey var mı?", time: "Pzt 12:00" }] },
+    { cid: "ayse", time: "08:16", unread: true, msgs: [{ me: false, t: "Kahvaltıyı yaptım, peyniri biraz azalttım.", time: "08:16", att: "Öğün fotoğrafı", attType: "photo" }] }
+  ],
+  elif: [
+    { cid: "can", time: "Dün", unread: true, msgs: [{ me: false, t: "Türevde zincir kuralı sorularında takılıyorum.", time: "Dün 21:20", att: "Fotoğraf · 3 soru", attType: "photo" }] },
+    { cid: "nil", time: "Dün", unread: true, msgs: [{ me: false, t: "Hocam önümüzdeki hafta okulda sınav var, programı kaydırabilir miyiz?", time: "Dün 22:10" }] },
+    { cid: "ece", time: "Sal", unread: false, msgs: [{ me: true, t: "Paragrafta süren çok iyi düştü, aynen devam!", time: "Sal 19:00" }] }
+  ],
+  mert: [
+    { cid: "can", time: "Dün", unread: true, msgs: [{ me: false, t: "Kaydı gönderdim, G'den D'ye geçişte hâlâ takılıyorum.", time: "Dün 20:06", att: "Ses kaydı · 0:48", attType: "mic" }] },
+    { cid: "defne", time: "Dün", unread: true, msgs: [{ me: false, t: "Parmak uçlarım acıyor, bu normal mi?", time: "Dün 19:40" }] },
+    { cid: "arda", time: "Pzt", unread: false, msgs: [{ me: true, t: "Etüt 3 harika oldu, gelecek hafta yeni parçaya geçiyoruz.", time: "Pzt 18:00" }] }
+  ]
+};
+
+var LIB = {
+  deniz: [
+    { k: "ex", label: "Hareketler", type: "workout", items: [["Dambıl Göğüs Pres", "Göğüs · Dambıl", 1], ["Lat Pulldown", "Sırt · Makine", 1], ["Goblet Squat", "Bacak · Dambıl", 1], ["Romanian Deadlift", "Arka bacak · Bar", 1], ["Oturarak Omuz Pres", "Omuz · Dambıl", 1], ["Tek Kol Dambıl Row", "Sırt · Dambıl", 1], ["Kalça Köprüsü", "Kalça · Vücut ağırlığı", 1], ["Plank", "Core · Vücut ağırlığı", 1]] },
+    { k: "meal", label: "Öğünler", type: "meal", items: [["Yulaf kasesi", "520 kcal · 24 g protein", 0], ["Izgara tavuk, bulgur, salata", "640 kcal · 48 g protein", 0], ["Mercimek çorbası ve yoğurt", "410 kcal · 22 g protein", 0], ["Menemen ve tam buğday ekmek", "480 kcal · 26 g protein", 0]] },
+    { k: "tpl", label: "Program şablonları", type: "habit", items: [["Kas kazanımı · 8 hafta", "4 gün antrenman · 2 alışkanlık", 0], ["Yağ kaybı · 12 hafta", "3 gün antrenman · beslenme planı", 0], ["Başlangıç tüm vücut · 4 hafta", "3 gün antrenman", 0]] }
+  ],
+  zehra: [
+    { k: "meal", label: "Öğünler", type: "meal", items: [["Yumurtalı kahvaltı tabağı", "380 kcal · 24 g protein", 0], ["Zeytinyağlı fasulye ve yoğurt", "450 kcal · 16 g protein", 0], ["Izgara balık ve salata", "520 kcal · 38 g protein", 0], ["Kefir ve meyve", "220 kcal · 9 g protein", 0]] },
+    { k: "plan", label: "Beslenme şablonları", type: "meal", items: [["Kilo yönetimi · 1.650 kcal", "5 öğün · alternatifli", 0], ["Sporcu · antrenman günü 2.800 kcal", "Antrenman / dinlenme günü ayrımı", 0], ["İnsülin direnci · düşük glisemik", "4 öğün", 0]] },
+    { k: "v", label: "Videolar", type: "lesson", items: [["Etiket okuma rehberi", "6 dk", 1], ["Porsiyon kontrolü", "8 dk", 1]] }
+  ],
+  elif: [
+    { k: "q", label: "Soru setleri", type: "study", items: [["Türev: 40 soru", "AYT Matematik · ~60 dk", 0], ["Limit: 30 soru", "AYT Matematik · ~45 dk", 0], ["Paragraf: 20 soru", "TYT Türkçe · ~25 dk", 0], ["Problemler: 30 soru", "TYT Matematik · ~45 dk", 0], ["Kuvvet ve hareket: 25 soru", "AYT Fizik · ~40 dk", 0]] },
+    { k: "v", label: "Video dersler", type: "lesson", items: [["Limit konu tekrarı", "18 dk", 1], ["Türevde zincir kuralı", "14 dk", 1], ["Paragrafta hız teknikleri", "11 dk", 1]] },
+    { k: "e", label: "Denemeler", type: "exam", items: [["TYT Deneme #6", "165 dk · 120 soru", 0], ["AYT Matematik mini deneme", "75 dk · 40 soru", 0]] }
+  ],
+  mert: [
+    { k: "g", label: "Egzersizler", type: "guitar", items: [["Akor geçişleri: Am, C, G, D", "15 dk · 70 → 80 BPM", 0], ["Ritim kalıbı 2", "15 dk · 60 → 70 BPM", 0], ["Kromatik ısınma", "5 dk · 80 → 100 BPM", 0], ["Etüt 3: Ritim ve akor", "20 dk · 60 → 70 BPM", 0]] },
+    { k: "v", label: "Video dersler", type: "lesson", items: [["Ders 7: Ritim kalıpları", "12 dk", 1], ["Ders 8: Barre akora giriş", "16 dk", 1], ["Ders 11: Modlar", "22 dk", 1]] },
+    { k: "s", label: "Program şablonları", type: "habit", items: [["Başlangıç · 12 hafta", "Akorlar, ritim, ilk şarkılar", 0], ["Fingerstyle · 8 hafta", "Arpej ve bağımsız parmak", 0]] }
+  ]
+};
+
+var QUICK = {
+  deniz: ["Harika iş!", "Kiloyu bir sonraki antrenmanda 2 kg düşürelim.", "Programı güncelledim, kontrol eder misin?"],
+  zehra: ["Tabağın çok dengeli, tebrikler!", "Antrenman günlerinde karbonhidratı 40 g artırıyorum.", "Planı güncelledim, kontrol eder misin?"],
+  elif: ["Çok iyi gidiyorsun!", "Yanlışları birlikte çözelim.", "Programı güncelledim, kontrol eder misin?"],
+  mert: ["Kaydın güzel, tebrikler!", "Tempoyu 5 BPM düşürüp tekrar dene.", "Programı güncelledim, kontrol eder misin?"]
+};
+
+function EX(n, sets, reps, rest) { return { n: n, sets: sets, reps: reps, rest: rest }; }
+function MEALS_LIGHT() {
+  return [
+    { n: "Kahvaltı", t: "Haşlanmış yumurta, beyaz peynir, domates, salatalık", kcal: 380 },
+    { n: "Ara öğün", t: "Elma, 10 badem", kcal: 170 },
+    { n: "Öğle", t: "Zeytinyağlı fasulye, yoğurt, yarım dilim ekmek", kcal: 450 },
+    { n: "Akşam", t: "Izgara balık, mevsim salata", kcal: 520 },
+    { n: "Gece", t: "1 su bardağı kefir", kcal: 130 }
+  ];
+}
+function MEALS(train) {
+  return train ? [
+    { n: "Kahvaltı", t: "Yulaf, yoğurt, muz, ceviz", kcal: 520 },
+    { n: "Öğle", t: "Izgara tavuk, bulgur, salata", kcal: 640 },
+    { n: "Antrenman sonrası", t: "Protein shake, muz", kcal: 330 },
+    { n: "Akşam", t: "Somon, fırın patates, sebze", kcal: 710 },
+    { n: "Ara öğün", t: "Lor peyniri, badem", kcal: 200 }
+  ] : [
+    { n: "Kahvaltı", t: "Menemen, tam buğday ekmek", kcal: 480 },
+    { n: "Öğle", t: "Mercimek çorbası, yoğurt, salata", kcal: 560 },
+    { n: "Akşam", t: "Hindi köfte, bulgur, cacık", kcal: 680 },
+    { n: "Ara öğün", t: "Meyve, kefir", kcal: 380 }
+  ];
+}
+var uid = 100;
+function T(type, day, f, extra) {
+  var t = { id: "t" + (uid++), type: type, day: day, f: f, tg: {}, note: "" };
+  if (extra) { for (var k in extra) t[k] = extra[k]; }
+  return t;
+}
+function seed() {
+  var d = [];
+  d.push(T("workout", 0, { title: "Alt Vücut A", dur: 50, level: "Orta" }, { ex: [EX("Goblet Squat", 4, "10", 90), EX("Romanian Deadlift", 3, "10", 90), EX("Bulgarian Split Squat", 3, "8 / bacak", 75), EX("Kalça Köprüsü", 3, "12", 60), EX("Plank", 3, "40 sn", 45)], tg: { 0: true, 1: true } }));
+  d.push(T("workout", 1, { title: "Üst Vücut B", dur: 45, level: "Orta" }, { ex: [EX("Bench Press", 4, "8", 120), EX("Tek Kol Dambıl Row", 4, "10", 90), EX("Lateral Raise", 3, "12", 60), EX("Face Pull", 3, "15", 60)], tg: { 0: true, 1: true } }));
+  d.push(T("workout", 2, { title: "Aktif dinlenme: 30 dk yürüyüş", dur: 30, level: "Hafif" }, { ex: [EX("Tempolu yürüyüş", 1, "30 dk", 0)], tg: {} }));
+  d.push(T("workout", 3, { title: "Üst Vücut A", dur: 45, level: "Orta" }, { ex: [EX("Dambıl Göğüs Pres", 4, "10", 90), EX("Lat Pulldown", 4, "12", 90), EX("Oturarak Omuz Pres", 3, "10", 90), EX("Tek Kol Dambıl Row", 3, "10", 75), EX("Plank", 3, "45 sn", 45)], tg: { 0: true, 1: true, 2: true }, note: "Göğüs preste son seti 14 kg ile dene, form öncelikli." }));
+  d.push(T("workout", 4, { title: "Alt Vücut B", dur: 50, level: "Yüksek" }, { ex: [EX("Back Squat", 4, "6", 150), EX("Hip Thrust", 4, "10", 90), EX("Walking Lunge", 3, "12 / bacak", 75), EX("Calf Raise", 3, "15", 45)], tg: { 0: true, 1: true } }));
+  d.push(T("workout", 5, { title: "Kondisyon: 25 dk interval", dur: 25, level: "Yüksek" }, { ex: [EX("Bisiklet 40 sn hızlı / 20 sn yavaş", 10, "1 tur", 20)], tg: { 1: true } }));
+  for (var i = 0; i < 7; i++) {
+    var tr = i === 0 || i === 1 || i === 3 || i === 4;
+    d.push(T("meal", i, { title: tr ? "Antrenman günü" : "Dinlenme günü", kcal: tr ? 2400 : 2100, p: tr ? 150 : 140, c: tr ? 260 : 210, y: tr ? 75 : 70 }, { meals: MEALS(tr), tg: { 0: true } }));
+  }
+  d.push(T("measure", 0, { title: "Haftalık ölçüm", metrics: "Kilo + bel çevresi", when: "Sabah aç karnına" }, { dom: "nut", tg: { 0: true, 1: true } }));
+  d.push(T("habit", -1, { title: "Su iç", freq: "Her gün", target: "8 bardak", remind: "Öğle 12:30" }, { dom: "nut", tg: { 1: true } }));
+  d.push(T("habit", -1, { title: "10.000 adım", freq: "Her gün", target: "10.000 adım", remind: "Akşam 21:00" }, { dom: "fit", tg: { 1: true } }));
+
+  var z = [];
+  z.push(T("measure", 0, { title: "Haftalık ölçüm", metrics: "Kilo + bel + kalça", when: "Sabah aç karnına" }, { tg: { 0: true, 1: true } }));
+  for (var j = 0; j < 7; j++) {
+    z.push(T("meal", j, { title: j === 5 ? "Esnek gün · 1.850 kcal" : "Kilo yönetimi · 1.650 kcal", kcal: j === 5 ? 1850 : 1650, p: 95, c: 170, y: 60 }, { meals: MEALS_LIGHT(), tg: { 0: true, 1: true } }));
+  }
+  z.push(T("lesson", 2, { title: "Etiket okuma rehberi", dur: 6, src: "Kütüphaneden" }, { tg: { 0: true } }));
+  z.push(T("habit", -1, { title: "Su iç", freq: "Her gün", target: "10 bardak", remind: "Öğle 12:30" }, { tg: { 1: true } }));
+  z.push(T("habit", -1, { title: "20:00'den sonra atıştırma yok", freq: "Her gün", target: "Akşam 20:00 sonrası", remind: "Akşam 21:00" }, { tg: { 1: true } }));
+
+  var e = [];
+  e.push(T("study", 0, { title: "Türev: 40 soru", ders: "AYT Matematik", konu: "Türev kuralları", q: 40, dur: 60 }, { tg: { 0: true, 1: true, 2: true } }));
+  e.push(T("lesson", 1, { title: "Limit konu tekrarı", dur: 18, src: "Kütüphaneden" }, { tg: { 0: true } }));
+  e.push(T("study", 1, { title: "Limit: 30 soru", ders: "AYT Matematik", konu: "Limit ve süreklilik", q: 30, dur: 45 }, { tg: { 0: true } }));
+  e.push(T("study", 2, { title: "Paragraf: 20 soru", ders: "TYT Türkçe", konu: "Paragrafta ana düşünce", q: 20, dur: 25 }, { tg: { 0: true, 2: true } }));
+  e.push(T("study", 3, { title: "Türev: 40 soru", ders: "AYT Matematik", konu: "Zincir kuralı", q: 40, dur: 60 }, { tg: { 0: true, 1: true, 2: true }, note: "Zincir kuralı sorularını önce çöz, takıldığını işaretle." }));
+  e.push(T("study", 3, { title: "Paragraf: 20 soru", ders: "TYT Türkçe", konu: "Paragrafta yardımcı düşünce", q: 20, dur: 25 }, { tg: { 0: true } }));
+  e.push(T("study", 4, { title: "Problemler: 30 soru", ders: "TYT Matematik", konu: "Yaş ve işçi problemleri", q: 30, dur: 45 }, { tg: { 0: true } }));
+  e.push(T("exam", 5, { title: "TYT Deneme #6", tur: "TYT", dur: 165 }, { tg: { 0: true, 1: true }, nets: { "Türkçe": true, "Sosyal": true, "Matematik": true, "Fen": true } }));
+  e.push(T("study", 6, { title: "Deneme yanlışlarını çöz", ders: "TYT Matematik", konu: "Deneme #6 yanlışları", q: 15, dur: 40 }, { tg: { 0: true, 1: true } }));
+  e.push(T("habit", -1, { title: "Erken uyku", freq: "Her gün", target: "23:30'da yatakta", remind: "Akşam 21:00" }, { tg: { 1: true } }));
+  e.push(T("habit", -1, { title: "Günde 20 dk kitap", freq: "Hafta içi", target: "20 dakika", remind: "Yok" }, { tg: { 0: true, 1: true } }));
+
+  var m = [];
+  m.push(T("guitar", 0, { title: "Akor geçişleri: Am, C, G, D", chords: "Am, C, G, D", dur: 15 }, { b: [65, 75], tg: { 0: true } }));
+  m.push(T("lesson", 1, { title: "Ders 7: Ritim kalıpları", dur: 12, src: "Kütüphaneden" }, { tg: { 0: true } }));
+  m.push(T("guitar", 2, { title: "Ritim kalıbı 2", chords: "G, D", dur: 15 }, { b: [60, 70], tg: { 0: true } }));
+  m.push(T("guitar", 3, { title: "Akor geçişleri: Am, C, G, D", chords: "Am, C, G, D", dur: 15 }, { b: [70, 80], tg: { 0: true, 2: true }, note: "70 BPM'de temizse 80'e çık. G'den D'ye geçerken 3. parmağı sabit tut." }));
+  m.push(T("lesson", 3, { title: "Ders 7: Ritim kalıpları (tekrar)", dur: 12, src: "Kütüphaneden" }, { tg: {} }));
+  m.push(T("guitar", 4, { title: "Etüt 3: Ritim ve akor", chords: "Am, F, C, G", dur: 20 }, { b: [60, 70], tg: { 0: true } }));
+  m.push(T("guitar", 5, { title: "Haftalık kayıt", chords: "Am, C, G, D", dur: 10 }, { b: [75, 80], tg: { 0: true, 1: true } }));
+  m.push(T("habit", -1, { title: "Günde 15 dk pratik", freq: "Her gün", target: "15 dakika", remind: "Akşam 21:00" }, { tg: { 1: true } }));
+
+  var defDom = { workout: "fit", meal: "nut", study: "study", exam: "study", guitar: "guitar" };
+  [[d, "fit"], [z, "nut"], [e, "study"], [m, "guitar"]].forEach(function (pair) {
+    pair[0].forEach(function (t) { if (!t.dom) t.dom = defDom[t.type] || pair[1]; });
+  });
+  return {
+    deniz: { name: "Kas kazanımı · 4. hafta", status: "Gönderildi", tasks: d },
+    zehra: { name: "Kilo yönetimi · 3. hafta", status: "Gönderildi", tasks: z },
+    elif: { name: "YKS Sayısal · 9. hafta", status: "Gönderildi", tasks: e },
+    mert: { name: "Başlangıç gitar · 6. hafta", status: "Gönderildi", tasks: m }
+  };
+}
+function clone(o) { return JSON.parse(JSON.stringify(o)); }
+
+function metaOf(t) {
+  var f = t.f;
+  if (t.type === "workout") { var s = 0; (t.ex || []).forEach(function (e) { s += e.sets; }); return (t.ex || []).length + " hareket · " + s + " set · ~" + f.dur + " dk"; }
+  if (t.type === "meal") { return Number(f.kcal).toLocaleString("tr-TR") + " kcal · " + f.p + " g protein"; }
+  if (t.type === "habit") { return f.freq + " · " + f.target; }
+  if (t.type === "study") { return f.ders + " · " + f.q + " soru · ~" + f.dur + " dk"; }
+  if (t.type === "exam") { return f.tur + " · " + f.dur + " dk · net girişi"; }
+  if (t.type === "lesson") { return "Video · " + f.dur + " dk"; }
+  if (t.type === "guitar") { var b = t.b || [70, 80]; return f.dur + " dk · " + b[0] + " → " + b[1] + " BPM"; }
+  if (t.type === "measure") { return f.metrics + " · " + f.when; }
+  return "";
+}
+function newTask(type, day, dom) { var t = newTask0(type, day); t.dom = dom; return t; }
+function newTask0(type, day) {
+  if (type === "workout") return T("workout", day, { title: "Yeni antrenman", dur: 40, level: "Orta" }, { ex: [EX("Goblet Squat", 3, "10", 90)], tg: { 0: true } });
+  if (type === "meal") return T("meal", day, { title: "Yeni beslenme planı", kcal: 2200, p: 140, c: 230, y: 70 }, { meals: MEALS(false), tg: { 0: true } });
+  if (type === "habit") return T("habit", -1, { title: "Yeni alışkanlık", freq: "Her gün", target: "", remind: "Yok" }, { tg: { 1: true } });
+  if (type === "study") return T("study", day, { title: "Yeni soru seti", ders: "TYT Matematik", konu: "", q: 20, dur: 30 }, { tg: { 0: true } });
+  if (type === "exam") return T("exam", day, { title: "Yeni deneme", tur: "TYT", dur: 165 }, { tg: { 0: true }, nets: { "Türkçe": true, "Sosyal": true, "Matematik": true, "Fen": true } });
+  if (type === "lesson") return T("lesson", day, { title: "Yeni video ders", dur: 10, src: "Kütüphaneden" }, { tg: {} });
+  if (type === "measure") return T("measure", day, { title: "Ölçüm", metrics: "Kilo", when: "Sabah aç karnına" }, { tg: { 0: true } });
+  return T("guitar", day, { title: "Yeni pratik", chords: "", dur: 15 }, { b: [60, 70], tg: { 0: true } });
+}
+var EXTRA_EX = ["Dambıl Biceps Curl", "Triceps Pushdown", "Cable Fly", "Leg Press", "Dead Bug"];
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      coach: "deniz", screen: "overview", cid: "can", clTab: "week", builderFor: "can",
+      progs: seed(), sel: null, menuDay: null, filter: "all", search: "", domFilter: "all",
+      libTab: 0, threadId: "selin", extraMsgs: {}, readIds: {}, draft: "",
+      sendOpen: false, sendSel: {}, sendStart: "30 Kasım Pazartesi", sendRep: "4 hafta tekrarla", sendNotify: true,
+      notes: {}, toast: ""
+    };
+  }
+  componentWillUnmount() { clearTimeout(this.tt); }
+  flash(msg) {
+    clearTimeout(this.tt);
+    this.setState({ toast: msg });
+    this.tt = setTimeout(() => this.setState({ toast: "" }), 3200);
+  }
+  updProg(fn) {
+    var progs = clone(this.state.progs);
+    var p = progs[this.state.coach];
+    fn(p);
+    if (p.status === "Gönderildi") p.status = "Değişiklikler gönderilmedi";
+    this.setState({ progs: progs });
+  }
+  updTask(id, fn) {
+    this.updProg(function (p) { p.tasks.forEach(function (t) { if (t.id === id) fn(t); }); });
+  }
+
+  renderVals() {
+    var self = this, s = this.state;
+    var C = COACHES[s.coach];
+    var clients = CLIENTS[s.coach];
+    var prog = s.progs[s.coach];
+    var findC = function (id) { for (var i = 0; i < clients.length; i++) if (clients[i].id === id) return clients[i]; return clients[0]; };
+    var threads = THREADS[s.coach];
+    var unreadCount = threads.filter(function (t) { return t.unread && !s.readIds[s.coach + t.cid]; }).length;
+
+    var go = function (scr, extra) { return function () { var u = { screen: scr, menuDay: null }; if (extra) for (var k in extra) u[k] = extra[k]; self.setState(u); }; };
+    var openClient = function (cid, tab) { return go("client", { cid: cid, clTab: tab || "week" }); };
+    var openBuilder = function (cid) { return go("builder", { builderFor: cid, sel: null }); };
+    var openThread = function (cid) {
+      return function () {
+        var r = Object.assign({}, s.readIds); r[s.coach + cid] = true;
+        self.setState({ screen: "messages", threadId: cid, readIds: r, menuDay: null });
+      };
+    };
+
+    // ---- nav
+    var navDefs = [["overview", "Genel bakış", IC.home], ["clients", "Danışanlar", IC.users], ["builder", "Program oluşturucu", IC.cal], ["library", "Kütüphane", IC.lib], ["messages", "Mesajlar", IC.msg]];
+    var activeNav = s.screen === "client" ? "clients" : s.screen;
+    var nav = navDefs.map(function (n) {
+      var on = activeNav === n[0];
+      return {
+        label: n[1], icon: n[2], current: on ? "page" : "false",
+        go: n[0] === "messages" ? openThread(s.threadId) : go(n[0]),
+        style: on ? "background:#16181D;color:#FFFFFF" : "background:transparent;color:#16181D",
+        hasBadge: n[0] === "messages" && unreadCount > 0, badge: unreadCount
+      };
+    });
+    var coachChips = Object.keys(COACHES).map(function (k) {
+      var c = COACHES[k], on = s.coach === k;
+      return {
+        domain: c.first + " · " + c.domain, color: c.color, on: on ? "true" : "false",
+        style: "height:40px;border-radius:10px;display:flex;align-items:center;gap:10px;padding:0 10px;font-size:13px;font-weight:600;border:1px solid " + (on ? "#16181D" : "#E6E3DD") + ";background:" + (on ? "#F1EFEA" : "#FFFFFF"),
+        pick: function () {
+          var th = THREADS[k][0].cid;
+          var first = CLIENTS[k][0].id;
+          self.setState({ coach: k, sel: null, menuDay: null, cid: first, builderFor: first, threadId: th, libTab: 0, filter: "all", domFilter: "all", sendSel: {} });
+        }
+      };
+    });
+
+    var titles = { overview: ["Perşembe, 26 Kasım", "Günaydın, " + C.first], clients: [clients.length + " aktif danışan", "Danışanlar"], client: ["Danışanlar", findC(s.cid).name], builder: ["Program oluşturucu", "Haftalık program"], library: [C.domain, "Kütüphane"], messages: [unreadCount + " okunmamış", "Mesajlar"] };
+
+    // ---- overview
+    var active = clients.filter(function (c) { return c.adh !== null; });
+    var avg = Math.round(active.reduce(function (a, c) { return a + c.adh; }, 0) / active.length);
+    var renew = clients.filter(function (c) { return c.status === "Yenileme yakın" || c.status === "Program yok"; }).length;
+    var kpis = [
+      { label: "Aktif danışan", value: String(clients.length), sub: "Bu ay +1 yeni" },
+      { label: "Haftalık uyum", value: "%" + avg, sub: "Tamamlanan / planlanan görev" },
+      { label: "Okunmamış mesaj", value: String(unreadCount), sub: "Ortalama yanıt süresi 2 sa" },
+      { label: "Program bekleyen", value: String(renew), sub: "Biten veya hiç atanmamış" }
+    ];
+    var toneColor = { warn: "#9A3412", info: "#3F4248", "new": "#3F4248" };
+    var attention = ATTN[s.coach].map(function (a) {
+      var c = findC(a.cid);
+      var act = a.act === "msg" ? openThread(a.cid) : a.act === "prog" ? openBuilder(a.cid) : openClient(a.cid, "logs");
+      return { name: c.name, ini: c.ini, text: a.text, toneColor: toneColor[a.tone] || "#3F4248", cta: a.cta, act: act };
+    });
+    var feedIcon = function (t) { return t === "msg" ? { icon: IC.msg, color: "#3F4248", bg: "#EFEDE8" } : { icon: IC[t], color: TYPES[t].color, bg: TYPES[t].bg }; };
+    var feed = FEED[s.coach].map(function (f) { var i = feedIcon(f.type); return { who: f.who, text: f.text, time: f.time, icon: i.icon, color: i.color, bg: i.bg }; });
+    var adhList = active.slice().sort(function (a, b) { return a.adh - b.adh; }).map(function (c) { return { name: c.name, adh: c.adh, barColor: c.adh < 65 ? "#C2410C" : "#16181D", open: openClient(c.id) }; });
+
+    // ---- clients
+    var q = (s.search || "").toLocaleLowerCase("tr-TR");
+    var fdefs = [["all", "Tümü", function () { return true; }], ["warn", "Dikkat", function (c) { return c.tone === "warn"; }], ["renew", "Program bekleyen", function (c) { return c.status === "Yenileme yakın" || c.status === "Program yok"; }], ["msg", "Mesaj / kayıt bekleyen", function (c) { return c.status === "Mesaj bekliyor" || c.status === "Kayıt bekliyor"; }]];
+    var filters = fdefs.map(function (f) {
+      var on = s.filter === f[0];
+      return { label: f[1], count: clients.filter(f[2]).length, on: on ? "true" : "false", style: on ? "background:#16181D;color:#FFFFFF;border-color:#16181D" : "", pick: function () { self.setState({ filter: f[0] }); } };
+    });
+    var fn = fdefs.filter(function (f) { return f[0] === s.filter; })[0][2];
+    var rowOf = function (c) {
+      var tn = TONE[c.tone];
+      return {
+        id: c.id, name: c.name, ini: c.ini, goal: c.goal, last: c.last, status: c.status,
+        weekText: c.week ? "Hafta " + c.week + " / " + c.weeks : "Başlamadı",
+        adhText: c.adh === null ? "–" : "%" + c.adh, adhW: c.adh || 0, barColor: c.adh !== null && c.adh < 65 ? "#C2410C" : "#16181D",
+        pillBg: tn.bg, pillColor: tn.color, open: openClient(c.id),
+        domChips: c.doms.map(function (d) { return { label: DOMS[d].label, color: DOMS[d].color, bg: DOMS[d].bg }; }),
+        domText: c.doms.map(function (d) { return DOMS[d].label; }).join(" + ")
+      };
+    };
+    var clientRows = clients.filter(fn).filter(function (c) { return !q || c.name.toLocaleLowerCase("tr-TR").indexOf(q) >= 0; }).map(rowOf);
+
+    // ---- task view helpers
+    var tview = function (t) {
+      var ty = TYPES[t.type];
+      var dm = DOMS[t.dom] || DOMS[C.doms[0]];
+      return { id: t.id, type: t.type, typeLabel: ty.label, color: ty.color, bg: ty.bg, icon: IC[t.type], title: t.f.title || "(adsız)", meta: metaOf(t), domLabel: dm.label, domColor: dm.color, showDom: C.multi };
+    };
+
+    // ---- client detail
+    var cRaw = findC(s.cid);
+    var cl = rowOf(cRaw);
+    cl.multi = !!cRaw.others; cl.single = !cRaw.others;
+    cl.others = (cRaw.others || []).map(function (k) { return { domain: DOMS[k].label + " · başka koç", color: DOMS[k].color }; });
+    cl.msg = openThread(cRaw.id);
+    cl.edit = openBuilder(cRaw.id);
+    cl.note = s.notes[s.coach + cRaw.id] !== undefined ? s.notes[s.coach + cRaw.id] : (cRaw.id === "can" ? "Sol dizde hafif hassasiyet var, squat derinliğini izle." : "");
+    cl.onNote = function (e) { var n = Object.assign({}, s.notes); n[s.coach + cRaw.id] = e.target.value; self.setState({ notes: n }); };
+    var clTabs = [["week", "Bu hafta"], ["progress", "İlerleme"], ["logs", "Son kayıtlar"]].map(function (t) {
+      var on = s.clTab === t[0];
+      return { label: t[1], on: on ? "true" : "false", style: on ? "color:#16181D;box-shadow:inset 0 -2px 0 #16181D" : "color:#5B5F66", pick: function () { self.setState({ clTab: t[0] }); } };
+    });
+    var noProgram = cRaw.adh === null;
+    var clWeek = DAYS.map(function (d, i) {
+      var tasks = noProgram ? [] : prog.tasks.filter(function (t) { return t.day === i && cRaw.doms.indexOf(t.dom) >= 0; }).map(function (t, j) {
+        var v = tview(t), st;
+        if (i < TODAY) st = cRaw.missed.indexOf(i) >= 0 && t.type !== "meal" ? "miss" : "done";
+        else if (i === TODAY) st = j === 0 && cRaw.tone !== "warn" ? "done" : "today";
+        else st = "plan";
+        v.stLabel = { done: "Tamamlandı", miss: "Yapılmadı", today: "Bugün", plan: "Planlandı" }[st];
+        v.stColor = { done: "#1E5C34", miss: "#9A3412", today: "#16181D", plan: "#5B5F66" }[st];
+        v.stIcon = { done: IC.check, miss: IC.miss, today: IC.dot, plan: IC.dot }[st];
+        return v;
+      });
+      return { d: d.d, n: d.n, isToday: i === TODAY, colBg: i === TODAY ? "#EFEDE8" : "#F6F5F2", tasks: tasks };
+    });
+    var clHabits = noProgram ? [] : prog.tasks.filter(function (t) { return t.type === "habit" && cRaw.doms.indexOf(t.dom) >= 0; }).map(function (t, hi) {
+      return {
+        title: t.f.title, dots: DAYS.map(function (d, i) {
+          var miss = i < TODAY && (cRaw.missed.indexOf(i) >= 0 || (hi === 1 && i === 1 && cRaw.tone !== "ok"));
+          if (i < TODAY) return miss ? { label: "–", bg: "#FCEDE4", color: "#9A3412" } : { label: "✓", bg: "#16181D", color: "#FFFFFF" };
+          if (i === TODAY) return { label: "Bugün", bg: "#FFFFFF", color: "#16181D" };
+          return { label: "", bg: "#EFEDE8", color: "#5B5F66" };
+        })
+      };
+    });
+    var P = PROG[s.coach];
+    var lo = Math.min.apply(null, P.pts), hi = Math.max.apply(null, P.pts);
+    var ymin = Math.floor((lo - (hi - lo) * 0.2)), ymax = Math.ceil(hi + (hi - lo) * 0.2);
+    var px = function (i) { return 40 + i * (580 / (P.pts.length - 1)); };
+    var py = function (v) { return 195 - (v - ymin) / (ymax - ymin) * 165; };
+    var line = P.pts.map(function (v, i) { return (i ? "L" : "M") + px(i).toFixed(1) + " " + py(v).toFixed(1); }).join(" ");
+    var dots = P.pts.map(function (v, i) { return "M" + px(i).toFixed(1) + " " + py(v).toFixed(1) + "h0"; }).join(" ");
+    var last = P.pts[P.pts.length - 1];
+    var progV = {
+      title: P.title, sub: P.sub, tiles: P.tiles, line: line, dots: dots, yMin: ymin, yMax: ymax, x0: P.x0, x1: P.x1,
+      lastX: 606, lastY: (py(last) - 12).toFixed(1), lastLabel: last + " " + P.unit,
+      aria: P.title + ": " + P.pts.join(", ") + " " + P.unit
+    };
+    var logs = LOGS[s.coach].map(function (l) {
+      var ty = TYPES[l.type];
+      return { t: l.t, when: l.when, tag: l.tag, d: l.d, audio: !!l.audio, icon: IC[l.type], color: ty.color, bg: ty.bg,
+        play: function () { self.flash("Kayıt oynatılıyor (örnek)"); },
+        reply: openThread(cRaw.id) };
+    });
+
+    // ---- builder
+    var bC = findC(s.builderFor);
+    var df = bC.doms.indexOf(s.domFilter) >= 0 ? s.domFilter : "all";
+    var visible = function (t) { return bC.doms.indexOf(t.dom) >= 0 && (df === "all" || t.dom === df); };
+    var vTasks = prog.tasks.filter(visible);
+    var selT = null;
+    vTasks.forEach(function (t) { if (t.id === s.sel) selT = t; });
+    var addPairs = [], seenT = {};
+    bC.doms.forEach(function (dk) {
+      if (df !== "all" && dk !== df) return;
+      DOMS[dk].types.forEach(function (tk) { if (!seenT[tk]) { seenT[tk] = 1; addPairs.push([tk, dk]); } });
+    });
+    var domTabs = bC.doms.length > 1 ? [["all", "Tüm alanlar"]].concat(bC.doms.map(function (d) { return [d, DOMS[d].label]; })).map(function (x) {
+      var on = df === x[0];
+      return { label: x[1], on: on ? "true" : "false", style: on ? "background:#16181D;color:#FFFFFF;border-color:#16181D" : "", pick: function () { self.setState({ domFilter: x[0], sel: null, menuDay: null }); } };
+    }) : [];
+    var week = DAYS.map(function (d, i) {
+      var tasks = vTasks.filter(function (t) { return t.day === i; }).map(function (t) {
+        var v = tview(t);
+        v.sel = s.sel === t.id ? "true" : "false";
+        v.cardStyle = s.sel === t.id ? "border-color:" + v.color + ";box-shadow:0 0 0 2px " + v.bg : "";
+        v.pick = function () { self.setState({ sel: t.id, menuDay: null }); };
+        return v;
+      });
+      var open = s.menuDay === i;
+      return {
+        d: d.d, n: d.n, isToday: i === TODAY, colBg: i === TODAY ? "#EFEDE8" : "#FFFFFF", tasks: tasks, menuOpen: open,
+        toggleMenu: function () { self.setState({ menuDay: open ? null : i }); },
+        addTypes: addPairs.map(function (pr) {
+          var k = pr[0];
+          return { label: TYPES[k].label + (bC.doms.length > 1 ? " · " + DOMS[pr[1]].label : ""), icon: IC[k], color: TYPES[k].color, bg: TYPES[k].bg,
+            add: function () {
+              var nt = newTask(k, i, pr[1]);
+              self.updProg(function (p) { p.tasks.push(nt); });
+              self.setState({ sel: nt.id, menuDay: null });
+            } };
+        })
+      };
+    });
+    var habits = vTasks.filter(function (t) { return t.type === "habit"; }).map(function (t) {
+      var v = tview(t);
+      v.sel = s.sel === t.id ? "true" : "false";
+      v.habitStyle = "width:auto;min-width:200px;flex:0 1 240px;" + (s.sel === t.id ? "border-color:" + v.color + ";box-shadow:0 0 0 2px " + v.bg : "");
+      v.pick = function () { self.setState({ sel: t.id, menuDay: null }); };
+      return v;
+    });
+    var addHabit = function () { var nt = newTask("habit", -1, df !== "all" ? df : bC.doms[0]); self.updProg(function (p) { p.tasks.push(nt); }); self.setState({ sel: nt.id }); };
+
+    var sel = {};
+    if (selT) {
+      var ty = TYPES[selT.type], id = selT.id;
+      sel = tview(selT);
+      sel.cta = ty.cta;
+      sel.hasDomSel = C.multi && (selT.type === "habit" || selT.type === "measure");
+      sel.domVal = selT.dom;
+      sel.domOpts = C.doms.map(function (d) { return { v: d, label: DOMS[d].label }; });
+      sel.setDom = function (e) { var v = e.target.value; self.updTask(id, function (t) { t.dom = v; }); };
+      sel.hasDay = selT.type !== "habit";
+      sel.dayVal = String(selT.day);
+      sel.setDay = function (e) { var v = Number(e.target.value); self.updTask(id, function (t) { t.day = v; }); };
+      sel.fields = FIELDS[selT.type].map(function (fd) {
+        return {
+          k: fd.k, l: fd.l, v: selT.f[fd.k], suf: fd.suf || "", opts: fd.opts || [],
+          isText: fd.kind === "text", isNum: fd.kind === "num", isSel: fd.kind === "sel",
+          wrapStyle: "display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;min-width:0;" + (fd.wide ? "grid-column:1 / -1" : ""),
+          set: function (e) { var val = fd.kind === "num" ? Number(e.target.value) : e.target.value; self.updTask(id, function (t) { t.f[fd.k] = val; }); }
+        };
+      });
+      sel.toggles = TOGGLES[selT.type].map(function (l, i) {
+        return { label: l, on: !!selT.tg[i], flip: function () { self.updTask(id, function (t) { t.tg[i] = !t.tg[i]; }); } };
+      });
+      var asks = ASK[selT.type].filter(function (a, i) { return a && selT.tg[i]; });
+      sel.hasAsk = asks.length > 0; sel.ask = asks.join(", ");
+      sel.note = selT.note; sel.hasNote = !!selT.note;
+      sel.onNote = function (e) { var v = e.target.value; self.updTask(id, function (t) { t.note = v; }); };
+      sel.dup = function () {
+        var nt = clone(selT); nt.id = "t" + (uid++); nt.f.title = selT.f.title + " (kopya)";
+        if (nt.day >= 0) nt.day = Math.min(6, nt.day + 1);
+        self.updProg(function (p) { p.tasks.push(nt); }); self.setState({ sel: nt.id });
+        self.flash("Görev kopyalandı" + (nt.day >= 0 ? ", " + DAYS[nt.day].full + " gününe eklendi." : "."));
+      };
+      sel.del = function () { self.updProg(function (p) { p.tasks = p.tasks.filter(function (t) { return t.id !== id; }); }); self.setState({ sel: null }); self.flash("Görev silindi."); };
+      sel.isWorkout = selT.type === "workout"; sel.isMeal = selT.type === "meal"; sel.isGuitar = selT.type === "guitar"; sel.isExam = selT.type === "exam";
+      if (sel.isWorkout) {
+        var totalSets = 0;
+        sel.ex = (selT.ex || []).map(function (e, i) {
+          totalSets += e.sets;
+          var ch = function (fn2) { return function () { self.updTask(id, function (t) { fn2(t.ex[i]); }); }; };
+          return {
+            n: e.n, sets: e.sets, reps: e.reps, rest: e.rest, video: "kütüphane, " + (i % 2 ? "yan açı" : "ön açı"),
+            setsUp: ch(function (x) { x.sets = Math.min(10, x.sets + 1); }), setsDown: ch(function (x) { x.sets = Math.max(1, x.sets - 1); }),
+            restUp: ch(function (x) { x.rest = Math.min(300, x.rest + 15); }), restDown: ch(function (x) { x.rest = Math.max(0, x.rest - 15); }),
+            onReps: function (ev) { var v = ev.target.value; self.updTask(id, function (t) { t.ex[i].reps = v; }); },
+            remove: function () { self.updTask(id, function (t) { t.ex.splice(i, 1); }); }
+          };
+        });
+        sel.exSummary = sel.ex.length + " hareket · " + totalSets + " set";
+        sel.addEx = function () { self.updTask(id, function (t) { t.ex.push(EX(EXTRA_EX[t.ex.length % EXTRA_EX.length], 3, "12", 60)); }); };
+      }
+      if (sel.isMeal) {
+        var tot = 0;
+        sel.meals = (selT.meals || []).map(function (m, i) {
+          tot += Number(m.kcal) || 0;
+          return { n: m.n, t: m.t, kcal: m.kcal,
+            onKcal: function (ev) { var v = Number(ev.target.value); self.updTask(id, function (t) { t.meals[i].kcal = v; }); },
+            onText: function (ev) { var v = ev.target.value; self.updTask(id, function (t) { t.meals[i].t = v; }); } };
+        });
+        sel.mealTotal = tot.toLocaleString("tr-TR");
+      }
+      if (sel.isGuitar) {
+        var b = selT.b || [70, 80];
+        sel.b0 = b[0]; sel.b1 = b[1];
+        var bc = function (i, d) { return function () { self.updTask(id, function (t) { t.b = t.b || [70, 80]; t.b[i] = Math.max(30, Math.min(220, t.b[i] + d)); }); }; };
+        sel.b0Up = bc(0, 5); sel.b0Down = bc(0, -5); sel.b1Up = bc(1, 5); sel.b1Down = bc(1, -5);
+      }
+      if (sel.isExam) {
+        var nets = selT.nets || {};
+        sel.nets = ["Türkçe", "Sosyal", "Matematik", "Fen"].map(function (n) {
+          var on = !!nets[n];
+          return { label: n, on: on ? "true" : "false", style: on ? "background:#16181D;color:#FFFFFF;border-color:#16181D" : "",
+            flip: function () { self.updTask(id, function (t) { t.nets = t.nets || {}; t.nets[n] = !t.nets[n]; }); } };
+        });
+      }
+    }
+    var taskCount = vTasks.filter(function (t) { return t.type !== "habit"; }).length;
+    var habitCount = vTasks.length - taskCount;
+    var stColors = { "Gönderildi": ["#E9F2EC", "#1E5C34"], "Taslak": ["#EFEDE8", "#3F4248"] };
+    var stc = stColors[prog.status] || ["#FCEDE4", "#9A3412"];
+
+    var sendList = clients.map(function (c) {
+      var on = s.sendSel[c.id] !== undefined ? s.sendSel[c.id] : c.id === s.builderFor;
+      return { name: c.name, goal: c.doms.map(function (d) { return DOMS[d].label; }).join(" + ") + " · " + c.goal, on: on, id: c.id, flip: function () { var m = Object.assign({}, s.sendSel); m[c.id] = !on; self.setState({ sendSel: m }); } };
+    });
+    var nSend = sendList.filter(function (c) { return c.on; }).length;
+
+    // ---- library
+    var lib = LIB[s.coach];
+    var lt = lib[Math.min(s.libTab, lib.length - 1)];
+    var libTabs = lib.map(function (t, i) {
+      var on = i === s.libTab;
+      return { label: t.label, count: t.items.length, on: on ? "true" : "false", style: on ? "color:#16181D;box-shadow:inset 0 -2px 0 #16181D" : "color:#5B5F66", pick: function () { self.setState({ libTab: i }); } };
+    });
+    var libItems = lt.items.map(function (it) {
+      return { t: it[0], m: it[1], video: !!it[2], icon: IC[lt.type],
+        use: function () { self.setState({ screen: "builder", sel: null }); self.flash("\"" + it[0] + "\" eklemek için takvimde bir gün seç."); } };
+    });
+
+    // ---- messages
+    var tList = threads.map(function (t) {
+      var c = findC(t.cid), extra = s.extraMsgs[s.coach + t.cid] || [];
+      var all = t.msgs.concat(extra), lastM = all[all.length - 1];
+      var on = s.threadId === t.cid;
+      var unread = t.unread && !s.readIds[s.coach + t.cid];
+      return {
+        cid: t.cid, name: c.name, ini: c.ini, time: extra.length ? "Şimdi" : t.time, last: (lastM.me ? "Sen: " : "") + lastM.t, unread: unread, all: all,
+        style: "display:flex;align-items:center;gap:12px;padding:14px 16px;border:none;border-bottom:1px solid #EFEDE8;text-align:left;width:100%;" + (on ? "background:#F1EFEA" : "background:transparent"),
+        open: openThread(t.cid)
+      };
+    });
+    var curT = tList.filter(function (t) { return t.cid === s.threadId; })[0] || tList[0];
+    var attIcons = { workout: IC.workout, photo: IC.photo, mic: IC.mic };
+    var thread = {
+      name: curT.name, profile: openClient(curT.cid),
+      msgs: curT.all.map(function (m) {
+        return {
+          t: m.t, time: m.time, hasAtt: !!m.att, att: m.att, attIcon: attIcons[m.attType] || IC.msg, attBg: m.me ? "rgba(255,255,255,.15)" : "#F1EFEA",
+          wrap: "display:flex;flex-direction:column;gap:3px;max-width:72%;" + (m.me ? "align-self:flex-end;align-items:flex-end" : "align-self:flex-start"),
+          bubble: "padding:10px 14px;border-radius:16px;font-size:14px;line-height:1.45;" + (m.me ? "background:#16181D;color:#FFFFFF;border-bottom-right-radius:4px" : "background:#FFFFFF;border:1px solid #E6E3DD;border-bottom-left-radius:4px")
+        };
+      })
+    };
+    var send = function (text) {
+      var t = (text || "").trim(); if (!t) return;
+      var em = Object.assign({}, s.extraMsgs), key = s.coach + curT.cid;
+      em[key] = (em[key] || []).concat([{ me: true, t: t, time: "Şimdi" }]);
+      self.setState({ extraMsgs: em, draft: "" });
+    };
+
+    return {
+      nav: nav, coachChips: coachChips, coach: C,
+      crumb: titles[s.screen][0], pageTitle: titles[s.screen][1],
+      search: s.search, onSearch: function (e) { self.setState({ search: e.target.value, screen: "clients" }); },
+      newProgram: openBuilder(s.builderFor),
+      scr: { overview: s.screen === "overview", clients: s.screen === "clients", client: s.screen === "client", builder: s.screen === "builder", library: s.screen === "library", messages: s.screen === "messages" },
+      kpis: kpis, attention: attention, attnCount: attention.length, feed: feed, adhList: adhList,
+      filters: filters, clientRows: clientRows, noClients: clientRows.length === 0,
+      goClients: go("clients"),
+      cl: cl, clTabs: clTabs, clTab: { week: s.clTab === "week", progress: s.clTab === "progress", logs: s.clTab === "logs" },
+      clWeek: clWeek, clHabits: clHabits, prog: progV, logs: logs,
+      progName: prog.name, progStatus: prog.status, statusBg: stc[0], statusColor: stc[1],
+      onProgName: function (e) { var v = e.target.value; self.updProg(function (p) { p.name = v; }); },
+      builderFor: s.builderFor, onBuilderFor: function (e) { self.setState({ builderFor: e.target.value, sendSel: {} }); },
+      clientOpts: clients.map(function (c) { return { id: c.id, name: c.name }; }),
+      saveTemplate: function () { self.flash("\"" + prog.name + "\" şablon olarak kütüphaneye kaydedildi."); },
+      openSend: function () { self.setState({ sendOpen: true, menuDay: null }); },
+      closeSend: function () { self.setState({ sendOpen: false }); },
+      noop: function () { self.flash("Diğer haftalar bu prototipte boş bırakıldı."); },
+      domTabs: domTabs, hasDomTabs: domTabs.length > 0, bDoms: bC.doms.map(function (d) { return { label: DOMS[d].label, color: DOMS[d].color, bg: DOMS[d].bg }; }), bName: bC.name,
+      sendDomText: C.multi ? "Her alan danışanın uygulamasında kendi widget'ında görünür (" + C.doms.map(function (d) { return DOMS[d].label; }).join(", ") + "); koç kartında ikisinde de sen görünürsün." : "Program danışanın uygulamasında " + C.domain + " widget'ına eklenir; o günün görevleri ana ekranda başlatılabilir.",
+      taskCount: taskCount, habitCount: habitCount, week: week, habits: habits, addHabit: addHabit,
+      dayOpts: DAYS.map(function (d, i) { return { v: String(i), label: d.full + " " + d.n }; }),
+      hasSel: !!selT, noSel: !selT, sel: sel,
+      sendOpen: s.sendOpen, sendList: sendList, sendStart: s.sendStart, sendRep: s.sendRep, sendNotify: s.sendNotify,
+      onSendStart: function (e) { self.setState({ sendStart: e.target.value }); },
+      onSendRep: function (e) { self.setState({ sendRep: e.target.value }); },
+      flipNotify: function () { self.setState({ sendNotify: !s.sendNotify }); },
+      sendLabel: nSend ? nSend + " danışana gönder" : "Danışan seç",
+      confirmSend: function () {
+        if (!nSend) return;
+        var progs = clone(s.progs); progs[s.coach].status = "Gönderildi";
+        self.setState({ progs: progs, sendOpen: false });
+        self.flash("Program " + nSend + " danışana gönderildi. " + s.sendStart + " itibarıyla her alan kendi widget'ında görünecek.");
+      },
+      libTabs: libTabs, libItems: libItems,
+      libAdd: function () { self.flash("Yeni içerik formu bu prototipte yok: video, açıklama ve etiketlerle eklenir."); },
+      threads: tList, thread: thread,
+      quick: QUICK[s.coach].map(function (t) { return { t: t, use: function () { self.setState({ draft: t }); } }; }),
+      draft: s.draft, onDraft: function (e) { self.setState({ draft: e.target.value }); },
+      onDraftKey: function (e) { if (e.key === "Enter") send(s.draft); },
+      sendMsg: function () { send(s.draft); },
+      hasToast: !!s.toast, toast: s.toast
+    };
+  }
+}
+</script>
+</body>
+</html>

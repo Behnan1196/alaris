@@ -1,0 +1,38 @@
+# Bağımlılıklar
+node_modules/
+
+# Ortam değişkenleri (gizli; asla commit edilmez)
+.env
+.env.*
+!.env.example
+
+# Derleme çıktıları
+.next/
+out/
+dist/
+build/
+.expo/
+web-build/
+*.tsbuildinfo
+next-env.d.ts
+
+# Supabase yerel
+supabase/.branches/
+supabase/.temp/
+
+# Araçlar / işletim sistemi
+.turbo/
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
+
+# Expo / native
+ios/
+android/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision

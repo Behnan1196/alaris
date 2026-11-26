@@ -1,0 +1,1 @@
+-- Yerel geliştirme için örnek veri. Şema migration'ları supabase/migrations altında.

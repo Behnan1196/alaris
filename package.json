@@ -1,0 +1,22 @@
+{
+  "name": "alaris",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "env:sync": "node scripts/sync-env.mjs",
+    "dev:web": "npm run env:sync && npm run dev -w @alaris/web",
+    "dev:mobile": "npm run env:sync && npm run start -w @alaris/mobile",
+    "build:web": "npm run env:sync && npm run build -w @alaris/web",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "supabase": "^3.4.0"
+  }
+}

@@ -1,0 +1,1288 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Alaris danışan uygulaması</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+*{box-sizing:border-box}
+button{font:inherit;cursor:pointer}
+input{font:inherit}
+a{color:#1D4ED8}a:hover{color:#1E3A8A}
+.scroll{scrollbar-width:none}
+.scroll::-webkit-scrollbar{display:none}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.card{background:#FFFFFF;border:1px solid #E6E3DD;border-radius:18px}
+.muted{color:#5B5F66}
+.disp{font-family:'Space Grotesk',Inter,sans-serif}
+.ibtn{width:44px;height:44px;border-radius:50%;border:1px solid #E6E3DD;background:#FFFFFF;display:flex;align-items:center;justify-content:center;color:#16181D;padding:0;flex:none}
+.pbtn{height:52px;border-radius:16px;border:none;background:#16181D;color:#FFFFFF;font-weight:600;font-size:16px;display:flex;align-items:center;justify-content:center;gap:8px;width:100%}
+.sbtn{height:44px;border-radius:14px;border:1px solid #E6E3DD;background:#FFFFFF;color:#16181D;font-weight:600;font-size:14px;display:flex;align-items:center;justify-content:center;gap:6px;padding:0 14px}
+.lbl{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase}
+.art{position:absolute;inset:0;width:100%;height:100%}
+</style>
+</helmet>
+<div style="width:390px;height:844px;position:relative;overflow:hidden;background:#F6F5F2;color:#16181D;font-family:Inter, system-ui, sans-serif;display:flex;flex-direction:column">
+<div class="scroll" style="flex:1;min-height:0;overflow-y:auto">
+
+<!-- ===================== ANA EKRAN: KOÇLUKLARIM ===================== -->
+<sc-if value="{{scr.home}}" hint-placeholder-val="{{ true }}">
+<div style="padding:20px 20px 28px;display:flex;flex-direction:column;gap:16px">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <div>
+      <p class="muted" style="margin:0;font-size:13px">Perşembe, 26 Kasım</p>
+      <h1 class="disp" style="margin:2px 0 0;font-size:26px;font-weight:600">Günaydın, Can</h1>
+    </div>
+    <div aria-label="Profil" role="img" style="width:44px;height:44px;border-radius:50%;background:#16181D;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-weight:600">C</div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:6px">
+    <div style="display:flex;justify-content:space-between;font-size:13px"><span style="font-weight:600">Bugün {{doneAll}} / {{totalAll}} görev tamam</span><span class="muted">4 koçluk alanı</span></div>
+    <div style="height:6px;border-radius:3px;background:#E6E3DD;overflow:hidden"><div style="height:6px;border-radius:3px;background:#16181D;width:{{donePct}}%"></div></div>
+  </div>
+
+  <sc-if value="{{showBanner}}" hint-placeholder-val="{{ true }}">
+    <div class="card" style="padding:14px 16px;display:flex;align-items:center;gap:12px">
+      <span style="width:10px;height:10px;border-radius:50%;background:#C2410C;flex:none"></span>
+      <span style="flex:1;font-size:14px;line-height:1.4"><b>Deniz Arslan</b> 4. haftanın programını gönderdi.</span>
+      <button class="ibtn" aria-label="Bildirimi kapat" onClick="{{hideBanner}}" style="width:36px;height:36px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+    </div>
+  </sc-if>
+
+  <sc-for list="{{widgets}}" as="w" hint-placeholder-count="3">
+    <div style="position:relative;height:208px;border-radius:24px;overflow:hidden;color:#FFFFFF;background:{{w.base}}">
+      <sc-if value="{{w.isFit}}">
+        <svg class="art" viewBox="0 0 390 208" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
+          <rect width="390" height="208" fill="#7C2D12"></rect>
+          <circle cx="340" cy="30" r="120" fill="#8A3416"></circle>
+          <circle cx="250" cy="210" r="60" fill="#8A3416"></circle>
+          <g transform="rotate(-22 300 90)">
+            <rect x="215" y="82" width="170" height="14" rx="7" fill="#B8441A"></rect>
+            <rect x="228" y="44" width="26" height="90" rx="8" fill="#E06A2C"></rect>
+            <rect x="257" y="56" width="17" height="66" rx="6" fill="#C9541F"></rect>
+            <rect x="326" y="56" width="17" height="66" rx="6" fill="#C9541F"></rect>
+            <rect x="346" y="44" width="26" height="90" rx="8" fill="#E06A2C"></rect>
+          </g>
+        </svg>
+      </sc-if>
+      <sc-if value="{{w.isNutr}}">
+        <svg class="art" viewBox="0 0 390 208" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
+          <rect width="390" height="208" fill="#881337"></rect>
+          <circle cx="320" cy="104" r="86" fill="#9F1D45"></circle>
+          <circle cx="320" cy="104" r="62" fill="#B3264F"></circle>
+          <circle cx="300" cy="92" r="20" fill="#E8577A"></circle>
+          <circle cx="338" cy="118" r="16" fill="#F28C3A"></circle>
+          <path d="M318 70c14-12 30-10 30-10s-2 16-16 26c-8 5-14 4-14 4s-6-12 0-20z" fill="#7BC46B"></path>
+          <path d="M214 50v108M206 50v34a8 8 0 0 0 16 0V50" stroke="#D9617F" stroke-width="5" stroke-linecap="round" fill="none"></path>
+        </svg>
+      </sc-if>
+      <sc-if value="{{w.isStudy}}">
+        <svg class="art" viewBox="0 0 390 208" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
+          <rect width="390" height="208" fill="#1E3A8A"></rect>
+          <path d="M0 34H390M0 64H390M0 94H390M0 124H390M0 154H390M0 184H390" stroke="#2848A0" stroke-width="1"></path>
+          <path d="M236 0V208" stroke="#3557B8" stroke-width="2"></path>
+          <text x="252" y="92" font-family="Space Grotesk, sans-serif" font-size="46" font-weight="600" fill="#4567CC">f'(x)</text>
+          <text x="262" y="150" font-family="Space Grotesk, sans-serif" font-size="30" font-weight="500" fill="#3B5EC6">lim x→0</text>
+          <g transform="rotate(32 330 40)"><rect x="285" y="30" width="96" height="16" rx="3" fill="#E9A93A"></rect><path d="M381 30l18 8-18 8z" fill="#F4D7A1"></path><rect x="279" y="30" width="10" height="16" rx="2" fill="#D9775B"></rect></g>
+        </svg>
+      </sc-if>
+      <sc-if value="{{w.isGuitar}}">
+        <svg class="art" viewBox="0 0 390 208" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
+          <rect width="390" height="208" fill="#134E4A"></rect>
+          <circle cx="335" cy="118" r="100" fill="#17605B"></circle>
+          <circle cx="335" cy="118" r="42" fill="#0D3936"></circle>
+          <path d="M190 100H390M190 108H390M190 116H390M190 124H390M190 132H390M190 140H390" stroke="#8FE3D6" stroke-width="1.5" opacity=".55"></path>
+          <path d="M212 92V148M238 92V148M262 92V148" stroke="#2B7C74" stroke-width="3"></path>
+        </svg>
+      </sc-if>
+      <div style="position:relative;height:100%;padding:16px;display:flex;flex-direction:column;justify-content:space-between">
+        <button onClick="{{w.open}}" aria-label="{{w.openLabel}}" style="border:none;background:transparent;color:#FFFFFF;padding:0;text-align:left;display:flex;align-items:flex-start;gap:8px">
+          <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+            <span class="lbl" style="color:{{w.accent}}">{{w.name}}</span>
+            <span class="disp" style="font-size:22px;font-weight:600;line-height:1.15">{{w.program}}</span>
+            <span style="font-size:13px;color:#F1EFEA">{{w.coach}} · {{w.week}}</span>
+          </span>
+          <span style="width:36px;height:36px;border-radius:50%;background:#FFFFFF;color:#16181D;display:flex;align-items:center;justify-content:center;flex:none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></span>
+        </button>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <span style="font-size:14px;font-weight:600">{{w.todayLine}}</span>
+            <span style="font-size:12px;color:#F1EFEA">{{w.todaySub}}</span>
+          </div>
+          <button onClick="{{w.act}}" style="align-self:flex-start;height:44px;border-radius:14px;border:none;padding:0 16px;font-weight:600;font-size:14px;display:flex;align-items:center;gap:8px;background:#FFFFFF;color:#16181D">
+            <sc-if value="{{w.showPlay}}"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></sc-if>
+            <sc-if value="{{w.showCheck}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F766E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5 10 17l9-10"></path></svg></sc-if>
+            {{w.actLabel}}
+          </button>
+        </div>
+      </div>
+    </div>
+  </sc-for>
+
+  <div class="card" style="padding:16px;display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:36px;height:36px;border-radius:12px;background:#EFEDE8;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16181D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.2-8.6"></path><path d="m9 11 3 3 9-9"></path></svg></div>
+      <div style="flex:1"><h2 class="disp" style="margin:0;font-size:17px;font-weight:600">Alışkanlıklarım</h2><p class="muted" style="margin:1px 0 0;font-size:12px">Bugün {{habitDone}} / {{habitTotal}} tamam</p></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <sc-for list="{{habitRows}}" as="h" hint-placeholder-count="3">
+        <div style="display:flex;align-items:center;gap:10px;font-size:14px">
+          <span style="width:10px;height:10px;border-radius:50%;flex:none;background:{{h.dot}}"></span>
+          <span style="flex:1;font-weight:500">{{h.name}}</span>
+          <span class="muted" style="font-size:13px">{{h.status}}</span>
+        </div>
+      </sc-for>
+    </div>
+    <button class="sbtn" onClick="{{go.habits}}" style="width:100%">Alışkanlıkları yönet ve yeni ekle</button>
+  </div>
+
+  <button onClick="{{invite}}" style="height:56px;border-radius:18px;border:2px dashed #C9C6BF;background:transparent;color:#16181D;font-weight:600;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Davet koduyla koç ekle
+  </button>
+</div>
+</sc-if>
+
+<!-- ===================== ALAN DETAYI ===================== -->
+<sc-if value="{{scr.domain}}">
+<div style="display:flex;flex-direction:column">
+  <div style="position:relative;height:230px;overflow:hidden;color:#FFFFFF">
+    <sc-if value="{{dv.isFit}}">
+      <svg class="art" viewBox="0 0 390 230" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
+        <rect width="390" height="230" fill="#7C2D12"></rect>
+        <circle cx="340" cy="40" r="130" fill="#8A3416"></circle>
+        <g transform="rotate(-22 300 100)">
+          <rect x="215" y="92" width="170" height="14" rx="7" fill="#B8441A"></rect>
+          <rect x="228" y="54" width="26" height="90" rx="8" fill="#E06A2C"></rect>
+          <rect x="257" y="66" width="17" height="66" rx="6" fill="#C9541F"></rect>
+          <rect x="326" y="66" width="17" height="66" rx="6" fill="#C9541F"></rect>
+          <rect x="346" y="54" width="26" height="90" rx="8" fill="#E06A2C"></rect>
+        </g>
+      </svg>
+    </sc-if>
+    <sc-if value="{{dv.isNutr}}">
+      <svg class="art" viewBox="0 0 390 230" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
+        <rect width="390" height="230" fill="#881337"></rect>
+        <circle cx="320" cy="100" r="90" fill="#9F1D45"></circle>
+        <circle cx="320" cy="100" r="64" fill="#B3264F"></circle>
+        <circle cx="300" cy="88" r="20" fill="#E8577A"></circle>
+        <circle cx="338" cy="114" r="16" fill="#F28C3A"></circle>
+        <path d="M318 66c14-12 30-10 30-10s-2 16-16 26c-8 5-14 4-14 4s-6-12 0-20z" fill="#7BC46B"></path>
+      </svg>
+    </sc-if>
+    <sc-if value="{{dv.isStudy}}">
+      <svg class="art" viewBox="0 0 390 230" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
+        <rect width="390" height="230" fill="#1E3A8A"></rect>
+        <path d="M0 40H390M0 70H390M0 100H390M0 130H390M0 160H390M0 190H390M0 220H390" stroke="#2848A0" stroke-width="1"></path>
+        <path d="M236 0V230" stroke="#3557B8" stroke-width="2"></path>
+        <text x="252" y="104" font-family="Space Grotesk, sans-serif" font-size="46" font-weight="600" fill="#4567CC">f'(x)</text>
+        <text x="262" y="162" font-family="Space Grotesk, sans-serif" font-size="30" font-weight="500" fill="#3B5EC6">lim x→0</text>
+      </svg>
+    </sc-if>
+    <sc-if value="{{dv.isGuitar}}">
+      <svg class="art" viewBox="0 0 390 230" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
+        <rect width="390" height="230" fill="#134E4A"></rect>
+        <circle cx="335" cy="125" r="105" fill="#17605B"></circle>
+        <circle cx="335" cy="125" r="44" fill="#0D3936"></circle>
+        <path d="M190 106H390M190 114H390M190 122H390M190 130H390M190 138H390M190 146H390" stroke="#8FE3D6" stroke-width="1.5" opacity=".55"></path>
+        <path d="M212 98V154M238 98V154M262 98V154" stroke="#2B7C74" stroke-width="3"></path>
+      </svg>
+    </sc-if>
+    <div style="position:relative;height:100%;padding:16px 20px 18px;display:flex;flex-direction:column;justify-content:space-between">
+      <button class="ibtn" aria-label="Koçluklarım'a dön" onClick="{{back}}" style="border:none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <span class="lbl" style="color:{{dv.accent}}">{{dv.name}}</span>
+        <h1 class="disp" style="margin:0;font-size:26px;font-weight:600;line-height:1.15">{{dv.program}}</h1>
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px">
+          <span>{{dv.week}}</span>
+          <div style="flex:1;height:6px;border-radius:3px;background:#FFFFFF;opacity:.9;overflow:hidden"><div style="height:6px;border-radius:3px;background:{{dv.color}};width:{{dv.pct}}%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding:18px 20px 28px;display:flex;flex-direction:column;gap:16px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline">
+      <h2 class="disp" style="margin:0;font-size:18px;font-weight:600">Bugün</h2>
+      <span style="font-size:13px;font-weight:600;color:{{dv.ink}}">{{dg.done}} / {{dg.total}} tamam</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <sc-for list="{{dg.tasks}}" as="t" hint-placeholder-count="3">
+        <div class="card" style="padding:6px 10px 6px 4px;display:flex;align-items:center;gap:4px;border-radius:16px">
+          <button aria-label="{{t.checkLabel}}" onClick="{{t.toggle}}" style="width:44px;height:44px;flex:none;border:none;background:transparent;padding:0;display:flex;align-items:center;justify-content:center">
+            <span style="width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#FFFFFF;border:2px solid {{t.color}};background:{{t.checkBg}}">
+              <sc-if value="{{t.done}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5 10 17l9-10"></path></svg></sc-if>
+            </span>
+          </button>
+          <sc-if value="{{t.isCounter}}">
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;padding:8px 0">
+              <span class="lbl" style="color:{{t.color}}">{{t.kind}}</span>
+              <span style="font-size:15px;font-weight:600">{{t.waterText}}</span>
+              <div style="height:6px;border-radius:3px;background:#EFEDE8;overflow:hidden"><div style="height:6px;border-radius:3px;width:{{t.waterPct}}%;background:{{t.color}}"></div></div>
+            </div>
+            <button class="ibtn" aria-label="Bir bardak su ekle" onClick="{{addWater}}" style="margin-left:6px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+          </sc-if>
+          <sc-if value="{{t.isPlain}}">
+            <button onClick="{{t.open}}" style="flex:1;min-width:0;text-align:left;border:none;background:transparent;padding:8px 0;display:flex;align-items:center;gap:8px;color:inherit">
+              <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+                <span class="lbl" style="color:{{t.color}}">{{t.kind}}</span>
+                <span style="font-size:15px;font-weight:600;text-decoration:{{t.deco}};color:{{t.titleColor}}">{{t.title}}</span>
+                <span class="muted" style="font-size:13px">{{t.meta}}</span>
+              </span>
+              <sc-if value="{{t.hasOpen}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5B5F66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></sc-if>
+            </button>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+
+    <div class="card" style="padding:16px">
+      <h2 class="disp" style="margin:0 0 10px;font-size:17px;font-weight:600">Bu hafta</h2>
+      <div style="display:flex;flex-direction:column">
+        <sc-for list="{{weekPlan}}" as="p" hint-placeholder-count="7">
+          <div style="display:flex;align-items:center;gap:12px;padding:9px 0;border-top:1px solid {{p.line}}">
+            <span style="width:34px;font-size:12px;font-weight:600;color:{{p.dayColor}}">{{p.day}}</span>
+            <span style="flex:1;font-size:14px;font-weight:{{p.weight}};color:{{p.textColor}}">{{p.title}}</span>
+            <sc-if value="{{p.done}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{dv.color}}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Tamamlandı"><path d="M5 12.5 10 17l9-10"></path></svg></sc-if>
+            <sc-if value="{{p.today}}"><span style="font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;color:#FFFFFF;background:{{dv.color}}">BUGÜN</span></sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div class="card" style="padding:16px;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;background:{{dv.tint}};color:{{dv.ink}}">{{dv.initials}}</div>
+        <div style="flex:1"><p style="margin:0;font-weight:600;font-size:15px">{{dv.coach}}</p><p class="muted" style="margin:2px 0 0;font-size:13px">{{dv.next}}</p></div>
+      </div>
+      <button class="sbtn" onClick="{{dv.chat}}" style="width:100%">Koça mesaj gönder</button>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ===================== ALIŞKANLIKLAR ===================== -->
+<sc-if value="{{scr.habits}}">
+<div style="display:flex;flex-direction:column">
+  <div style="display:flex;align-items:center;gap:12px;padding:16px 20px 8px">
+    <button class="ibtn" aria-label="Geri" onClick="{{back}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button>
+    <div style="flex:1"><h1 class="disp" style="margin:0;font-size:22px;font-weight:600">Alışkanlıklarım</h1><p class="muted" style="margin:2px 0 0;font-size:13px">Bugün {{habitDone}} / {{habitTotal}} tamam</p></div>
+  </div>
+  <div style="padding:8px 20px 28px;display:flex;flex-direction:column;gap:10px">
+    <sc-for list="{{habitRows}}" as="h" hint-placeholder-count="3">
+      <div class="card" style="padding:6px 10px 6px 4px;display:flex;align-items:center;gap:4px;border-radius:16px">
+        <button aria-label="{{h.checkLabel}}" onClick="{{h.toggle}}" style="width:44px;height:44px;flex:none;border:none;background:transparent;padding:0;display:flex;align-items:center;justify-content:center">
+          <span style="width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#FFFFFF;border:2px solid {{h.dot}};background:{{h.checkBg}}">
+            <sc-if value="{{h.done}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5 10 17l9-10"></path></svg></sc-if>
+          </span>
+        </button>
+        <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;padding:8px 0">
+          <span style="font-size:15px;font-weight:600">{{h.name}}</span>
+          <span style="font-size:12px;font-weight:500;color:{{h.srcColor}}">{{h.sub}}</span>
+          <sc-if value="{{h.isCounter}}"><div style="height:6px;border-radius:3px;background:#EFEDE8;overflow:hidden;margin-top:3px"><div style="height:6px;border-radius:3px;background:{{h.dot}};width:{{h.pct}}%"></div></div></sc-if>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;padding-left:8px">
+          <span class="disp" style="font-size:15px;font-weight:600">{{h.streak}}</span>
+          <span class="muted" style="font-size:11px">seri</span>
+        </div>
+        <sc-if value="{{h.isCounter}}"><button class="ibtn" aria-label="Bir bardak su ekle" onClick="{{addWater}}" style="margin-left:8px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button></sc-if>
+      </div>
+    </sc-for>
+
+    <sc-if value="{{noForm}}">
+      <button onClick="{{openForm}}" style="height:56px;border-radius:18px;border:2px dashed #C9C6BF;background:transparent;color:#16181D;font-weight:600;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:6px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Yeni alışkanlık ekle
+      </button>
+    </sc-if>
+
+    <sc-if value="{{showForm}}">
+      <div class="card" style="padding:16px;display:flex;flex-direction:column;gap:14px;margin-top:6px">
+        <h2 class="disp" style="margin:0;font-size:17px;font-weight:600">Yeni alışkanlık</h2>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <label for="hname" style="font-size:13px;font-weight:600">Ne yapmak istiyorsun?</label>
+          <input id="hname" value="{{nName}}" onChange="{{onName}}" placeholder="Örneğin: 10 dakika esneme" style="height:46px;border-radius:12px;border:1px solid #D6D3CC;background:#FFFFFF;padding:0 14px;font-size:15px;color:#16181D">
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <sc-for list="{{suggest}}" as="g" hint-placeholder-count="3">
+              <button onClick="{{g.pick}}" style="height:34px;padding:0 12px;border-radius:999px;border:1px solid #E6E3DD;background:#F6F5F2;font-size:13px;color:#16181D">{{g.label}}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:13px;font-weight:600">Ne sıklıkla?</span>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <sc-for list="{{freqChips}}" as="c" hint-placeholder-count="3">
+              <button onClick="{{c.pick}}" style="height:38px;padding:0 14px;border-radius:999px;font-size:14px;font-weight:600;background:{{c.bg}};color:{{c.fg}};border:1px solid {{c.bd}}">{{c.label}}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:13px;font-weight:600">Hatırlatma</span>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <sc-for list="{{timeChips}}" as="c" hint-placeholder-count="4">
+              <button onClick="{{c.pick}}" style="height:38px;padding:0 14px;border-radius:999px;font-size:14px;font-weight:600;background:{{c.bg}};color:{{c.fg}};border:1px solid {{c.bd}}">{{c.label}}</button>
+            </sc-for>
+          </div>
+        </div>
+        <label style="display:flex;align-items:center;gap:10px;font-size:14px">
+          <input type="checkbox" checked="{{nShare}}" onChange="{{toggleShare}}" style="width:20px;height:20px">
+          Koçlarım bu alışkanlığı görebilsin
+        </label>
+        <div style="display:flex;gap:8px">
+          <button class="pbtn" onClick="{{saveHabit}}" style="flex:1">Kaydet</button>
+          <button class="sbtn" onClick="{{closeForm}}" style="height:52px;border-radius:16px">Vazgeç</button>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+</div>
+</sc-if>
+
+<!-- ===================== ANTRENMAN ÖZETİ ===================== -->
+<sc-if value="{{scr.workout}}">
+<div style="display:flex;flex-direction:column;min-height:100%">
+  <div style="display:flex;align-items:center;gap:12px;padding:16px 20px 8px">
+    <button class="ibtn" aria-label="Geri" onClick="{{back}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button>
+    <div style="flex:1"><p class="lbl" style="margin:0;color:#C2410C">Fitness &amp; Beslenme</p><p style="margin:2px 0 0;font-weight:600;font-size:15px">Koç: Deniz Arslan</p></div>
+  </div>
+  <div style="padding:8px 20px 20px;display:flex;flex-direction:column;gap:16px;flex:1">
+    <div>
+      <p class="muted" style="margin:0;font-size:13px">Hafta 4 · Gün 2</p>
+      <h1 class="disp" style="margin:4px 0 0;font-size:28px;font-weight:600">Üst Vücut A</h1>
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+        <span style="font-size:13px;font-weight:600;padding:6px 12px;border-radius:999px;background:#FFF1E6;color:#9A3412">5 hareket</span>
+        <span style="font-size:13px;font-weight:600;padding:6px 12px;border-radius:999px;background:#FFF1E6;color:#9A3412">17 set</span>
+        <span style="font-size:13px;font-weight:600;padding:6px 12px;border-radius:999px;background:#FFF1E6;color:#9A3412">~45 dk</span>
+        <span style="font-size:13px;font-weight:600;padding:6px 12px;border-radius:999px;background:#FFF1E6;color:#9A3412">Dambıl, makine</span>
+      </div>
+    </div>
+    <div style="background:#FFF1E6;border-radius:16px;padding:14px 16px">
+      <p class="lbl" style="margin:0 0 4px;color:#9A3412">Koçun notu</p>
+      <p style="margin:0;font-size:14px;line-height:1.45">Isınmayı atlama: 5 dk bisiklet ve omuz rotasyonu. Her sette 1-2 tekrar yedekte kalsın.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <sc-for list="{{exList}}" as="e" hint-placeholder-count="5">
+        <button onClick="{{e.open}}" class="card" style="padding:12px;display:flex;align-items:center;gap:12px;text-align:left;color:inherit;width:100%">
+          <span style="width:56px;height:56px;border-radius:14px;background:#22252B;color:#FFFFFF;display:flex;align-items:center;justify-content:center;flex:none">
+            <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg>
+          </span>
+          <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+            <span style="font-size:15px;font-weight:600">{{e.num}}. {{e.name}}</span>
+            <span class="muted" style="font-size:13px">{{e.summary}}</span>
+            <span style="font-size:12px;color:#9A3412;font-weight:500">{{e.muscleText}}</span>
+          </span>
+          <span style="font-size:12px;font-weight:600;color:{{e.stateColor}}">{{e.state}}</span>
+        </button>
+      </sc-for>
+    </div>
+  </div>
+  <div style="position:sticky;bottom:0;background:#F6F5F2;padding:12px 20px 20px;border-top:1px solid #E6E3DD">
+    <button class="pbtn" onClick="{{startWorkout}}"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg>{{startLabel}}</button>
+  </div>
+</div>
+</sc-if>
+
+<!-- ===================== HAREKET OYNATICI ===================== -->
+<sc-if value="{{scr.player}}">
+<div style="display:flex;flex-direction:column;min-height:100%">
+  <div style="background:#15171B;color:#FFFFFF;padding:14px 16px 16px;display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:center;gap:8px">
+      <button class="ibtn" aria-label="Antrenmanı duraklat ve özete dön" onClick="{{go.workout}}" style="background:#2A2D33;border-color:#2A2D33;color:#FFFFFF"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+      <div style="flex:1;text-align:center">
+        <p class="lbl" style="margin:0;color:#B8BCC4">Üst Vücut A</p>
+        <p style="margin:2px 0 0;font-weight:600;font-size:15px">Hareket {{exNum}} / 5</p>
+      </div>
+      <span style="width:44px;text-align:right;font-size:13px;color:#B8BCC4;font-variant-numeric:tabular-nums">{{doneSets}}/17</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(5, minmax(0, 1fr));gap:4px">
+      <sc-for list="{{segments}}" as="s" hint-placeholder-count="5"><div style="height:4px;border-radius:2px;background:{{s.bg}}"></div></sc-for>
+    </div>
+    <div style="height:200px;border-radius:16px;background:#22252B;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px">
+      <button aria-label="Hareket videosunu oynat" style="width:64px;height:64px;border-radius:50%;border:none;background:#FFFFFF;color:#15171B;display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></button>
+      <p style="margin:0;font-size:13px;color:#B8BCC4;text-align:center">Koçun yüklediği video · {{angleLabel}} · {{speedLabel}}<br>Döngüde, sessiz oynar</p>
+    </div>
+    <div style="display:flex;gap:8px">
+      <sc-for list="{{angles}}" as="a" hint-placeholder-count="2">
+        <button onClick="{{a.pick}}" style="height:36px;padding:0 14px;border-radius:999px;font-size:13px;font-weight:600;background:{{a.bg}};color:{{a.fg}};border:1px solid #3A3D44">{{a.label}}</button>
+      </sc-for>
+      <button onClick="{{toggleSlow}}" style="height:36px;padding:0 14px;border-radius:999px;font-size:13px;font-weight:600;margin-left:auto;background:{{slowBg}};color:{{slowFg}};border:1px solid #3A3D44">Yavaş çekim</button>
+    </div>
+  </div>
+
+  <div style="padding:18px 20px 20px;display:flex;flex-direction:column;gap:16px;flex:1">
+    <div>
+      <h1 class="disp" style="margin:0;font-size:24px;font-weight:600">{{ex.name}}</h1>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+        <sc-for list="{{ex.muscles}}" as="m" hint-placeholder-count="3"><span style="font-size:12px;font-weight:600;padding:5px 10px;border-radius:999px;background:#FFF1E6;color:#9A3412">{{m.label}}</span></sc-for>
+      </div>
+    </div>
+
+    <div class="card" style="padding:8px">
+      <div style="display:grid;grid-template-columns:44px minmax(0, 1fr) minmax(0, 1fr) 48px;gap:4px;padding:4px 6px 8px" class="muted">
+        <span class="lbl">Set</span><span class="lbl">Hedef</span><span class="lbl">Önceki</span><span class="lbl" style="text-align:center">Yap</span>
+      </div>
+      <sc-for list="{{setRows}}" as="r" hint-placeholder-count="4">
+        <div style="display:grid;grid-template-columns:44px minmax(0, 1fr) minmax(0, 1fr) 48px;gap:4px;align-items:center;padding:2px 6px;border-radius:12px;background:{{r.rowBg}}">
+          <span class="disp" style="font-weight:600;font-size:16px">{{r.n}}</span>
+          <span style="font-weight:600;font-size:15px">{{r.target}}</span>
+          <span class="muted" style="font-size:14px">{{r.prev}}</span>
+          <button aria-label="{{r.label}}" onClick="{{r.toggle}}" style="width:44px;height:44px;border:none;background:transparent;padding:0;display:flex;align-items:center;justify-content:center">
+            <span style="width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;color:#FFFFFF;border:2px solid #C2410C;background:{{r.checkBg}}">
+              <sc-if value="{{r.done}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5 10 17l9-10"></path></svg></sc-if>
+            </span>
+          </button>
+        </div>
+      </sc-for>
+      <p class="muted" style="margin:8px 6px 2px;font-size:12px">Seti işaretleyince {{ex.rest}} sn dinlenme sayacı başlar.</p>
+    </div>
+
+    <div class="card" style="padding:16px">
+      <h2 class="disp" style="margin:0 0 10px;font-size:16px;font-weight:600">Nasıl yapılır</h2>
+      <ol style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px">
+        <sc-for list="{{ex.steps}}" as="st" hint-placeholder-count="3">
+          <li style="display:flex;gap:10px;font-size:14px;line-height:1.45">
+            <span style="width:24px;height:24px;border-radius:50%;background:#16181D;color:#FFFFFF;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex:none">{{st.n}}</span>
+            <span>{{st.text}}</span>
+          </li>
+        </sc-for>
+      </ol>
+    </div>
+
+    <div style="background:#FFF1E6;border-radius:16px;padding:14px 16px">
+      <p class="lbl" style="margin:0 0 4px;color:#9A3412">Koçun notu</p>
+      <p style="margin:0;font-size:14px;line-height:1.45">{{ex.note}}</p>
+    </div>
+  </div>
+
+  <div style="position:sticky;bottom:0;background:#F6F5F2;padding:12px 20px 20px;border-top:1px solid #E6E3DD;display:flex;gap:10px">
+    <sc-if value="{{hasPrev}}"><button class="sbtn" onClick="{{prevEx}}" style="height:52px;border-radius:16px">Önceki</button></sc-if>
+    <button class="pbtn" onClick="{{nextEx}}" style="flex:1">{{nextLabel}}</button>
+  </div>
+</div>
+</sc-if>
+
+<!-- ===================== BESLENME ===================== -->
+<sc-if value="{{scr.meal}}">
+<div style="display:flex;flex-direction:column">
+  <div style="display:flex;align-items:center;gap:12px;padding:16px 20px 8px">
+    <button class="ibtn" aria-label="Geri" onClick="{{back}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button>
+    <div style="flex:1"><p class="lbl" style="margin:0;color:#BE123C">Beslenme</p><p style="margin:2px 0 0;font-weight:600;font-size:15px">Koç: Deniz Arslan</p></div>
+  </div>
+  <div style="padding:8px 20px 28px;display:flex;flex-direction:column;gap:16px">
+    <div class="card" style="padding:16px;display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:baseline;justify-content:space-between">
+        <span class="disp" style="font-size:28px;font-weight:600">{{kcalText}}</span>
+        <span class="muted" style="font-size:14px">/ 2.100 kcal</span>
+      </div>
+      <div style="height:10px;border-radius:5px;background:#EFEDE8;overflow:hidden"><div style="height:10px;border-radius:5px;background:#BE123C;width:{{kcalPct}}%"></div></div>
+      <div style="display:grid;grid-template-columns:repeat(3, minmax(0, 1fr));gap:12px">
+        <sc-for list="{{macros}}" as="m" hint-placeholder-count="3">
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <span class="muted" style="font-size:12px;font-weight:500">{{m.label}}</span>
+            <span style="font-size:15px;font-weight:600">{{m.val}} <span class="muted" style="font-weight:400;font-size:12px">/ {{m.target}} g</span></span>
+            <div style="height:6px;border-radius:3px;background:#EFEDE8;overflow:hidden"><div style="height:6px;border-radius:3px;background:#16181D;width:{{m.pct}}%"></div></div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="card" style="padding:14px 16px;display:flex;gap:12px;align-items:center">
+        <span style="width:26px;height:26px;border-radius:50%;background:#BE123C;color:#FFFFFF;display:flex;align-items:center;justify-content:center;flex:none"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5 10 17l9-10"></path></svg></span>
+        <div style="flex:1"><p class="lbl muted" style="margin:0">Kahvaltı · 08:00</p><p style="margin:2px 0 0;font-weight:600;font-size:15px">Yulaf, yoğurt, muz</p></div>
+        <span class="muted" style="font-size:13px">420 kcal</span>
+      </div>
+      <div class="card" style="padding:14px 16px;display:flex;gap:12px;align-items:center">
+        <span style="width:26px;height:26px;border-radius:50%;background:#BE123C;color:#FFFFFF;display:flex;align-items:center;justify-content:center;flex:none"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5 10 17l9-10"></path></svg></span>
+        <div style="flex:1"><p class="lbl muted" style="margin:0">Ara öğün · 10:30</p><p style="margin:2px 0 0;font-weight:600;font-size:15px">Elma ve 10 badem</p></div>
+        <span class="muted" style="font-size:13px">180 kcal</span>
+      </div>
+
+      <div style="background:#FFFFFF;border:2px solid #BE123C;border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <p class="lbl" style="margin:0;color:#9F1239">Öğle · 13:00 · {{lunchState}}</p>
+          <span class="muted" style="font-size:13px">640 kcal</span>
+        </div>
+        <p class="disp" style="margin:0;font-size:19px;font-weight:600">Izgara tavuk, bulgur pilavı, mevsim salata</p>
+        <ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.6" class="muted">
+          <li>180 g tavuk göğsü</li>
+          <li>1 kase bulgur pilavı (150 g pişmiş)</li>
+          <li>Bol salata, 1 tatlı kaşığı zeytinyağı</li>
+        </ul>
+        <div style="display:flex;gap:8px">
+          <button class="pbtn" onClick="{{eatLunch}}" style="height:44px;border-radius:14px;font-size:14px;flex:1">{{lunchBtn}}</button>
+          <button class="sbtn" onClick="{{photoMeal}}" aria-label="Fotoğrafla kaydet"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg>Fotoğraf</button>
+        </div>
+        <button onClick="{{toggleAlt}}" style="border:none;background:transparent;padding:6px 0;text-align:left;font-weight:600;font-size:14px;color:#9F1239">{{altBtn}}</button>
+        <sc-if value="{{showAlt}}">
+          <div style="background:#FFE4EA;border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.45">Koçunun onayladığı alternatif: Fırında somon (150 g), kinoa, buharda brokoli. Aynı kalori ve proteine yakın.</div>
+        </sc-if>
+      </div>
+
+      <div class="card" style="padding:14px 16px;display:flex;gap:12px;align-items:center">
+        <span style="width:26px;height:26px;border-radius:50%;border:2px solid #BE123C;flex:none"></span>
+        <div style="flex:1"><p class="lbl muted" style="margin:0">Akşam · 19:30</p><p style="margin:2px 0 0;font-weight:600;font-size:15px">Etli kuru fasulye, cacık</p></div>
+        <span class="muted" style="font-size:13px">560 kcal</span>
+      </div>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ===================== SINAV: SORU ÇÖZÜMÜ ===================== -->
+<sc-if value="{{scr.study}}">
+<div style="display:flex;flex-direction:column">
+  <div style="display:flex;align-items:center;gap:12px;padding:16px 20px 8px">
+    <button class="ibtn" aria-label="Geri" onClick="{{back}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button>
+    <div style="flex:1"><p class="lbl" style="margin:0;color:#1D4ED8">Sınav Koçluğu</p><p style="margin:2px 0 0;font-weight:600;font-size:15px">Koç: Elif Kaya</p></div>
+  </div>
+  <div style="padding:8px 20px 28px;display:flex;flex-direction:column;gap:16px">
+    <div>
+      <p class="muted" style="margin:0;font-size:13px">AYT Matematik · Soru çözümü</p>
+      <h1 class="disp" style="margin:4px 0 0;font-size:28px;font-weight:600">Türev: 40 soru</h1>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:14px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h14v16H6a2 2 0 0 0-2 2z"></path><path d="M4 19V5"></path></svg>
+        <span>Kaynak: Türev fasikülü, sayfa 112–120</span>
+      </div>
+    </div>
+    <div style="background:#EAF0FF;border-radius:16px;padding:14px 16px">
+      <p class="lbl" style="margin:0 0 4px;color:#1E3A8A">Koçun notu</p>
+      <p style="margin:0;font-size:14px;line-height:1.45">İlk 10 kolay soruyla ısın. Takıldığın soruyu işaretleyip geç, akşam birlikte bakalım.</p>
+    </div>
+
+    <div class="card" style="padding:20px;display:flex;flex-direction:column;align-items:center;gap:12px">
+      <p class="lbl muted" style="margin:0">Odak bloğu 1 / 2</p>
+      <p class="disp" style="margin:0;font-size:56px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1">{{studyTime}}</p>
+      <div style="display:flex;gap:8px;width:100%">
+        <button class="pbtn" onClick="{{toggleStudy}}" style="flex:1;background:#1D4ED8">{{studyBtn}}</button>
+        <button class="sbtn" onClick="{{resetStudy}}" style="height:52px;border-radius:16px">Sıfırla</button>
+      </div>
+      <p class="muted" style="margin:0;font-size:12px;text-align:center">Ekrandan çıksan da sayaç kaldığı yerden devam eder.</p>
+    </div>
+
+    <div class="card" style="padding:16px;display:flex;flex-direction:column;gap:12px">
+      <h2 class="disp" style="margin:0;font-size:17px;font-weight:600">Sonuçlarını gir</h2>
+      <sc-for list="{{counters}}" as="c" hint-placeholder-count="2">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="flex:1;font-size:15px;font-weight:500">{{c.label}}</span>
+          <button class="ibtn" aria-label="{{c.minusLabel}}" onClick="{{c.minus}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button>
+          <span class="disp" style="width:40px;text-align:center;font-size:20px;font-weight:600;font-variant-numeric:tabular-nums">{{c.val}}</span>
+          <button class="ibtn" aria-label="{{c.plusLabel}}" onClick="{{c.plus}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+        </div>
+      </sc-for>
+      <div style="display:flex;justify-content:space-between;padding-top:10px;border-top:1px solid #E6E3DD;font-size:14px">
+        <span class="muted">Boş: {{bos}}</span>
+        <span style="font-weight:600;color:#1E3A8A">Net: {{net}}</span>
+      </div>
+      <button class="pbtn" onClick="{{sendStudy}}">Sonuçları koça gönder</button>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ===================== GİTAR PRATİĞİ ===================== -->
+<sc-if value="{{scr.guitar}}">
+<div style="display:flex;flex-direction:column">
+  <div style="display:flex;align-items:center;gap:12px;padding:16px 20px 8px">
+    <button class="ibtn" aria-label="Geri" onClick="{{back}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button>
+    <div style="flex:1"><p class="lbl" style="margin:0;color:#0F766E">Gitar Eğitimi</p><p style="margin:2px 0 0;font-weight:600;font-size:15px">Koç: Mert Yıldız</p></div>
+  </div>
+  <div style="padding:8px 20px 28px;display:flex;flex-direction:column;gap:16px">
+    <div style="height:170px;border-radius:18px;background:#15171B;color:#FFFFFF;padding:16px;display:flex;flex-direction:column;justify-content:space-between">
+      <span class="lbl" style="color:#8FE3D6">Ders 7 · Video</span>
+      <div style="display:flex;align-items:center;gap:14px">
+        <button aria-label="Ders videosunu oynat" style="width:56px;height:56px;border-radius:50%;border:none;background:#FFFFFF;color:#15171B;display:flex;align-items:center;justify-content:center;flex:none"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg></button>
+        <div><p class="disp" style="margin:0;font-size:19px;font-weight:600">Ritim kalıpları ve akor geçişi</p><p style="margin:2px 0 0;font-size:13px;color:#B8BCC4">12 dk · Mert Yıldız</p></div>
+      </div>
+    </div>
+
+    <div style="background:#E2F4F1;border-radius:16px;padding:14px 16px">
+      <p class="lbl" style="margin:0 0 4px;color:#115E59">Bu haftanın hedefi</p>
+      <p style="margin:0;font-size:14px;line-height:1.45">Am, C, G, D sırasında her akora 4 vuruş. 70 BPM'de temiz çalınca 80'e çık. G'den D'ye geçerken 3. parmağı erken hazırla.</p>
+    </div>
+
+    <div class="card" style="padding:16px;display:flex;flex-direction:column;gap:16px">
+      <div style="display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));gap:8px">
+        <sc-for list="{{chordChips}}" as="c" hint-placeholder-count="4">
+          <span class="disp" style="height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600;background:{{c.bg}};color:{{c.fg}}">{{c.name}}</span>
+        </sc-for>
+      </div>
+      <div style="display:flex;align-items:center;gap:20px">
+        <div role="img" aria-label="{{chordAria}}" style="position:relative;width:150px;height:170px;flex:none">
+          <div style="position:absolute;left:15px;top:20px;width:120px;height:4px;background:#16181D;border-radius:2px"></div>
+          <div style="position:absolute;left:15px;top:65px;width:120px;height:2px;background:#C9C6BF"></div>
+          <div style="position:absolute;left:15px;top:110px;width:120px;height:2px;background:#C9C6BF"></div>
+          <div style="position:absolute;left:15px;top:155px;width:120px;height:2px;background:#C9C6BF"></div>
+          <div style="position:absolute;left:14px;top:20px;width:2px;height:137px;background:#8A8D93"></div>
+          <div style="position:absolute;left:38px;top:20px;width:2px;height:137px;background:#8A8D93"></div>
+          <div style="position:absolute;left:62px;top:20px;width:2px;height:137px;background:#8A8D93"></div>
+          <div style="position:absolute;left:86px;top:20px;width:2px;height:137px;background:#8A8D93"></div>
+          <div style="position:absolute;left:110px;top:20px;width:2px;height:137px;background:#8A8D93"></div>
+          <div style="position:absolute;left:134px;top:20px;width:2px;height:137px;background:#8A8D93"></div>
+          <sc-for list="{{chordDots}}" as="d" hint-placeholder-count="3">
+            <div style="position:absolute;width:20px;height:20px;border-radius:50%;background:#0F766E;color:#FFFFFF;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;left:{{d.x}}px;top:{{d.y}}px">{{d.f}}</div>
+          </sc-for>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <span class="disp" style="font-size:44px;font-weight:600;line-height:1">{{chord}}</span>
+          <span class="muted" style="font-size:13px">Sıradaki: {{nextChord}}</span>
+          <div style="display:flex;gap:6px">
+            <sc-for list="{{beats}}" as="b" hint-placeholder-count="4"><span style="width:16px;height:16px;border-radius:50%;background:{{b.bg}}"></span></sc-for>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;padding-top:12px;border-top:1px solid #E6E3DD">
+        <button class="ibtn" aria-label="Tempoyu düşür" onClick="{{bpmDown}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button>
+        <div style="flex:1;text-align:center"><span class="disp" style="font-size:24px;font-weight:600">{{bpm}}</span> <span class="muted" style="font-size:13px">BPM</span></div>
+        <button class="ibtn" aria-label="Tempoyu artır" onClick="{{bpmUp}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+      </div>
+      <button class="pbtn" onClick="{{toggleMetro}}" style="background:#0F766E">{{metroBtn}}</button>
+    </div>
+
+    <div class="card" style="padding:16px;display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;justify-content:space-between;font-size:14px"><span style="font-weight:600">Bugünkü pratik</span><span class="muted">6 / 15 dk</span></div>
+      <div style="height:8px;border-radius:4px;background:#EFEDE8;overflow:hidden"><div style="height:8px;width:40%;background:#0F766E;border-radius:4px"></div></div>
+      <button class="sbtn" onClick="{{sendRecording}}" style="width:100%;margin-top:4px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v3"></path></svg>Çalışını kaydet ve koça gönder</button>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ===================== MESAJLAR ===================== -->
+<sc-if value="{{scr.messages}}">
+<div style="padding:20px 20px 28px;display:flex;flex-direction:column;gap:12px">
+  <h1 class="disp" style="margin:0 0 4px;font-size:26px;font-weight:600">Mesajlar</h1>
+  <sc-for list="{{threads}}" as="th" hint-placeholder-count="3">
+    <button onClick="{{th.open}}" class="card" style="padding:14px;display:flex;align-items:center;gap:12px;text-align:left;color:inherit;width:100%">
+      <div style="width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex:none;background:{{th.tint}};color:{{th.ink}}">{{th.initials}}</div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;justify-content:space-between;gap:8px"><span style="font-weight:600;font-size:15px">{{th.coach}}</span><span class="muted" style="font-size:12px">{{th.time}}</span></div>
+        <p class="lbl" style="margin:2px 0 3px;color:{{th.color}}">{{th.name}}</p>
+        <p class="muted" style="margin:0;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{th.last}}</p>
+      </div>
+      <sc-if value="{{th.hasUnread}}"><span style="min-width:22px;height:22px;border-radius:11px;background:{{th.color}};color:#FFFFFF;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 6px">{{th.unread}}</span></sc-if>
+    </button>
+  </sc-for>
+</div>
+</sc-if>
+
+<!-- ===================== SOHBET ===================== -->
+<sc-if value="{{scr.chat}}">
+<div style="display:flex;flex-direction:column;min-height:100%">
+  <div style="display:flex;align-items:center;gap:12px;padding:16px 20px 12px;border-bottom:1px solid #E6E3DD;background:#FFFFFF">
+    <button class="ibtn" aria-label="Geri" onClick="{{chatBack}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button>
+    <div style="flex:1"><p class="lbl" style="margin:0;color:{{chatDom.color}}">{{chatDom.name}}</p><p style="margin:2px 0 0;font-weight:600;font-size:15px">{{chatDom.coach}}</p></div>
+  </div>
+  <div style="flex:1;padding:16px 20px;display:flex;flex-direction:column;gap:10px">
+    <sc-for list="{{chatMsgs}}" as="m" hint-placeholder-count="3">
+      <div style="display:flex;justify-content:{{m.justify}}">
+        <div style="max-width:78%;padding:10px 14px;border-radius:16px;font-size:14px;line-height:1.45;background:{{m.bg}};color:{{m.fg}};border:1px solid {{m.bd}}">{{m.t}}</div>
+      </div>
+    </sc-for>
+  </div>
+  <div style="position:sticky;bottom:0;background:#F6F5F2;padding:10px 16px 18px;display:flex;gap:8px;align-items:center;border-top:1px solid #E6E3DD">
+    <label for="msg" class="sr">Mesaj yaz</label>
+    <input id="msg" value="{{draft}}" onChange="{{onDraft}}" placeholder="Mesaj yaz" style="flex:1;height:44px;border-radius:22px;border:1px solid #D6D3CC;background:#FFFFFF;padding:0 16px;font-size:15px;color:#16181D">
+    <button class="ibtn" aria-label="Gönder" onClick="{{sendMsg}}" style="background:#16181D;color:#FFFFFF;border-color:#16181D"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"></path></svg></button>
+  </div>
+</div>
+</sc-if>
+
+<!-- ===================== İLERLEME ===================== -->
+<sc-if value="{{scr.progress}}">
+<div style="padding:20px 20px 28px;display:flex;flex-direction:column;gap:16px">
+  <h1 class="disp" style="margin:0;font-size:26px;font-weight:600">İlerleme</h1>
+  <div style="display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));gap:4px;background:#EBE9E4;padding:4px;border-radius:14px">
+    <sc-for list="{{progChips}}" as="c" hint-placeholder-count="3">
+      <button onClick="{{c.pick}}" style="height:40px;border-radius:11px;border:none;font-size:14px;font-weight:600;background:{{c.bg}};color:{{c.fg}}">{{c.label}}</button>
+    </sc-for>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:10px">
+    <sc-for list="{{prog.tiles}}" as="t" hint-placeholder-count="2">
+      <div class="card" style="padding:14px">
+        <p class="muted" style="margin:0;font-size:12px;font-weight:500">{{t.label}}</p>
+        <p class="disp" style="margin:6px 0 0;font-size:22px;font-weight:600">{{t.val}}</p>
+        <p style="margin:2px 0 0;font-size:12px;font-weight:600;color:{{prog.ink}}">{{t.sub}}</p>
+      </div>
+    </sc-for>
+  </div>
+  <div class="card" style="padding:16px">
+    <h2 class="disp" style="margin:0 0 4px;font-size:16px;font-weight:600">{{prog.chartTitle}}</h2>
+    <p class="muted" style="margin:0 0 14px;font-size:12px">{{prog.chartSub}}</p>
+    <div style="height:170px;display:flex;align-items:flex-end;gap:10px">
+      <sc-for list="{{prog.bars}}" as="b" hint-placeholder-count="6">
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;height:170px">
+          <span style="font-size:12px;font-weight:600">{{b.v}}</span>
+          <div style="width:100%;border-radius:8px 8px 4px 4px;height:{{b.h}}px;background:{{b.bg}}"></div>
+          <span class="muted" style="font-size:11px">{{b.l}}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  <div style="background:{{prog.tint}};border-radius:16px;padding:14px 16px">
+    <p class="lbl" style="margin:0 0 4px;color:{{prog.ink}}">Koçunun yorumu</p>
+    <p style="margin:0;font-size:14px;line-height:1.45">{{prog.comment}}</p>
+  </div>
+</div>
+</sc-if>
+
+</div>
+
+<!-- ===================== ALT MENÜ ===================== -->
+<sc-if value="{{showNav}}" hint-placeholder-val="{{ true }}">
+<nav aria-label="Ana menü" style="flex:none;background:#FFFFFF;border-top:1px solid #E6E3DD;padding:6px 8px 18px;display:grid;grid-template-columns:repeat(3, minmax(0, 1fr))">
+  <button onClick="{{go.home}}" style="height:56px;border:none;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:11px;font-weight:600;color:{{navC.home}}">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"></path></svg>Koçluklarım
+  </button>
+  <button onClick="{{go.messages}}" style="height:56px;border:none;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:11px;font-weight:600;color:{{navC.messages}}">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"></path></svg>Mesajlar
+  </button>
+  <button onClick="{{go.progress}}" style="height:56px;border:none;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:11px;font-weight:600;color:{{navC.progress}}">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg>İlerleme
+  </button>
+</nav>
+</sc-if>
+
+<!-- Dinlenme sayacı -->
+<sc-if value="{{resting}}">
+<div role="status" style="position:absolute;left:16px;right:16px;bottom:16px;background:#15171B;color:#FFFFFF;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px">
+  <div style="display:flex;align-items:center;justify-content:space-between">
+    <div><p class="lbl" style="margin:0;color:#FDBA8C">Dinlenme</p><p class="disp" style="margin:2px 0 0;font-size:36px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1">{{restText}}</p></div>
+    <div style="display:flex;gap:8px">
+      <button onClick="{{addRest}}" style="height:44px;padding:0 14px;border-radius:14px;border:1px solid #3A3D44;background:transparent;color:#FFFFFF;font-weight:600">+15 sn</button>
+      <button onClick="{{skipRest}}" style="height:44px;padding:0 16px;border-radius:14px;border:none;background:#FFFFFF;color:#15171B;font-weight:600">Atla</button>
+    </div>
+  </div>
+  <div style="height:6px;border-radius:3px;background:#2A2D33;overflow:hidden"><div style="height:6px;border-radius:3px;background:#FDBA8C;width:{{restPct}}%"></div></div>
+</div>
+</sc-if>
+
+<!-- Bildirim -->
+<sc-if value="{{showToast}}">
+<div role="status" style="position:absolute;left:16px;right:16px;top:14px;background:#16181D;color:#FFFFFF;border-radius:14px;padding:12px 16px;font-size:14px;font-weight:500;display:flex;align-items:center;gap:10px">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8FE3D6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5 10 17l9-10"></path></svg>
+  <span>{{toast}}</span>
+</div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+var DOM = {
+  fit: { key: "fit", name: "Fitness", short: "Fitness", coach: "Deniz Arslan", initials: "DA", color: "#C2410C", tint: "#FFF1E6", ink: "#9A3412", accent: "#FFD3B8", base: "#7C2D12" },
+  nutr: { key: "nutr", name: "Beslenme", short: "Beslenme", coach: "Deniz Arslan", initials: "DA", color: "#BE123C", tint: "#FFE4EA", ink: "#9F1239", accent: "#FFC2D0", base: "#881337" },
+  study: { key: "study", name: "Sınav Koçluğu", short: "Sınav", coach: "Elif Kaya", initials: "EK", color: "#1D4ED8", tint: "#EAF0FF", ink: "#1E3A8A", accent: "#C7D6FF", base: "#1E3A8A" },
+  guitar: { key: "guitar", name: "Gitar Eğitimi", short: "Gitar", coach: "Mert Yıldız", initials: "MY", color: "#0F766E", tint: "#E2F4F1", ink: "#115E59", accent: "#A7EDE2", base: "#134E4A" }
+};
+var DKEYS = ["fit", "nutr", "study", "guitar"];
+var CHAT_KEYS = ["fit", "study", "guitar"];
+var CHAT_OF = { fit: "fit", nutr: "fit", study: "study", guitar: "guitar" };
+var CHAT_NAME = { fit: "Fitness ve Beslenme", study: "Sınav Koçluğu", guitar: "Gitar Eğitimi" };
+var TASKS = [
+  { id: "w1", d: "fit", kind: "Antrenman", title: "Üst Vücut A", meta: "5 hareket · 17 set · ~45 dk", screen: "workout" },
+  { id: "m1", d: "nutr", kind: "Öğün", title: "Öğle: Izgara tavuk, bulgur, salata", meta: "640 kcal · 48 g protein", screen: "meal" },
+  { id: "n2", d: "nutr", kind: "Öğün", title: "Akşam: Etli kuru fasulye, cacık", meta: "560 kcal · 19:30" },
+  { id: "h1", d: "nutr", kind: "Alışkanlık", title: "Su", meta: "", counter: true },
+  { id: "h2", d: "fit", kind: "Alışkanlık", title: "10.000 adım", meta: "Şu an 7.420 adım" },
+  { id: "s1", d: "study", kind: "Soru çözümü", title: "Türev: 40 soru", meta: "AYT Matematik · ~60 dk", screen: "study" },
+  { id: "s2", d: "study", kind: "Tekrar", title: "Paragraf: 20 soru", meta: "TYT Türkçe · ~25 dk" },
+  { id: "s3", d: "study", kind: "Video", title: "Limit konu tekrarı", meta: "18 dk" },
+  { id: "g1", d: "guitar", kind: "Pratik", title: "Akor geçişleri: Am, C, G, D", meta: "15 dk · 70 → 80 BPM", screen: "guitar" },
+  { id: "g2", d: "guitar", kind: "Ders", title: "Ders 7: Ritim kalıpları", meta: "Video · 12 dk", screen: "guitar" }
+];
+var DETAIL_DOM = { workout: "fit", meal: "nutr", study: "study", guitar: "guitar" };
+var WEEK = {
+  nutr: ["Menü A · 2.100 kcal", "Menü B · 2.100 kcal", "Menü A · 2.100 kcal", "Menü C · 2.100 kcal", "Menü B · 2.100 kcal", "Serbest öğün günü", "Tartı ve ölçü girişi"],
+  fit: ["Alt Vücut A", "Dinlenme, 30 dk yürüyüş", "Kardiyo 30 dk", "Üst Vücut A", "Alt Vücut B", "Üst Vücut B", "Haftalık check-in formu"],
+  study: ["Limit: 30 soru", "Paragraf ve problem", "Türev konu anlatımı", "Türev: 40 soru", "Birebir görüşme 18:30", "TYT deneme sınavı", "Deneme analizi"],
+  guitar: ["Ders 7 videosu", "Canlı ders 19:00", "Akor pratiği 15 dk", "Akor geçişleri 15 dk", "Ritim kalıbı 1", "Serbest çalışma 20 dk", "Pratik kaydı gönder"]
+};
+var DAYS = ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"];
+var EX = [
+  { name: "Dambıl Göğüs Pres", muscles: ["Göğüs", "Ön omuz", "Triceps"], sets: 4, target: "10 × 20 kg", prev: "10 × 18 kg", rest: 90,
+    steps: ["Bankta sırtüstü uzan, dambıllar göğüs hizasında, ayaklar yerde.", "Nefes vererek kolları yukarı it, dirsekleri tam kilitleme.", "2 saniyede kontrollü indir, göğüs gergin kalsın."],
+    note: "Bu hafta 20 kg. 8 tekrarın altına düşersen son sette 18 kg'a in." },
+  { name: "Tek Kol Dambıl Row", muscles: ["Sırt", "Arka omuz", "Biceps"], sets: 4, target: "10 × 22 kg", prev: "10 × 20 kg", rest: 75,
+    steps: ["Bir diz ve el bankta, sırt düz, bakış yere.", "Dambılı kalçana doğru çek, dirsek gövdeye yakın.", "Kürek kemiğini sıkıp 1 sn bekle, yavaş indir."],
+    note: "Gövdeyi döndürme. Ağırlık değil, sırtın çalışsın." },
+  { name: "Oturarak Omuz Pres", muscles: ["Omuz", "Triceps"], sets: 3, target: "12 × 12 kg", prev: "12 × 12 kg", rest: 75,
+    steps: ["Sırt destekli otur, dambıllar kulak hizasında.", "Başının üstüne doğru it, belini kamburlaştırma.", "Kulak hizasına kadar kontrollü indir."],
+    note: "Bel boşluğu açılıyorsa sırt desteğini biraz dikleştir." },
+  { name: "Lat Pulldown", muscles: ["Sırt", "Biceps"], sets: 3, target: "12 × 45 kg", prev: "12 × 40 kg", rest: 60,
+    steps: ["Barı omuz genişliğinden biraz geniş tut.", "Göğsünü kaldır, barı üst göğsüne çek.", "Kollar tam açılana kadar yavaşça bırak."],
+    note: "Geriye yaslanma; 10-15 derece yeterli." },
+  { name: "Plank", muscles: ["Karın", "Core"], sets: 3, target: "45 sn", prev: "40 sn", rest: 45,
+    steps: ["Dirsekler omuzların altında, vücut düz bir çizgi.", "Karnını ve kalçanı sık, beli düşürme.", "Nefesini tutma, sakin nefes al."],
+    note: "Form bozulursa süreyi bitirmeden bırak, sayılır." }
+];
+var CHORDS = {
+  Am: [[2, 2], [3, 2], [4, 1]],
+  C: [[1, 3], [2, 2], [4, 1]],
+  G: [[0, 3], [1, 2], [5, 3]],
+  D: [[3, 2], [4, 3], [5, 2]]
+};
+var SEQ = ["Am", "C", "G", "D"];
+var MSGS = {
+  fit: [
+    { me: false, t: "4. haftanın programı hazır. Bench'te hedefi 20 kg'a çıkardım." },
+    { me: true, t: "Süper, bugün deniyorum!" },
+    { me: false, t: "Setleri işaretlemeyi unutma, dinlenmeleri uzatmayalım." }
+  ],
+  study: [
+    { me: false, t: "Son denemede türevde 4 yanlış vardı. Bu hafta 40 soruluk set gönderdim." },
+    { me: true, t: "Tamam hocam, akşam sonuçları girerim." }
+  ],
+  guitar: [
+    { me: false, t: "G'den D'ye geçerken 3. parmağı erken hazırla." },
+    { me: false, t: "70 BPM'de temizse 80'e çık, kaydını gönderirsen yorumlarım." }
+  ]
+};
+var PROGRAMS = {
+  fit: { program: "Kas kazanımı programı", week: "Hafta 4 / 12", pct: 33, next: "Pazar: haftalık check-in formu" },
+  nutr: { program: "Kas kazanımı beslenmesi", week: "Hafta 4 / 12", pct: 33, next: "Pazar: tartı ve ölçü girişi" },
+  study: { program: "YKS 2027 hazırlık", week: "Hafta 9 / 30", pct: 30, next: "Cuma 18:30: birebir görüşme" },
+  guitar: { program: "Başlangıçtan orta seviyeye", week: "Ders 7 / 24", pct: 29, next: "Salı 19:00: canlı ders" }
+};
+var THREADS = {
+  fit: { time: "08:12", unread: 1 },
+  study: { time: "Dün", unread: 0 },
+  guitar: { time: "07:40", unread: 2 }
+};
+var PROG = {
+  nutr: {
+    tiles: [{ label: "Protein hedefi", val: "5 / 7 gün", sub: "Geçen hafta 3 / 7" }, { label: "Ortalama kalori", val: "2.060", sub: "Hedef 2.100 kcal" }],
+    chartTitle: "Günlük protein (g)", chartSub: "Bu hafta, hedef 150 g",
+    data: [142, 151, 155, 138, 150, 149], labels: ["Cum", "Cmt", "Paz", "Pzt", "Sal", "Çar"], base: 100, scale: 2.4,
+    comment: "Protein çok daha düzenli. Hafta sonu öğün atlamamaya dikkat edelim."
+  },
+  fit: {
+    tiles: [{ label: "Bu hafta antrenman", val: "3 / 4", sub: "1 gün kaldı" }, { label: "Kilo", val: "76,1 kg", sub: "6 haftada −2,3 kg" }],
+    chartTitle: "Kilo (kg)", chartSub: "Son 6 hafta, haftalık tartı",
+    data: [78.4, 77.9, 77.5, 77.0, 76.6, 76.1], labels: ["H1", "H2", "H3", "H4", "H5", "H6"], base: 75.5, scale: 40,
+    comment: "Düzenli iniyorsun. Protein hedefini tutturduğun haftalarda kuvvet de artıyor."
+  },
+  study: {
+    tiles: [{ label: "Bu hafta çözülen soru", val: "212", sub: "Hedef 300" }, { label: "Çalışma süresi", val: "9 sa 40 dk", sub: "Geçen hafta +1 sa 10 dk" }],
+    chartTitle: "Deneme netleri (TYT)", chartSub: "Son 5 deneme",
+    data: [62, 66, 71, 74, 79], labels: ["D1", "D2", "D3", "D4", "D5"], base: 45, scale: 3.4,
+    comment: "Türkçe netlerin oturdu. Matematikte türev ve limitle 5 net daha kazanabiliriz."
+  },
+  guitar: {
+    tiles: [{ label: "Pratik serisi", val: "12 gün", sub: "En uzun serin" }, { label: "Bu hafta", val: "95 dk", sub: "Hedef 105 dk" }],
+    chartTitle: "Temiz çalınan tempo (BPM)", chartSub: "Am, C, G, D geçişi, haftalık",
+    data: [60, 64, 66, 70, 72, 76], labels: ["H1", "H2", "H3", "H4", "H5", "H6"], base: 50, scale: 4.5,
+    comment: "Geçişlerin hızlandı. Bu hafta 80 BPM'i temiz çalarsan yeni ritme geçiyoruz."
+  }
+};
+var FREQS = ["Her gün", "Hafta içi", "Haftada 3"];
+var TIMES = ["Sabah 08:00", "Öğle 13:00", "Akşam 21:00", "Yok"];
+var SUGGEST = ["10 dk meditasyon", "23:30'da yat", "Ekransız 1 saat"];
+var TAB_SCREENS = ["home", "messages", "progress"];
+
+function pad(n) { return n < 10 ? "0" + n : "" + n; }
+function mmss(s) { return Math.floor(s / 60) + ":" + pad(s % 60); }
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      screen: "home", tab: "home", dom: "fit", banner: true,
+      done: { s3: true }, water: 6,
+      exIndex: 0, sets: {}, resting: false, restLeft: 0, restTotal: 90,
+      angle: "front", slow: false,
+      studyLeft: 1500, studyRun: false, dogru: 0, yanlis: 0,
+      bpm: 70, playing: false, beat: 0,
+      showAlt: false, progTab: "fit",
+      chatId: "fit", chatBack: "messages", draft: "", extra: { fit: [], study: [], guitar: [] },
+      own: [{ id: "u1", name: "20 sayfa kitap oku", freq: "Her gün", time: "Akşam 21:00", streak: 5, done: false }],
+      showForm: false, nName: "", nFreq: "Her gün", nTime: "Akşam 21:00", nShare: true,
+      toast: ""
+    };
+  }
+  componentDidMount() {
+    this.timer = setInterval(() => {
+      var s = this.state, up = {}, any = false;
+      if (s.resting) { any = true; if (s.restLeft <= 1) { up.resting = false; up.restLeft = 0; } else { up.restLeft = s.restLeft - 1; } }
+      if (s.studyRun) { any = true; if (s.studyLeft <= 1) { up.studyRun = false; up.studyLeft = 0; } else { up.studyLeft = s.studyLeft - 1; } }
+      if (any) this.setState(up);
+    }, 1000);
+  }
+  componentWillUnmount() { clearInterval(this.timer); clearInterval(this.metro); clearTimeout(this.toastT); }
+  startMetro(bpm) {
+    clearInterval(this.metro);
+    this.metro = setInterval(() => { this.setState((st) => ({ beat: st.beat + 1 })); }, Math.round(60000 / bpm));
+  }
+  flash(msg) {
+    this.setState({ toast: msg });
+    clearTimeout(this.toastT);
+    this.toastT = setTimeout(() => this.setState({ toast: "" }), 2600);
+  }
+  isDone(id) { return id === "h1" ? this.state.water >= 10 : !!this.state.done[id]; }
+  setDone(id, v) { var d = Object.assign({}, this.state.done); d[id] = v; this.setState({ done: d }); }
+  go(screen) {
+    var up = { screen: screen };
+    if (TAB_SCREENS.indexOf(screen) >= 0) up.tab = screen;
+    if (screen !== "guitar" && this.state.playing) { clearInterval(this.metro); up.playing = false; }
+    this.setState(up);
+  }
+  openDomain(k) { this.go("domain"); this.setState({ dom: k, tab: "home" }); }
+  setsFor(i) { var arr = this.state.sets[i]; return arr ? arr : new Array(EX[i].sets).fill(false); }
+  firstOpenEx() {
+    for (var k = 0; k < EX.length; k++) { if (this.setsFor(k).some(function (x) { return !x; })) return k; }
+    return 0;
+  }
+
+  renderVals() {
+    var s = this.state;
+    var self = this;
+    var scr = {};
+    ["home", "domain", "habits", "workout", "player", "meal", "study", "guitar", "messages", "chat", "progress"].forEach(function (k) { scr[k] = s.screen === k; });
+    var go = {};
+    ["home", "workout", "messages", "progress", "habits"].forEach(function (k) { go[k] = function () { self.go(k); }; });
+    var navC = {};
+    TAB_SCREENS.forEach(function (k) { navC[k] = s.tab === k ? "#16181D" : "#6B6F76"; });
+
+    var doneAll = TASKS.filter(function (t) { return self.isDone(t.id); }).length;
+
+    var taskVals = function (t, D) {
+      var done = self.isDone(t.id);
+      var toggle = function () {
+        if (t.id === "h1") { self.setState({ water: s.water >= 10 ? 6 : 10 }); return; }
+        self.setDone(t.id, !done);
+      };
+      return {
+        kind: t.kind, title: t.title, meta: t.meta, color: D.color, done: done,
+        checkBg: done ? D.color : "#FFFFFF", deco: done ? "line-through" : "none", titleColor: done ? "#5B5F66" : "#16181D",
+        checkLabel: done ? t.title + ": tamamlanmadı olarak işaretle" : t.title + ": tamamlandı olarak işaretle",
+        isCounter: !!t.counter, isPlain: !t.counter, hasOpen: !!t.screen,
+        waterText: "Su: " + s.water + " / 10 bardak", waterPct: Math.min(100, s.water * 10),
+        toggle: toggle, open: t.screen ? function () { self.go(t.screen); } : toggle
+      };
+    };
+
+    // Antrenman
+    var totalDone = 0;
+    var exList = EX.map(function (e, i) {
+      var arr = self.setsFor(i), n = arr.filter(Boolean).length;
+      totalDone += n;
+      var st = n === 0 ? "" : (n === e.sets ? "Bitti" : n + "/" + e.sets);
+      return {
+        num: i + 1, name: e.name, summary: e.sets + " set · " + e.target, muscleText: e.muscles.join(" · "),
+        state: st, stateColor: n === e.sets ? "#0F766E" : "#9A3412",
+        open: function () { self.setState({ screen: "player", exIndex: i }); }
+      };
+    });
+    var startWorkout = function () { self.setState({ screen: "player", exIndex: self.firstOpenEx(), banner: false }); };
+
+    // Ana ekran widget'ları
+    var widgets = DKEYS.map(function (k) {
+      var D = DOM[k], P = PROGRAMS[k];
+      var ts = TASKS.filter(function (t) { return t.d === k; });
+      var dn = ts.filter(function (t) { return self.isDone(t.id); }).length;
+      var w = {
+        name: D.name, coach: D.coach, program: P.program, week: P.week, base: D.base, accent: D.accent,
+        isFit: k === "fit", isNutr: k === "nutr", isStudy: k === "study", isGuitar: k === "guitar",
+        openLabel: D.name + " programının detayını aç",
+        todaySub: dn + " / " + ts.length + " görev tamam",
+        open: function () { self.openDomain(k); },
+        showPlay: true, showCheck: false
+      };
+      if (k === "fit") {
+        w.todayLine = "Bugün: Üst Vücut A · ~45 dk";
+        if (self.isDone("w1")) { w.actLabel = "Antrenman bitti"; w.showPlay = false; w.showCheck = true; w.act = function () { self.go("workout"); }; }
+        else if (totalDone > 0) { w.actLabel = "Kaldığın yerden devam · " + totalDone + "/17 set"; w.act = startWorkout; }
+        else { w.actLabel = "Antrenmanı başlat"; w.act = startWorkout; }
+      } else if (k === "nutr") {
+        if (self.isDone("m1")) {
+          w.todayLine = "Sıradaki: Akşam 19:30 · 560 kcal";
+          w.actLabel = "Akşam öğününü gör"; w.act = function () { self.go("meal"); };
+        } else {
+          w.todayLine = "Sıradaki: Öğle 13:00 · 640 kcal";
+          w.actLabel = "Öğle öğününü aç"; w.act = function () { self.go("meal"); };
+        }
+      } else if (k === "study") {
+        w.todayLine = "Bugün: Türev, 40 soru · ~60 dk";
+        if (self.isDone("s1")) { w.actLabel = "Sonuçlar gönderildi"; w.showPlay = false; w.showCheck = true; w.act = function () { self.go("study"); }; }
+        else if (s.studyRun) { w.actLabel = "Sürüyor · " + mmss(s.studyLeft) + " kaldı"; w.act = function () { self.go("study"); }; }
+        else if (s.studyLeft < 1500) { w.actLabel = "Kaldığın yerden devam · " + mmss(s.studyLeft); w.act = function () { self.go("study"); self.setState({ studyRun: true }); }; }
+        else { w.actLabel = "Çalışmayı başlat"; w.act = function () { self.go("study"); self.setState({ studyRun: true }); }; }
+      } else {
+        w.todayLine = "Bugün: Akor geçişleri · 15 dk";
+        if (self.isDone("g1")) { w.actLabel = "Kayıt gönderildi"; w.showPlay = false; w.showCheck = true; w.act = function () { self.go("guitar"); }; }
+        else { w.actLabel = "Pratiğe başla"; w.act = function () { self.go("guitar"); }; }
+      }
+      return w;
+    });
+
+    // Alan detayı
+    var DD = DOM[s.dom], PP = PROGRAMS[s.dom];
+    var dts = TASKS.filter(function (t) { return t.d === s.dom; });
+    var dg = {
+      total: dts.length,
+      done: dts.filter(function (t) { return self.isDone(t.id); }).length,
+      tasks: dts.map(function (t) { return taskVals(t, DD); })
+    };
+    var dv = {
+      name: DD.name, coach: DD.coach, initials: DD.initials, color: DD.color, tint: DD.tint, ink: DD.ink, accent: DD.accent,
+      program: PP.program, week: PP.week, pct: PP.pct, next: PP.next,
+      isFit: s.dom === "fit", isNutr: s.dom === "nutr", isStudy: s.dom === "study", isGuitar: s.dom === "guitar",
+      chat: function () { self.setState({ screen: "chat", chatId: CHAT_OF[s.dom], chatBack: "domain" }); }
+    };
+    var weekPlan = WEEK[s.dom].map(function (title, i) {
+      var past = i < 3, today = i === 3;
+      return {
+        day: DAYS[i], title: title, done: past, today: today,
+        line: i === 0 ? "transparent" : "#EFEDE8",
+        dayColor: today ? DD.ink : "#5B5F66",
+        textColor: past ? "#5B5F66" : "#16181D",
+        weight: today ? "600" : "400"
+      };
+    });
+
+    // Alışkanlıklar
+    var habitRows = [
+      {
+        name: "Su iç", sub: "Beslenme koçundan · Her gün", streak: "8 gün", srcColor: "#9F1239", dot: "#BE123C",
+        isCounter: true, pct: Math.min(100, s.water * 10), done: s.water >= 10,
+        status: s.water + " / 10 bardak",
+        toggle: function () { self.setState({ water: s.water >= 10 ? 6 : 10 }); }
+      },
+      {
+        name: "10.000 adım", sub: "Fitness koçundan · Her gün", streak: "3 gün", srcColor: "#9A3412", dot: "#C2410C",
+        isCounter: false, pct: 0, done: self.isDone("h2"),
+        status: self.isDone("h2") ? "Tamam" : "7.420 adım",
+        toggle: function () { self.setDone("h2", !self.isDone("h2")); }
+      }
+    ].concat(s.own.map(function (h, idx) {
+      return {
+        name: h.name, sub: "Kendi alışkanlığın · " + h.freq + (h.time !== "Yok" ? " · " + h.time : ""),
+        streak: h.streak > 0 ? h.streak + " gün" : "Yeni", srcColor: "#5B5F66", dot: "#16181D",
+        isCounter: false, pct: 0, done: h.done, status: h.done ? "Tamam" : "Bekliyor",
+        toggle: function () { var own = s.own.slice(); own[idx] = Object.assign({}, h, { done: !h.done }); self.setState({ own: own }); }
+      };
+    }));
+    habitRows.forEach(function (h) {
+      h.checkBg = h.done ? h.dot : "#FFFFFF";
+      h.checkLabel = h.name + (h.done ? ": tamamlanmadı olarak işaretle" : ": tamamlandı olarak işaretle");
+    });
+    var chipSet = function (list, cur, key) {
+      return list.map(function (v) {
+        var sel = cur === v;
+        return { label: v, bg: sel ? "#16181D" : "#FFFFFF", fg: sel ? "#FFFFFF" : "#16181D", bd: sel ? "#16181D" : "#E6E3DD", pick: function () { var o = {}; o[key] = v; self.setState(o); } };
+      });
+    };
+
+    // Oynatıcı
+    var cur = EX[s.exIndex];
+    var curSets = this.setsFor(s.exIndex);
+    var setRows = curSets.map(function (d, j) {
+      return {
+        n: j + 1, target: cur.target, prev: cur.prev, done: d,
+        rowBg: d ? "#FFF1E6" : "transparent", checkBg: d ? "#C2410C" : "#FFFFFF",
+        label: "Set " + (j + 1) + (d ? " yapılmadı olarak işaretle" : " yapıldı olarak işaretle"),
+        toggle: function () {
+          var all = Object.assign({}, s.sets);
+          var arr = self.setsFor(s.exIndex).slice();
+          arr[j] = !arr[j];
+          all[s.exIndex] = arr;
+          var up = { sets: all };
+          if (arr[j]) { up.resting = true; up.restLeft = cur.rest; up.restTotal = cur.rest; } else { up.resting = false; }
+          self.setState(up);
+        }
+      };
+    });
+    var isLast = s.exIndex === EX.length - 1;
+    var finish = function () {
+      var d = Object.assign({}, s.done); d.w1 = true;
+      self.setState({ done: d, screen: "domain", dom: "fit", tab: "home", resting: false });
+      self.flash("Antrenman tamamlandı. Deniz Arslan'a bildirildi.");
+    };
+
+    // Beslenme
+    var lunch = this.isDone("m1");
+    var kcal = 600 + (lunch ? 640 : 0);
+    var macros = [
+      { label: "Protein", val: 28 + (lunch ? 48 : 0), target: 150 },
+      { label: "Karbonhidrat", val: 78 + (lunch ? 62 : 0), target: 230 },
+      { label: "Yağ", val: 21 + (lunch ? 18 : 0), target: 70 }
+    ].map(function (m) { m.pct = Math.round(m.val / m.target * 100); return m; });
+
+    // Sınav
+    var bos = 40 - s.dogru - s.yanlis;
+    var net = (s.dogru - s.yanlis / 4).toFixed(2).replace(".", ",");
+    var counters = [
+      { label: "Doğru", key: "dogru" },
+      { label: "Yanlış", key: "yanlis" }
+    ].map(function (c) {
+      return {
+        label: c.label, val: s[c.key], minusLabel: c.label + " sayısını azalt", plusLabel: c.label + " sayısını artır",
+        minus: function () { var o = {}; o[c.key] = Math.max(0, s[c.key] - 1); self.setState(o); },
+        plus: function () { if (s.dogru + s.yanlis >= 40) return; var o = {}; o[c.key] = s[c.key] + 1; self.setState(o); }
+      };
+    });
+
+    // Gitar
+    var chordIdx = s.playing ? Math.floor(s.beat / 4) % 4 : 0;
+    var chord = SEQ[chordIdx];
+    var beatIdx = s.playing ? s.beat % 4 : -1;
+
+    // Mesajlar
+    var threads = CHAT_KEYS.map(function (k) {
+      var D = DOM[k], all = MSGS[k].concat(s.extra[k]);
+      var last = all[all.length - 1];
+      return {
+        coach: D.coach, name: CHAT_NAME[k], initials: D.initials, color: D.color, tint: D.tint, ink: D.ink,
+        time: THREADS[k].time, unread: THREADS[k].unread, hasUnread: THREADS[k].unread > 0,
+        last: (last.me ? "Sen: " : "") + last.t,
+        open: function () { self.setState({ screen: "chat", tab: "messages", chatId: k, chatBack: "messages" }); }
+      };
+    });
+    var chatMsgs = MSGS[s.chatId].concat(s.extra[s.chatId]).map(function (m) {
+      return { t: m.t, justify: m.me ? "flex-end" : "flex-start", bg: m.me ? "#16181D" : "#FFFFFF", fg: m.me ? "#FFFFFF" : "#16181D", bd: m.me ? "#16181D" : "#E6E3DD" };
+    });
+
+    // İlerleme
+    var P = PROG[s.progTab], PD = DOM[s.progTab];
+    var prog = {
+      tiles: P.tiles, chartTitle: P.chartTitle, chartSub: P.chartSub, comment: P.comment, tint: PD.tint, ink: PD.ink,
+      bars: P.data.map(function (v, i) {
+        return { v: String(v).replace(".", ","), l: P.labels[i], h: Math.round((v - P.base) * P.scale), bg: i === P.data.length - 1 ? PD.color : PD.tint };
+      })
+    };
+    var progChips = DKEYS.map(function (k) {
+      var sel = s.progTab === k;
+      return { label: DOM[k].short, bg: sel ? "#FFFFFF" : "transparent", fg: sel ? DOM[k].ink : "#5B5F66", pick: function () { self.setState({ progTab: k }); } };
+    });
+
+    return {
+      scr: scr, go: go, navC: navC,
+      showNav: TAB_SCREENS.indexOf(s.screen) >= 0,
+      back: function () {
+        if (DETAIL_DOM[s.screen]) { self.go("domain"); self.setState({ dom: DETAIL_DOM[s.screen] }); }
+        else if (s.screen === "domain" || s.screen === "habits") { self.go("home"); }
+        else { self.go(s.tab); }
+      },
+      toast: s.toast, showToast: !!s.toast,
+
+      doneAll: doneAll, totalAll: TASKS.length, donePct: Math.round(doneAll / TASKS.length * 100),
+      widgets: widgets,
+      showBanner: s.banner,
+      hideBanner: function () { self.setState({ banner: false }); },
+      addWater: function () { self.setState({ water: Math.min(10, s.water + 1) }); },
+      invite: function () { self.flash("Koçunun verdiği davet kodunu gir."); },
+
+      dv: dv, dg: dg, weekPlan: weekPlan,
+
+      habitRows: habitRows,
+      habitDone: habitRows.filter(function (h) { return h.done; }).length, habitTotal: habitRows.length,
+      showForm: s.showForm, noForm: !s.showForm,
+      openForm: function () { self.setState({ showForm: true }); },
+      closeForm: function () { self.setState({ showForm: false, nName: "" }); },
+      nName: s.nName, onName: function (e) { self.setState({ nName: e.target.value }); },
+      suggest: SUGGEST.map(function (v) { return { label: v, pick: function () { self.setState({ nName: v }); } }; }),
+      freqChips: chipSet(FREQS, s.nFreq, "nFreq"),
+      timeChips: chipSet(TIMES, s.nTime, "nTime"),
+      nShare: s.nShare, toggleShare: function () { self.setState({ nShare: !s.nShare }); },
+      saveHabit: function () {
+        var name = (s.nName || "").trim();
+        if (!name) { self.flash("Önce alışkanlığa bir ad ver."); return; }
+        var own = s.own.concat([{ id: "u" + (s.own.length + 1), name: name, freq: s.nFreq, time: s.nTime, streak: 0, done: false }]);
+        self.setState({ own: own, showForm: false, nName: "" });
+        self.flash("Alışkanlık eklendi" + (s.nShare ? ", koçların görebilir." : "."));
+      },
+
+      exList: exList,
+      startLabel: totalDone > 0 ? "Kaldığın yerden devam et" : "Antrenmana başla",
+      startWorkout: startWorkout,
+      ex: {
+        name: cur.name, rest: cur.rest, note: cur.note,
+        muscles: cur.muscles.map(function (m) { return { label: m }; }),
+        steps: cur.steps.map(function (t, i) { return { n: i + 1, text: t }; })
+      },
+      exNum: s.exIndex + 1, doneSets: totalDone,
+      segments: EX.map(function (e, i) {
+        var full = self.setsFor(i).every(Boolean);
+        return { bg: i === s.exIndex ? "#FDBA8C" : (full ? "#C2410C" : "#3A3D44") };
+      }),
+      angles: [{ k: "front", label: "Önden" }, { k: "side", label: "Yandan" }].map(function (a) {
+        var sel = s.angle === a.k;
+        return { label: a.label, bg: sel ? "#FFFFFF" : "transparent", fg: sel ? "#15171B" : "#FFFFFF", pick: function () { self.setState({ angle: a.k }); } };
+      }),
+      angleLabel: s.angle === "front" ? "Önden" : "Yandan",
+      speedLabel: s.slow ? "0,5x" : "1x",
+      slowBg: s.slow ? "#FFFFFF" : "transparent", slowFg: s.slow ? "#15171B" : "#FFFFFF",
+      toggleSlow: function () { self.setState({ slow: !s.slow }); },
+      setRows: setRows,
+      hasPrev: s.exIndex > 0,
+      prevEx: function () { self.setState({ exIndex: Math.max(0, s.exIndex - 1), resting: false }); },
+      nextLabel: isLast ? "Antrenmanı bitir" : "Sonraki hareket",
+      nextEx: isLast ? finish : function () { self.setState({ exIndex: s.exIndex + 1, resting: false }); },
+      resting: s.resting && s.screen === "player",
+      restText: mmss(s.restLeft),
+      restPct: s.restTotal ? Math.round(s.restLeft / s.restTotal * 100) : 0,
+      addRest: function () { self.setState({ restLeft: s.restLeft + 15, restTotal: Math.max(s.restTotal, s.restLeft + 15) }); },
+      skipRest: function () { self.setState({ resting: false }); },
+
+      kcalText: kcal.toLocaleString("tr-TR"), kcalPct: Math.round(kcal / 2100 * 100), macros: macros,
+      lunchState: lunch ? "Yendi" : "Sıradaki",
+      lunchBtn: lunch ? "Yendi olarak işaretlendi" : "Yedim",
+      eatLunch: function () { self.setDone("m1", !lunch); if (!lunch) self.flash("Öğle öğünü kaydedildi."); },
+      photoMeal: function () { self.flash("Kamera açılır, fotoğraf koçuna gider."); },
+      showAlt: s.showAlt, altBtn: s.showAlt ? "Alternatifi gizle" : "Alternatif öğün gör",
+      toggleAlt: function () { self.setState({ showAlt: !s.showAlt }); },
+
+      studyTime: mmss(s.studyLeft), studyBtn: s.studyRun ? "Duraklat" : (s.studyLeft < 1500 ? "Devam et" : "Başlat"),
+      toggleStudy: function () { self.setState({ studyRun: !s.studyRun }); },
+      resetStudy: function () { self.setState({ studyRun: false, studyLeft: 1500 }); },
+      counters: counters, bos: bos, net: net,
+      sendStudy: function () {
+        var d = Object.assign({}, s.done); d.s1 = true;
+        self.setState({ done: d, screen: "domain", dom: "study", tab: "home", studyRun: false });
+        self.flash("Sonuçların Elif Kaya'ya gönderildi. Net: " + net);
+      },
+
+      chordChips: SEQ.map(function (c, i) {
+        var on = i === chordIdx;
+        return { name: c, bg: on ? "#0F766E" : "#E2F4F1", fg: on ? "#FFFFFF" : "#115E59" };
+      }),
+      chord: chord, nextChord: SEQ[(chordIdx + 1) % 4],
+      chordAria: chord + " akor şeması",
+      chordDots: CHORDS[chord].map(function (p) { return { x: 15 + p[0] * 24 - 10 + 1, y: 20 + (p[1] - 0.5) * 45 - 10 + 2, f: p[1] }; }),
+      beats: [0, 1, 2, 3].map(function (i) { return { bg: i === beatIdx ? (i === 0 ? "#0F766E" : "#5FB8AC") : "#E6E3DD" }; }),
+      bpm: s.bpm,
+      bpmDown: function () { var b = Math.max(40, s.bpm - 2); self.setState({ bpm: b }); if (s.playing) self.startMetro(b); },
+      bpmUp: function () { var b = Math.min(160, s.bpm + 2); self.setState({ bpm: b }); if (s.playing) self.startMetro(b); },
+      metroBtn: s.playing ? "Metronomu durdur" : "Metronomla çalmaya başla",
+      toggleMetro: function () {
+        if (s.playing) { clearInterval(self.metro); self.setState({ playing: false, beat: 0 }); }
+        else { self.setState({ playing: true, beat: 0 }); self.startMetro(s.bpm); }
+      },
+      sendRecording: function () {
+        var d = Object.assign({}, s.done); d.g1 = true;
+        clearInterval(self.metro);
+        self.setState({ done: d, playing: false, screen: "domain", dom: "guitar", tab: "home" });
+        self.flash("Kaydın Mert Yıldız'a gönderildi.");
+      },
+
+      threads: threads,
+      chatDom: { color: DOM[s.chatId].color, coach: DOM[s.chatId].coach, name: CHAT_NAME[s.chatId] }, chatMsgs: chatMsgs, draft: s.draft,
+      chatBack: function () { self.setState({ screen: s.chatBack }); },
+      onDraft: function (e) { self.setState({ draft: e.target.value }); },
+      sendMsg: function () {
+        var t = (s.draft || "").trim();
+        if (!t) return;
+        var ex = Object.assign({}, s.extra); ex[s.chatId] = ex[s.chatId].concat([{ me: true, t: t }]);
+        self.setState({ extra: ex, draft: "" });
+      },
+
+      prog: prog, progChips: progChips
+    };
+  }
+}
+</script>
+</body>
+</html>
