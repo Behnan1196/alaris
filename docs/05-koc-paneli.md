@@ -13,7 +13,7 @@ Sol menü: **Genel bakış · Danışanlar · Program oluşturucu · Kütüphane
 - **Bugün olanlar**: danışan etkinlik akışı (antrenman bitti, öğün fotoğrafı yükledi, seri ulaştı, ...).
 - **Bu hafta uyum**: danışan başına tamamlanan / planlanan görev yüzdesi.
 
-**Uyum (adherence)** = haftada tamamlanan görev / planlanan görev. Alışkanlıklar dahil mi? [AÇIK SORU]
+**Uyum (adherence)** = haftada tamamlanan / planlanan (görevler + koçun atadığı alışkanlıklar). Koç, kendi atadığı alışkanlıkları takip eder ve bunlar uyuma dahildir; danışanın kendi alışkanlıkları uyuma girmez. [KARAR]
 
 ## 5.2 Danışanlar
 

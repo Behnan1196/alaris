@@ -16,6 +16,6 @@ Durum: **öneri** [VARSAYIM], 26 Kasım 2026. Onaylanınca `karar-gunlugu.md` do
 
 ## Kilometre taşlarından önce cevaplanması iyi olanlar
 
-- 1 öncesi: alan başına program mı (açık soru 4), uyuma alışkanlık dahil mi (6), Supabase bölgesi ve KVKK (1).
+- 1 öncesi: Supabase bölgesi ve KVKK (açık soru 1). (Alan başına program ve uyum kararları 26 Kasım 2026 alındı.)
 - 3 öncesi: hazır hareket kütüphanesi mi (7), besin veritabanı gerekli mi (8).
 - 8 öncesi: ödeme sağlayıcısı ve fiyat (16, 17).

@@ -18,3 +18,5 @@ Yeni kararı en alta, tarihiyle ekle.
 | 2026-11-26 | Teknik yığın: Next.js (koç paneli), Expo / React Native (danışan uygulaması, ileride EAS ile derleme), Supabase (arka uç). |
 | 2026-11-26 | Beslenme alanının rengi yeşil (`#4D7C0F`). |
 | 2026-11-26 | Kod deposu GitHub'da: `Behnan1196/alaris`. Tek depo (npm workspaces): `apps/web`, `apps/mobile`, `packages/shared`, `supabase/`. |
+| 2026-11-26 | Program alan başına: aynı koçtan iki alan alan danışana her alan için ayrı program gider; builder alanları birlikte gösterir. |
+| 2026-11-26 | Uyum = tamamlanan / planlanan (görevler + koçun atadığı alışkanlıklar). Koç kendi atadığı alışkanlıkları takip eder; danışanın kendi alışkanlıkları uyuma girmez. |

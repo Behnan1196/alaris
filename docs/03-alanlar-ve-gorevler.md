@@ -54,4 +54,4 @@ Program, bir danışana bir veya daha fazla hafta boyunca verilen görevler ve a
 - Adı, süresi (ör. 12 hafta), başlangıç tarihi, tekrar biçimi (yalnızca 1 hafta / 4 hafta tekrarla / program bitene kadar) vardır.
 - Şablon olarak kaydedilip başka danışanlara gönderilebilir.
 - Bir danışanın bir alanda aynı anda tek aktif programı olur. [VARSAYIM]
-- Aynı koçtan iki alan alan danışana tek program mı, alan başına program mı gider? Mockup'ta builder tek takvimde alan filtresiyle çalışıyor; danışan tarafında ise her alanın kendi program adı ve haftası var. [AÇIK SORU] Önerim: alan başına program, builder'da birlikte gösterim.
+- Aynı koçtan iki alan alan danışana **alan başına ayrı program** gider (her programın kendi adı ve haftası). Program oluşturucu aynı danışanın alanlarını tek takvimde, alan filtresiyle birlikte gösterir. [KARAR]

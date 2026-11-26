@@ -9,9 +9,7 @@ Cevaplanınca soruyu buradan kaldır, kararı `karar-gunlugu.md` dosyasına ve i
 
 ## Ürün
 
-4. Aynı koçtan iki alan alan danışana tek program mı, alan başına ayrı program mı? (Öneri: alan başına program, builder'da birlikte gösterim.)
 5. Danışan başına koçluk sayısı sınırı olacak mı?
-6. Uyum hesabına alışkanlıklar dahil mi?
 7. Hazır hareket kütüphanesiyle mi başlanacak, yoksa koçlar kendi videolarını mı yükleyecek? Hazır kütüphanenin kaynağı?
 8. Besin veritabanı gerekli mi (koç öğünleri elle mi giriyor, besin arayıp kalori mi hesaplanıyor)?
 9. Aynı danışanın iki koçu da ölçüm isterse: tek ölçüm kaydı ortak mı kullanılır (rızayla)?
