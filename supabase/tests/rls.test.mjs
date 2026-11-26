@@ -335,3 +335,17 @@ test("mesajlar: okundu işaretleme yalnız karşı tarafın mesajlarını etkile
   assert.equal(unreadForDeniz.length, 1);
   await rejects(as(zehra, `select mark_thread_read($1)`, [threadId]), /erişimin yok/);
 });
+
+test("cihaz kayıtları: herkes yalnız kendininkini görür; bildirim tetikleyicisi işlemi bozmaz", async () => {
+  await as(can, `insert into push_tokens (token, user_id, platform) values ('ExponentPushToken[can]', $1, 'ios')`, [can]);
+  await rejects(
+    as(burak, `insert into push_tokens (token, user_id, platform) values ('ExponentPushToken[x]', $1, 'ios')`, [can]),
+    /row-level security/,
+  );
+  assert.equal((await as(deniz, `select * from push_tokens`)).length, 0);
+  assert.equal((await as(can, `select * from push_tokens`)).length, 1);
+  await rejects(as(can, `select * from notification_log`), /permission denied/);
+  // pg_net olmasa da mesaj ve program gönderme çalışır
+  const [{ id: threadId }] = await as(can, `select id from threads where coach_id = $1`, [deniz]);
+  await as(deniz, `insert into messages (thread_id, sender_id, body) values ($1, $2, 'bildirim testi')`, [threadId, deniz]);
+});

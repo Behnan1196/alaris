@@ -20,7 +20,7 @@ import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { useAuth } from '@/lib/auth';
 import { loadHabits, type HabitView } from '@/lib/habits';
-import { syncHabitReminders } from '@/lib/notifications';
+import { syncHabitReminders, unregisterPushToken } from '@/lib/notifications';
 import { supabase } from '@/lib/supabase';
 
 type Widget = {
@@ -223,7 +223,7 @@ export default function KocluklarimScreen() {
         )}
       </Pressable>
 
-      <Pressable onPress={() => supabase.auth.signOut()}>
+      <Pressable onPress={() => unregisterPushToken().finally(() => supabase.auth.signOut())}>
         <ThemedText type="small" themeColor="textSecondary" style={styles.signOut}>
           Çıkış yap
         </ThemedText>

@@ -465,6 +465,11 @@
     // },
   },
 
+  "functions": {
+    // Veritabanı tetikleyicisinden çağrılır; olayı kendisi doğrular (bkz. functions/notify).
+    "notify": { "verify_jwt": false }
+  },
+
   "analytics": {
     "enabled": true,
     "port": 54327,

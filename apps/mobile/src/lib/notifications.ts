@@ -1,8 +1,11 @@
 import * as Notifications from 'expo-notifications';
 import { AndroidImportance } from 'expo-notifications';
+import Constants from 'expo-constants';
+import * as Device from 'expo-device';
 import { Platform } from 'react-native';
 
 import type { HabitView } from './habits';
+import { supabase } from './supabase';
 
 // Uygulama açıkken gelen bildirim de gösterilsin.
 Notifications.setNotificationHandler({
@@ -73,5 +76,38 @@ export async function syncHabitReminders(habits: HabitView[]) {
   } catch (e) {
     // Bildirimler desteklenmiyorsa (ör. bazı Expo Go sürümleri) uygulama çalışmaya devam etsin.
     console.warn('Hatırlatmalar zamanlanamadı', e);
+  }
+}
+
+/**
+ * Bu cihazın Expo push kaydını alır ve kullanıcıya bağlar. Simülatörde, web'de ya da
+ * izin verilmediyse sessizce vazgeçer.
+ */
+export async function registerPushToken(userId: string) {
+  try {
+    if (Platform.OS === 'web' || !Device.isDevice) return;
+    if (!(await ensurePermission())) return;
+    const projectId = Constants.expoConfig?.extra?.eas?.projectId as string | undefined;
+    if (!projectId) return;
+    const { data: token } = await Notifications.getExpoPushTokenAsync({ projectId });
+    await supabase.from('push_tokens').upsert(
+      { token, user_id: userId, platform: Platform.OS === 'ios' ? 'ios' : 'android', updated_at: new Date().toISOString() },
+      { onConflict: 'token' },
+    );
+  } catch (e) {
+    console.warn('Bildirim kaydı alınamadı', e);
+  }
+}
+
+/** Çıkışta bu cihazın kaydını sil (başka kullanıcıya bildirim gitmesin). */
+export async function unregisterPushToken() {
+  try {
+    if (Platform.OS === 'web' || !Device.isDevice) return;
+    const projectId = Constants.expoConfig?.extra?.eas?.projectId as string | undefined;
+    if (!projectId) return;
+    const { data: token } = await Notifications.getExpoPushTokenAsync({ projectId });
+    await supabase.from('push_tokens').delete().eq('token', token);
+  } catch {
+    // önemsiz
   }
 }
