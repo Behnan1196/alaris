@@ -17,6 +17,11 @@ function RootStack() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="(auth)" />
+      <Stack.Screen name="gorev/[id]" options={{ headerShown: true, headerBackTitle: 'Geri' }} />
+      <Stack.Screen
+        name="aliskanliklar"
+        options={{ headerShown: true, title: 'Alışkanlıklarım', headerBackTitle: 'Geri' }}
+      />
       <Stack.Screen
         name="koc-ekle"
         options={{ presentation: 'modal', headerShown: true, title: 'Koç ekle' }}

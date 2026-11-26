@@ -54,3 +54,12 @@ Widget'ın kenarına / başlığına dokununca açılır:
 - Koçluğu bitirme / koçtan ayrılma.
 - Çevrimdışı kullanım (spor salonunda zayıf bağlantı). [VARSAYIM: antrenman ekranı çevrimdışı çalışmalı]
 - Sağlık uygulamalarıyla bağlantı (adım sayısı: Apple Health / Google Fit). [SONRA]
+
+## Uygulama durumu (26 Kasım 2026)
+
+İlk sürümde yapılanlar [VARSAYIM: ayrıntılar sonra iyileştirilecek]:
+- Koçluklarım kartında bugünün görevleri ve durumu (Başla / Devam et / Tamamlandı); göreve dokununca görev ekranı açılır.
+- Antrenman: özet → hareket hareket ilerleme, set tablosu (Set / Hedef / Önceki / Yap), kilo ve tekrar girişi, dinlenme sayacı (+15 sn, Atla), isteğe bağlı zorluk puanı (1-10). Kaldığı yer kaydedilir. Video ve "Nasıl yapılır" adımları yok.
+- Beslenme: kalori ve makro çubukları (makrolar yenen kaloriyle orantılı yaklaşık), öğünleri "Yedim" ile işaretleme, su sayacı. Fotoğraf ve alternatif öğün yok.
+- Ölçüm: seçilen ölçüleri girme, son değer gösterimi. Fotoğraf yok.
+- Alışkanlıklarım: ana ekranda bugünün alışkanlıkları (sayaçlı veya tek dokunuş), seri, "haftada 3" için haftalık sayaç; ayrı ekranda yeni alışkanlık (öneriler, sıklık, hedef, hatırlatma saati, "Koçlarım görebilsin"). Hatırlatma bildirimi yok.

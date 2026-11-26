@@ -157,3 +157,31 @@ export function programDay(startDate: string, totalWeeks: number, today = new Da
   if (week > totalWeeks) return null;
   return { week, dayOfWeek: dayIndex(t) };
 }
+
+/** Yerel tarih "YYYY-MM-DD" (Postgres date sütunları için). */
+export function localDate(d = new Date()) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+/** Alışkanlık bugün gösterilmeli mi? (haftada 3: her gün gösterilir, hedef haftalık sayılır) */
+export function habitDueOn(frequency: HabitFrequency, d = new Date()) {
+  if (frequency === "weekdays") {
+    const day = d.getDay();
+    return day >= 1 && day <= 5;
+  }
+  return true;
+}
+
+/** Workout ilerleme kaydı (task_instances.progress). */
+export interface WorkoutProgress {
+  exercise_index: number;
+  /** done[exerciseIndex][setIndex] = { kg, reps } */
+  done: Record<string, Record<string, { kg: number | null; reps: number | null }>>;
+  rpe?: number;
+}
+
+/** Beslenme ilerleme kaydı. */
+export interface MealProgress {
+  eaten: number[]; // öğün indeksleri
+  water?: number; // bardak
+}

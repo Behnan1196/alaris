@@ -2,6 +2,7 @@ import {
   DOMAINS,
   TASK_TYPE_LABELS,
   activeWeeks,
+  localDate,
   programDay,
   type DomainKey,
   type ProgramRepeat,
@@ -12,11 +13,13 @@ import { useCallback, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
 import { Message } from '@/components/form';
+import { HabitList, withValue } from '@/components/habit-list';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { useAuth } from '@/lib/auth';
+import { loadHabits, type HabitView } from '@/lib/habits';
 import { supabase } from '@/lib/supabase';
 
 type Widget = {
@@ -27,7 +30,7 @@ type Widget = {
   week: number | null;
   weeks: number | null;
   startsLater: string | null;
-  today: { id: string; type: string; title: string }[];
+  today: { id: string; type: string; title: string; status: string | null }[];
 };
 
 const dateFmt = new Intl.DateTimeFormat('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' });
@@ -45,11 +48,12 @@ export default function KocluklarimScreen() {
   const [name, setName] = useState('');
   const [widgets, setWidgets] = useState<Widget[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [habits, setHabits] = useState<HabitView[]>([]);
 
   const load = useCallback(async () => {
     const uid = session?.user.id;
     if (!uid) return;
-    const [profile, coachings] = await Promise.all([
+    const [profile, coachings, instances] = await Promise.all([
       supabase.from('profiles').select('full_name').eq('id', uid).single(),
       supabase
         .from('coachings')
@@ -61,7 +65,14 @@ export default function KocluklarimScreen() {
         )
         .eq('client_id', uid)
         .neq('status', 'ended'),
+      supabase
+        .from('task_instances')
+        .select('program_task_id, status')
+        .eq('client_id', uid)
+        .eq('date', localDate()),
     ]);
+    loadHabits(uid).then(setHabits).catch((e: Error) => setError(e.message));
+    const statusOf = new Map((instances.data ?? []).map((i) => [i.program_task_id, i.status]));
     if (coachings.error) return setError(coachings.error.message);
     setName(profile.data?.full_name?.split(' ')[0] ?? '');
 
@@ -76,7 +87,7 @@ export default function KocluklarimScreen() {
           ? program!.program_tasks
               .filter((t) => t.week_no === 1 && t.day_of_week === pos.dayOfWeek)
               .sort((a, b) => a.sort_order - b.sort_order)
-              .map((t) => ({ id: t.id, type: t.task_type_key, title: t.title }))
+              .map((t) => ({ id: t.id, type: t.task_type_key, title: t.title, status: statusOf.get(t.id) ?? null }))
           : [];
         const startsLater =
           program?.start_date && new Date(program.start_date + 'T00:00:00') > new Date()
@@ -160,18 +171,45 @@ export default function KocluklarimScreen() {
                   Bugün
                 </ThemedText>
                 {w.today.map((t) => (
-                  <View key={t.id} style={styles.todayRow}>
-                    <ThemedText type="small" style={styles.widgetMuted}>
-                      {TASK_TYPE_LABELS[t.type as TaskTypeKey] ?? t.type}
-                    </ThemedText>
-                    <ThemedText style={styles.todayTitle}>{t.title}</ThemedText>
-                  </View>
+                  <Pressable
+                    key={t.id}
+                    onPress={() => router.push({ pathname: '/gorev/[id]', params: { id: t.id } })}
+                    style={({ pressed }) => [styles.todayRow, pressed && { opacity: 0.7 }]}>
+                    <View style={{ flex: 1 }}>
+                      <ThemedText type="small" style={styles.widgetMuted}>
+                        {TASK_TYPE_LABELS[t.type as TaskTypeKey] ?? t.type}
+                      </ThemedText>
+                      <ThemedText style={styles.todayTitle}>{t.title}</ThemedText>
+                    </View>
+                    <View style={styles.action}>
+                      <ThemedText type="smallBold" style={{ color: '#111' }}>
+                        {t.status === 'done' ? '✓ Tamamlandı' : t.status === 'in_progress' ? 'Devam et' : 'Başla'}
+                      </ThemedText>
+                    </View>
+                  </Pressable>
                 ))}
               </View>
             )}
           </View>
         );
       })}
+
+      <ThemedView type="backgroundElement" style={styles.habits}>
+        <View style={styles.habitsHead}>
+          <ThemedText type="smallBold">Alışkanlıklarım</ThemedText>
+          <ThemedText type="small" themeColor="textSecondary">
+            Bugün {habits.filter((h) => h.due && h.doneToday).length} / {habits.filter((h) => h.due).length} tamam
+          </ThemedText>
+        </View>
+        <HabitList
+          habits={habits}
+          onChanged={(id, v) => setHabits((hs) => withValue(hs, id, v))}
+          onError={setError}
+        />
+        <Pressable onPress={() => router.push('/aliskanliklar')}>
+          <ThemedText type="linkPrimary">Alışkanlıkları yönet ve yeni ekle</ThemedText>
+        </Pressable>
+      </ThemedView>
 
       <Pressable onPress={() => router.push('/koc-ekle')}>
         {({ pressed }) => (
@@ -197,7 +235,17 @@ const styles = StyleSheet.create({
   widgetTitle: { color: '#fff', fontSize: 22, lineHeight: 28, fontWeight: '700' },
   widgetMuted: { color: 'rgba(255,255,255,0.85)' },
   todayList: { marginTop: Spacing.two, gap: Spacing.one },
-  todayRow: { backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: Spacing.two, padding: Spacing.two },
+  todayRow: {
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    borderRadius: Spacing.two,
+    padding: Spacing.two,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.two,
+  },
+  action: { backgroundColor: '#fff', borderRadius: 999, paddingHorizontal: 12, paddingVertical: 4 },
+  habits: { borderRadius: Spacing.three, padding: Spacing.three, gap: Spacing.two },
+  habitsHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' },
   todayTitle: { color: '#fff', fontWeight: '600' },
   addCoach: { borderRadius: Spacing.three, padding: Spacing.three, alignItems: 'center' },
   signOut: { textAlign: 'center', marginTop: Spacing.three },
