@@ -16,6 +16,7 @@ await db.exec(`
   create role anon nologin;
   create role authenticated nologin;
   create role service_role nologin bypassrls;
+  create publication supabase_realtime;
   grant usage on schema public to anon, authenticated, service_role;
   create schema auth;
   grant usage on schema auth to anon, authenticated;
@@ -322,4 +323,15 @@ test("koç olma: yalnız etkin alanlar", async () => {
   await as(burak, `select become_coach('PT', array['fitness'])`);
   const d = await as(burak, `select domain_key from coach_domains where coach_id = $1`, [burak]);
   assert.deepEqual(d.map((r) => r.domain_key), ["fitness"]);
+});
+
+test("mesajlar: okundu işaretleme yalnız karşı tarafın mesajlarını etkiler", async () => {
+  const [{ id: threadId }] = await as(can, `select id from threads where coach_id = $1`, [deniz]);
+  await as(deniz, `insert into messages (thread_id, sender_id, body) values ($1, $2, 'Bugün nasılsın?')`, [threadId, deniz]);
+  await as(can, `insert into messages (thread_id, sender_id, body) values ($1, $2, 'İyiyim')`, [threadId, can]);
+  const [{ mark_thread_read: n }] = await as(can, `select mark_thread_read($1)`, [threadId]);
+  assert.equal(n, 1);
+  const unreadForDeniz = await as(deniz, `select id from messages where read_at is null and sender_id <> $1`, [deniz]);
+  assert.equal(unreadForDeniz.length, 1);
+  await rejects(as(zehra, `select mark_thread_read($1)`, [threadId]), /erişimin yok/);
 });

@@ -74,6 +74,12 @@ async function Content({ params }: { params: PageProps<"/panel/danisan/[coaching
     supabase.from("coaching_notes").select("body").eq("coaching_id", coaching.id).maybeSingle(),
   ]);
   const week = weekMap.get(coaching.id)!;
+  const { data: thread } = await supabase
+    .from("threads")
+    .select("id")
+    .eq("coach_id", userId)
+    .eq("client_id", coaching.client_id)
+    .maybeSingle();
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-6 py-10">
@@ -81,9 +87,17 @@ async function Content({ params }: { params: PageProps<"/panel/danisan/[coaching
         <Link href="/panel" className="text-sm text-zinc-500 underline">
           ← Danışanlar
         </Link>
-        <h1 className="mt-2 text-2xl font-semibold tracking-tight">
-          {coaching.client?.full_name || "İsimsiz danışan"}
-        </h1>
+        <div className="mt-2 flex items-center justify-between gap-4">
+          <h1 className="text-2xl font-semibold tracking-tight">{coaching.client?.full_name || "İsimsiz danışan"}</h1>
+          {thread && (
+            <Link
+              href={`/panel/mesajlar?t=${thread.id}`}
+              className="rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-sm font-medium hover:bg-zinc-50"
+            >
+              Mesaj gönder
+            </Link>
+          )}
+        </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">

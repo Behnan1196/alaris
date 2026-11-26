@@ -11,6 +11,7 @@ import { Suspense, type ReactNode } from "react";
 import { DomainTag } from "@/components/domain-tag";
 import { Card } from "@/components/ui";
 import { requireCoach } from "@/lib/coach";
+import { loadThreads } from "@/lib/messages";
 import { loadWeek, pct } from "@/lib/tracking";
 import { signOut } from "../auth-actions";
 import { InviteForm } from "./invite-form";
@@ -67,7 +68,8 @@ async function Content() {
   const open = (coachings ?? []).filter((c) => c.status !== "ended");
   const ids = open.map((c) => c.id);
   const nameOf = new Map(open.map((c) => [c.id, c.client?.full_name || "İsimsiz"]));
-  const week = await loadWeek(supabase, ids);
+  const [week, threads] = await Promise.all([loadWeek(supabase, ids), loadThreads(supabase, userId)]);
+  const unreadTotal = threads.reduce((n, t) => n + t.unread, 0);
 
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0);
@@ -94,7 +96,16 @@ async function Content() {
   ]);
 
   // İlgilenmen gerekenler
-  const attention: Attention[] = [];
+  const attention: Attention[] = threads
+    .filter((t) => t.unread > 0)
+    .map((t) => ({
+      key: `${t.id}:unread`,
+      client: t.otherName,
+      text: `${t.unread} okunmamış mesaj`,
+      href: `/panel/mesajlar?t=${t.id}`,
+      action: "Mesaja yanıt ver",
+      tone: "red" as const,
+    }));
   const today = new Date();
   for (const c of open) {
     const client = nameOf.get(c.id)!;
@@ -179,9 +190,15 @@ async function Content() {
             </Link>
           </div>
         </div>
+        <div className="flex items-center gap-4">
+          <Link href="/panel/mesajlar" className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-medium hover:bg-zinc-50">
+            Mesajlar
+            {unreadTotal > 0 && <span className="ml-1.5 rounded-full bg-red-600 px-1.5 text-xs text-white">{unreadTotal}</span>}
+          </Link>
         <form action={signOut}>
           <button className="text-sm text-zinc-600 underline">Çıkış yap</button>
         </form>
+        </div>
       </header>
 
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">

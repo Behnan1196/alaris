@@ -1109,6 +1109,7 @@ export type Database = {
         }[]
       }
       create_invite: { Args: { p_domain_keys: string[] }; Returns: string }
+      mark_thread_read: { Args: { p_thread_id: string }; Returns: number }
       invite_preview: {
         Args: { p_code: string }
         Returns: {
