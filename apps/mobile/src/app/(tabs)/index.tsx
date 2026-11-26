@@ -20,6 +20,7 @@ import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { useAuth } from '@/lib/auth';
 import { loadHabits, type HabitView } from '@/lib/habits';
+import { syncHabitReminders } from '@/lib/notifications';
 import { supabase } from '@/lib/supabase';
 
 type Widget = {
@@ -71,7 +72,10 @@ export default function KocluklarimScreen() {
         .eq('client_id', uid)
         .eq('date', localDate()),
     ]);
-    loadHabits(uid).then(setHabits).catch((e: Error) => setError(e.message));
+    loadHabits(uid).then((hs) => {
+      setHabits(hs);
+      syncHabitReminders(hs);
+    }).catch((e: Error) => setError(e.message));
     const statusOf = new Map((instances.data ?? []).map((i) => [i.program_task_id, i.status]));
     if (coachings.error) return setError(coachings.error.message);
     setName(profile.data?.full_name?.split(' ')[0] ?? '');

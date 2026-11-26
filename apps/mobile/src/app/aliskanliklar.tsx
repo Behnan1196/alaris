@@ -11,6 +11,7 @@ import { ThemedText } from '@/components/themed-text';
 import { Spacing } from '@/constants/theme';
 import { useAuth } from '@/lib/auth';
 import { loadHabits, type HabitView } from '@/lib/habits';
+import { syncHabitReminders } from '@/lib/notifications';
 import { supabase } from '@/lib/supabase';
 
 const ACCENT = '#18181B';
@@ -38,7 +39,10 @@ export default function AliskanliklarScreen() {
   const [busy, setBusy] = useState(false);
 
   const load = useCallback(() => {
-    if (uid) loadHabits(uid).then(setHabits).catch((e: Error) => setError(e.message));
+    if (uid) loadHabits(uid).then((hs) => {
+      setHabits(hs);
+      syncHabitReminders(hs);
+    }).catch((e: Error) => setError(e.message));
   }, [uid]);
   useFocusEffect(load);
 
@@ -130,7 +134,7 @@ export default function AliskanliklarScreen() {
             </View>
           </View>
           <ThemedText type="small" themeColor="textSecondary">
-            Hatırlatma bildirimleri 6. adımda etkinleşecek.
+            Hatırlatma seçersen telefonun bu saatte bildirim gösterir.
           </ThemedText>
         </Panel>
       ) : (
