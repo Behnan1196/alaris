@@ -29,6 +29,16 @@ await db.exec(`
     select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid
   $$;
   grant execute on function auth.uid() to anon, authenticated;
+  create schema storage;
+  grant usage on schema storage to anon, authenticated;
+  create table storage.buckets (id text primary key, name text, public boolean);
+  create table storage.objects (id uuid primary key default gen_random_uuid(), bucket_id text, name text, owner uuid);
+  alter table storage.objects enable row level security;
+  grant select, insert, update, delete on storage.objects to authenticated;
+  create function storage.foldername(name text) returns text[] language sql immutable as $$
+    select (string_to_array(name, '/'))[1:array_length(string_to_array(name, '/'), 1) - 1]
+  $$;
+  grant execute on function storage.foldername(text) to authenticated;
 `);
 
 const migrations = readdirSync(resolve(supabaseDir, "migrations"))
@@ -348,4 +358,34 @@ test("cihaz kayıtları: herkes yalnız kendininkini görür; bildirim tetikleyi
   // pg_net olmasa da mesaj ve program gönderme çalışır
   const [{ id: threadId }] = await as(can, `select id from threads where coach_id = $1`, [deniz]);
   await as(deniz, `insert into messages (thread_id, sender_id, body) values ($1, $2, 'bildirim testi')`, [threadId, deniz]);
+});
+
+test("medya: fotoğraf yolları ve koçlar arası görünürlük", async () => {
+  const p1 = `${can}/${canDenizCoaching}/a.jpg`;
+  await as(can, `insert into storage.objects (bucket_id, name) values ('media', $1)`, [p1]);
+  // Başkasının klasörüne ya da ait olmadığı koçluğa yazamaz
+  await rejects(as(burak, `insert into storage.objects (bucket_id, name) values ('media', $1)`, [`${can}/self/x.jpg`]), /row-level security/);
+  await rejects(as(burak, `insert into storage.objects (bucket_id, name) values ('media', $1)`, [`${burak}/${canDenizCoaching}/x.jpg`]), /row-level security/);
+  await as(can, `insert into photos (client_id, coaching_id, kind, path) values ($1, $2, 'meal', $3)`, [can, canDenizCoaching, p1]);
+  await as(can, `insert into storage.objects (bucket_id, name) values ('media', $1)`, [`${can}/self/b.jpg`]);
+
+  assert.equal((await as(deniz, `select * from storage.objects where name = $1`, [p1])).length, 1);
+  assert.equal((await as(zehra, `select * from storage.objects where name = $1`, [p1])).length, 0);
+  assert.equal((await as(deniz, `select * from storage.objects where name like '%/self/%'`)).length, 0);
+  assert.equal((await as(deniz, `select * from photos`)).length, 1);
+  assert.equal((await as(zehra, `select * from photos`)).length, 0);
+
+  // Hareket videoları: koç kendi klasörüne yazar, danışanı okur, başkası okuyamaz
+  const v = `exercises/${deniz}/squat.mp4`;
+  await as(deniz, `insert into storage.objects (bucket_id, name) values ('media', $1)`, [v]);
+  await rejects(as(zehra, `insert into storage.objects (bucket_id, name) values ('media', $1)`, [`exercises/${deniz}/z.mp4`]), /row-level security/);
+  assert.equal((await as(can, `select * from storage.objects where name = $1`, [v])).length, 1);
+  assert.equal((await as(burak, `select * from storage.objects where name = $1`, [v])).length, 0);
+});
+
+test("ilerleme yorumu: koç yazar, danışan okur, diğer koç göremez", async () => {
+  await as(deniz, `insert into progress_comments (coaching_id, domain_key, body) values ($1, 'fitness', 'Harika gidiyorsun')`, [canDenizCoaching]);
+  assert.equal((await as(can, `select body from progress_comments`))[0].body, "Harika gidiyorsun");
+  assert.equal((await as(zehra, `select * from progress_comments`)).length, 0);
+  await rejects(as(can, `insert into progress_comments (coaching_id, domain_key, body) values ($1, 'nutrition', 'x')`, [canDenizCoaching]), /row-level security/);
 });

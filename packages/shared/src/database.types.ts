@@ -733,6 +733,64 @@ export type Database = {
         }
         Relationships: []
       }
+      photos: {
+        Row: {
+          client_id: string
+          coaching_id: string | null
+          created_at: string
+          id: string
+          kind: Database["public"]["Enums"]["photo_kind"]
+          meta: Json
+          path: string
+          taken_on: string
+          task_instance_id: string | null
+        }
+        Insert: {
+          client_id: string
+          coaching_id?: string | null
+          created_at?: string
+          id?: string
+          kind: Database["public"]["Enums"]["photo_kind"]
+          meta?: Json
+          path: string
+          taken_on?: string
+          task_instance_id?: string | null
+        }
+        Update: {
+          client_id?: string
+          coaching_id?: string | null
+          created_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["photo_kind"]
+          meta?: Json
+          path?: string
+          taken_on?: string
+          task_instance_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "photos_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "photos_coaching_id_fkey"
+            columns: ["coaching_id"]
+            isOneToOne: false
+            referencedRelation: "coachings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "photos_task_instance_id_fkey"
+            columns: ["task_instance_id"]
+            isOneToOne: false
+            referencedRelation: "task_instances"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
@@ -874,6 +932,42 @@ export type Database = {
           },
           {
             foreignKeyName: "programs_domain_key_fkey"
+            columns: ["domain_key"]
+            isOneToOne: false
+            referencedRelation: "domains"
+            referencedColumns: ["key"]
+          },
+        ]
+      }
+      progress_comments: {
+        Row: {
+          body: string
+          coaching_id: string
+          domain_key: string
+          updated_at: string
+        }
+        Insert: {
+          body?: string
+          coaching_id: string
+          domain_key: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          coaching_id?: string
+          domain_key?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "progress_comments_coaching_id_fkey"
+            columns: ["coaching_id"]
+            isOneToOne: false
+            referencedRelation: "coachings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "progress_comments_domain_key_fkey"
             columns: ["domain_key"]
             isOneToOne: false
             referencedRelation: "domains"
@@ -1185,6 +1279,7 @@ export type Database = {
         | "marketing"
       habit_frequency: "daily" | "weekdays" | "three_per_week"
       measurement_metric: "weight" | "waist" | "hip" | "body_fat"
+      photo_kind: "meal" | "front" | "side" | "other"
       program_repeat: "once" | "four_weeks" | "until_end"
       program_status: "draft" | "active" | "completed" | "archived"
       subscription_plan: "monthly" | "yearly"
@@ -1330,6 +1425,7 @@ export const Constants = {
       ],
       habit_frequency: ["daily", "weekdays", "three_per_week"],
       measurement_metric: ["weight", "waist", "hip", "body_fat"],
+      photo_kind: ["meal", "front", "side", "other"],
       program_repeat: ["once", "four_weeks", "until_end"],
       program_status: ["draft", "active", "completed", "archived"],
       subscription_plan: ["monthly", "yearly"],
