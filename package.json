@@ -12,7 +12,9 @@
     "build:web": "npm run env:sync && npm run build -w @alaris/web",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
-    "test:db": "node --test supabase/tests/rls.test.mjs"
+    "test:db": "node --test supabase/tests/rls.test.mjs",
+    "db:types": "supabase gen types --remote --lang typescript > packages/shared/src/database.types.ts",
+    "db:push": "supabase db push --remote"
   },
   "engines": {
     "node": ">=20"

@@ -1,6 +1,6 @@
 # 6. Veri modeli (taslak)
 
-> **Uygulama durumu (26 Kasım 2026):** İlk şema `supabase/migrations/` altında yazıldı ve `npm run test:db` ile RLS testleri geçiyor. Henüz uzak Supabase projesine uygulanmadı. Taslaktan farkları [VARSAYIM]:
+> **Uygulama durumu (26 Kasım 2026):** İlk şema `supabase/migrations/` altında; `npm run test:db` ile RLS testleri geçiyor ve şema Supabase projesine uygulandı. Tipler: `packages/shared/src/database.types.ts`. Taslaktan farkları [VARSAYIM]:
 > - Koçun özel notu `coachings` içinde değil, ayrı `coaching_notes` tablosunda (satır bazlı güvenlikte sütun gizlenemediği için).
 > - `ProgramHabit` ve `Habit` tek `habits` tablosu: `coaching_id` doluysa koçun atadığı (uyuma dahil), boşsa danışanın kendi alışkanlığı.
 > - `TaskInstance` görevin o anki halini (başlık, içerik, tip, alan) kopyalar; program değişince geçmiş bozulmaz. Görev örneğini danışan başlatırken oluşturur.

@@ -78,5 +78,7 @@ Kök klasörde çalıştırılır (Node 20+, npm).
 | `npm run typecheck` | Tüm paketlerde TypeScript denetimi |
 | `npm run lint` | Tüm paketlerde lint |
 | `npm run test:db` | Migration'ları PGlite (Docker'sız Postgres) üzerinde kurar, RLS ve RPC testlerini çalıştırır |
+| `npm run db:push` | Migration'ları bağlı Supabase projesine uygular (önce kullanıcıya sorulur) |
+| `npm run db:types` | Uzak şemadan `packages/shared/src/database.types.ts` üretir |
 | `npx supabase ...` | Supabase CLI (yerel geliştirme Docker ister). Uzak projeye migration uygulamadan önce kullanıcıya sorulur. |
 | `cd apps/mobile && npx expo install <paket>` | Mobil pakete SDK uyumlu bağımlılık ekler |
