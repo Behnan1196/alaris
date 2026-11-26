@@ -1109,7 +1109,6 @@ export type Database = {
         }[]
       }
       create_invite: { Args: { p_domain_keys: string[] }; Returns: string }
-      mark_thread_read: { Args: { p_thread_id: string }; Returns: number }
       invite_preview: {
         Args: { p_code: string }
         Returns: {
@@ -1119,6 +1118,7 @@ export type Database = {
           expires_at: string
         }[]
       }
+      mark_thread_read: { Args: { p_thread_id: string }; Returns: number }
       redeem_invite: {
         Args: { p_code: string; p_consent_version: string }
         Returns: string
