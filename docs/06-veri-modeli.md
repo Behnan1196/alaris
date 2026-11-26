@@ -1,5 +1,14 @@
 # 6. Veri modeli (taslak)
 
+> **Uygulama durumu (26 Kasım 2026):** İlk şema `supabase/migrations/` altında yazıldı ve `npm run test:db` ile RLS testleri geçiyor. Henüz uzak Supabase projesine uygulanmadı. Taslaktan farkları [VARSAYIM]:
+> - Koçun özel notu `coachings` içinde değil, ayrı `coaching_notes` tablosunda (satır bazlı güvenlikte sütun gizlenemediği için).
+> - `ProgramHabit` ve `Habit` tek `habits` tablosu: `coaching_id` doluysa koçun atadığı (uyuma dahil), boşsa danışanın kendi alışkanlığı.
+> - `TaskInstance` görevin o anki halini (başlık, içerik, tip, alan) kopyalar; program değişince geçmiş bozulmaz. Görev örneğini danışan başlatırken oluşturur.
+> - Rıza türleri: `kvkk`, `health_data`, `share_with_coach` (davet kodu kullanılınca otomatik), `cross_coach_share` (A koçu, B koçluğunun verisini görür), `marketing`.
+> - Koçluk, sohbet ve "koçla paylaşım" rızası `redeem_invite()` ile birlikte oluşur; davet kodu `create_invite()` ile üretilir (8 karakter, 14 gün geçerli).
+> - "Başka koçlardan aldığı" alanları `client_other_domains()` döndürür; şimdilik rıza gerektirmez (açık soru 13).
+> - Koçluk bitince koçun eski veriye okuma erişimi şimdilik sürüyor (açık soru 12).
+
 Bu bir **taslaktır** [VARSAYIM]. Supabase (Postgres) şemasına dönüştürülecek; erişim kuralları Row Level Security ile uygulanacak. İsimler İngilizce, açıklamalar Türkçe.
 
 ## Ana varlıklar

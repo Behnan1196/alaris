@@ -77,5 +77,6 @@ Kök klasörde çalıştırılır (Node 20+, npm).
 | `npm run build:web` | Koç panelinin üretim derlemesi |
 | `npm run typecheck` | Tüm paketlerde TypeScript denetimi |
 | `npm run lint` | Tüm paketlerde lint |
+| `npm run test:db` | Migration'ları PGlite (Docker'sız Postgres) üzerinde kurar, RLS ve RPC testlerini çalıştırır |
 | `npx supabase ...` | Supabase CLI (yerel geliştirme Docker ister). Uzak projeye migration uygulamadan önce kullanıcıya sorulur. |
 | `cd apps/mobile && npx expo install <paket>` | Mobil pakete SDK uyumlu bağımlılık ekler |

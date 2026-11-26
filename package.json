@@ -11,12 +11,14 @@
     "dev:mobile": "npm run env:sync && npm run start -w @alaris/mobile",
     "build:web": "npm run env:sync && npm run build -w @alaris/web",
     "typecheck": "npm run typecheck --workspaces --if-present",
-    "lint": "npm run lint --workspaces --if-present"
+    "lint": "npm run lint --workspaces --if-present",
+    "test:db": "node --test supabase/tests/rls.test.mjs"
   },
   "engines": {
     "node": ">=20"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.6.0",
     "supabase": "^3.4.0"
   }
 }
