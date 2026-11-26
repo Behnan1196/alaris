@@ -169,3 +169,12 @@ export async function sendProgram(
   revalidatePath("/panel");
   return { ok: true };
 }
+
+export async function saveNote(coachingId: string, body: string): Promise<Result> {
+  const { supabase } = await requireUser();
+  const { error } = await supabase
+    .from("coaching_notes")
+    .upsert({ coaching_id: coachingId, body, updated_at: new Date().toISOString() });
+  if (error) return { error: error.message };
+  return { ok: true };
+}

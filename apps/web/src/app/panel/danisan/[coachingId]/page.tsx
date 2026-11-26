@@ -4,6 +4,9 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { Card } from "@/components/ui";
 import { requireCoach } from "@/lib/coach";
+import { currentWeekDays, loadWeek } from "@/lib/tracking";
+import { NoteForm } from "./note-form";
+import { Progress, RecentLogs, ThisWeek } from "./sections";
 
 const PROGRAM_STATUS: Record<string, string> = {
   draft: "Taslak",
@@ -53,8 +56,27 @@ async function Content({ params }: { params: PageProps<"/panel/danisan/[coaching
     .order("created_at");
   const visibleHabits = (habits ?? []).filter((h) => h.coaching_id === null || h.coaching_id === coaching.id);
 
+  const [weekMap, { data: measurements }, { data: logs }, { data: note }] = await Promise.all([
+    loadWeek(supabase, [coaching.id]),
+    supabase
+      .from("measurements")
+      .select("metric, value, measured_on")
+      .eq("coaching_id", coaching.id)
+      .order("measured_on")
+      .order("created_at")
+      .limit(300),
+    supabase
+      .from("task_logs")
+      .select("id, kind, data, created_at, task_instances!inner(title, date, task_type_key, coaching_id)")
+      .eq("task_instances.coaching_id", coaching.id)
+      .order("created_at", { ascending: false })
+      .limit(30),
+    supabase.from("coaching_notes").select("body").eq("coaching_id", coaching.id).maybeSingle(),
+  ]);
+  const week = weekMap.get(coaching.id)!;
+
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-6 py-10">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-6 py-10">
       <div>
         <Link href="/panel" className="text-sm text-zinc-500 underline">
           ← Danışanlar
@@ -95,6 +117,17 @@ async function Content({ params }: { params: PageProps<"/panel/danisan/[coaching
           );
         })}
       </div>
+
+      <ThisWeek week={week} days={currentWeekDays()} />
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <Progress measurements={(measurements ?? []).map((m) => ({ ...m, value: Number(m.value) }))} />
+        <Card title="Koç notu (danışan görmez)">
+          <NoteForm coachingId={coaching.id} initial={note?.body ?? ""} />
+        </Card>
+      </div>
+
+      <RecentLogs logs={logs ?? []} />
 
       <Card title="Alışkanlıklar · son 7 gün">
         {visibleHabits.length === 0 ? (

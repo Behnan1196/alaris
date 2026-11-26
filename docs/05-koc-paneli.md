@@ -53,3 +53,10 @@ Birden çok haftalık programın düzenlenmesi (hafta 1..12 arası geçiş, haft
 - Davet kodu üretme ve danışan ekleme. [KARAR: geliştirmede tasarlanacak]
 - Danışanla ücret / paket yönetimi (koçun danışandan para alması). [AÇIK SORU]
 - Bildirimler, mobil uyumlu panel.
+
+## Uygulama durumu (26 Kasım 2026)
+
+- **Genel bakış:** göstergeler (aktif danışan, bu hafta ortalama uyum, bugün tamamlanan görev, ilgilenmen gereken), İlgilenmen gerekenler (bu hafta kaçırılan görevler, gönderilmiş programı olmayan alan, 7 gün içinde biten program), Bugün olanlar (tamamlanan görevler ve ölçümler), danışan tablosunda haftalık uyum çubuğu.
+- **Uyum hesabı:** bu haftanın pazartesisinden bugüne kadar planlanan görevler + koçun atadığı alışkanlıklar içinde tamamlananların oranı. "Haftada 3" alışkanlıkta hedef geçen gün sayısıyla sınırlı. Geçmiş günde tamamlanmayan görev "kaçırıldı" sayılır.
+- **Danışan sayfası:** alan kartları, Bu hafta (günlere göre görev durumları), İlerleme (ölçüm başına son değer, değişim ve çizgi grafik), koç notu, Son kayıtlar (set, zorluk puanı, öğün), Alışkanlıklar (son 7 gün), Başka koçlardan aldığı.
+- Henüz yok: "Mesaja yanıt ver" ve okunmamış mesaj göstergesi (6. adım), filtreler ve arama.
