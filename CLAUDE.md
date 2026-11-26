@@ -43,6 +43,7 @@ Alaris, birden çok alanda (fitness, beslenme, sınav koçluğu, gitar ve ilerid
 - Kod içi isimler (değişken, tablo, API) İngilizce olabilir; arayüz metni Türkçe kalır. [VARSAYIM]
 - Belgede **[VARSAYIM]** ile işaretli bir şeyi kesinmiş gibi uygulamadan önce kullanıcıya sor ya da varsayımı açıkça belirterek ilerle.
 - Yeni bir karar alındığında `docs/karar-gunlugu.md` dosyasına tarihli satır ekle; ilgili belgeyi de güncelle.
+- Onay (26 Kasım 2026, Behnan): GitHub'a push, Supabase migration'ları ve Edge Function yüklemesi için ayrıca onay istenmez. Geri alınamayan işler (veri silme, üretim verisini değiştiren toplu işlem, proje dışına mesaj) yine sorulur.
 - Proje kurulunca bu dosyaya "Komutlar" bölümü (kurulum, çalıştırma, test, derleme) ekle.
 - Monorepo iskeleti kuruldu (26 Kasım 2026); yol haritası `docs/12-yol-haritasi.md`.
 
@@ -73,12 +74,15 @@ Kök klasörde çalıştırılır (Node 20+, npm).
 |---|---|
 | `npm install` | Tüm çalışma alanlarının bağımlılıklarını kurar |
 | `npm run dev:web` | Koç panelini http://localhost:3000 adresinde açar |
-| `npm run dev:mobile` | Expo geliştirme sunucusunu açar (Expo Go veya web ile) |
+| `npm run dev:mobile` | Expo geliştirme sunucusunu açar. iPhone'daki geliştirme derlemesi (Alaris) aynı Wi-Fi'da bu sunucuya bağlanır |
+| `npm run dev:mobile:tunnel` | Aynı ağda bağlanılamıyorsa sunucuyu internet tüneliyle açar |
 | `npm run build:web` | Koç panelinin üretim derlemesi |
 | `npm run typecheck` | Tüm paketlerde TypeScript denetimi |
 | `npm run lint` | Tüm paketlerde lint |
 | `npm run test:db` | Migration'ları PGlite (Docker'sız Postgres) üzerinde kurar, RLS ve RPC testlerini çalıştırır |
-| `npm run db:push` | Migration'ları bağlı Supabase projesine uygular (önce kullanıcıya sorulur) |
+| `npm run db:push` | Migration'ları bağlı Supabase projesine uygular |
+| `npm run functions:deploy` | `notify` Edge Function'ını yükler |
 | `npm run db:types` | Uzak şemadan `packages/shared/src/database.types.ts` üretir |
-| `npx supabase ...` | Supabase CLI (yerel geliştirme Docker ister). Uzak projeye migration uygulamadan önce kullanıcıya sorulur. |
+| `npx supabase ...` | Supabase CLI (yerel geliştirme Docker ister) |
+| `cd apps/mobile && npx eas-cli@latest build --profile development --platform ios` | iPhone geliştirme derlemesi (EAS projesi @behnan/alaris) |
 | `cd apps/mobile && npx expo install <paket>` | Mobil pakete SDK uyumlu bağımlılık ekler |

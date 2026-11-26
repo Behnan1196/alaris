@@ -715,6 +715,24 @@ export type Database = {
           },
         ]
       }
+      notification_log: {
+        Row: {
+          kind: string
+          ref: string
+          sent_at: string
+        }
+        Insert: {
+          kind: string
+          ref: string
+          sent_at?: string
+        }
+        Update: {
+          kind?: string
+          ref?: string
+          sent_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -864,10 +882,33 @@ export type Database = {
         ]
       }
       push_tokens: {
-        Row: { platform: string; token: string; updated_at: string; user_id: string }
-        Insert: { platform: string; token: string; updated_at?: string; user_id: string }
-        Update: { platform?: string; token?: string; updated_at?: string; user_id?: string }
-        Relationships: []
+        Row: {
+          platform: string
+          token: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          platform: string
+          token: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          platform?: string
+          token?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "push_tokens_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       subscriptions: {
         Row: {
