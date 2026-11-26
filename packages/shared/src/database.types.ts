@@ -1098,6 +1098,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      become_coach: {
+        Args: { p_domain_keys: string[]; p_title: string }
+        Returns: undefined
+      }
       client_other_domains: {
         Args: { p_client_id: string }
         Returns: {

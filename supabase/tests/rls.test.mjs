@@ -304,3 +304,22 @@ test("danışan koçun alışkanlığında hedefi yalnız izinle değiştirir", 
   const direct = await as(can, `update habits set title = 'x' where id = $1 returning id`, [water]);
   assert.equal(direct.length, 0);
 });
+
+test("kayıtta KVKK rızası metadata'dan yazılır", async () => {
+  const { rows } = await db.query(
+    `insert into auth.users (email, raw_user_meta_data) values ('ayse@test.local', $1) returning id`,
+    [{ full_name: "Ayşe", kvkk_version: "2026-11-v1", marketing_opt_in: false }],
+  );
+  const ayse = rows[0].id;
+  const consents = await as(ayse, `select type, text_version from consents`);
+  assert.deepEqual(consents, [{ type: "kvkk", text_version: "2026-11-v1" }]);
+});
+
+test("koç olma: yalnız etkin alanlar", async () => {
+  await rejects(as(burak, `select become_coach('', array['exam'])`), /kullanılamıyor/);
+  await rejects(as(burak, `select become_coach('', array[]::text[])`), /En az bir/);
+  await as(burak, `select become_coach('PT', array['fitness','nutrition'])`);
+  await as(burak, `select become_coach('PT', array['fitness'])`);
+  const d = await as(burak, `select domain_key from coach_domains where coach_id = $1`, [burak]);
+  assert.deepEqual(d.map((r) => r.domain_key), ["fitness"]);
+});
