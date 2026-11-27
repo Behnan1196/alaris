@@ -1,4 +1,5 @@
 import { DOMAINS, type DomainKey } from "@alaris/shared";
+import { getT } from "@/lib/i18n";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -11,6 +12,7 @@ type Params = PageProps<"/panel/danisan/[coachingId]/program/[domain]">["params"
 
 async function Content({ params }: { params: Params }) {
   const { coachingId, domain } = await params;
+  const { t } = await getT();
   const { supabase, userId } = await requireCoach();
   const d = DOMAINS[domain as DomainKey];
   if (!d) notFound();
@@ -42,7 +44,7 @@ async function Content({ params }: { params: Params }) {
       title={
         <span className="flex items-center gap-3">
           <span className="h-3.5 w-3.5 rounded-full" style={{ backgroundColor: d.color }} />
-          {d.name} programı
+          {t("b.domainProgram", { domain: t(`domain.${d.key}`) })}
         </span>
       }
     />
@@ -55,9 +57,9 @@ async function Content({ params }: { params: Params }) {
         <form action={createProgram} className="flex flex-col gap-4 rounded-2xl border border-line bg-surface p-5">
           <input type="hidden" name="coaching_id" value={coachingId} />
           <input type="hidden" name="domain_key" value={domain} />
-          <Field label="Program adı" name="name" placeholder={`ör. ${d.key === "fitness" ? "Güç ve kondisyon" : "Yağ kaybı planı"}`} required />
-          <Field label="Süre (hafta)" name="weeks" type="number" min={1} max={52} defaultValue={4} required />
-          <Button type="submit">Taslak oluştur</Button>
+          <Field label={t("b.programName")} name="name" placeholder={d.key === "fitness" ? t("b.namePhFitness") : t("b.namePhNutrition")} required />
+          <Field label={t("b.weeks")} name="weeks" type="number" min={1} max={52} defaultValue={4} required />
+          <Button type="submit">{t("b.createDraft")}</Button>
         </form>
       </div>
     );

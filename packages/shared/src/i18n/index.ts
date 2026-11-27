@@ -72,3 +72,9 @@ export function translateError(message: string, t: TFunction) {
   if (/rate limit/i.test(message)) return t("auth.err.rateLimit");
   return message;
 }
+
+/** Haftanın günü adı (i: 0 = Pazartesi). */
+export function weekdayName(intl: string, i: number, style: "long" | "short" = "long") {
+  // 1 Ocak 2024 pazartesi
+  return new Intl.DateTimeFormat(intl, { weekday: style }).format(new Date(2024, 0, 1 + i));
+}

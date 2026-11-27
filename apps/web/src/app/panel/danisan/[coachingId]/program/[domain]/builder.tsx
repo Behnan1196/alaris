@@ -3,13 +3,7 @@
 import {
   DEFAULT_TASK,
   DOMAINS,
-  HABIT_FREQUENCY_LABELS,
-  INTENSITY_LABELS,
-  MEASURE_METRIC_LABELS,
-  PROGRAM_REPEAT_LABELS,
-  TASK_TYPE_LABELS,
-  WEEKDAYS,
-  WEEKDAYS_SHORT,
+  weekdayName,
   type BuilderTaskType,
   type DomainKey,
   type HabitFrequency,
@@ -20,6 +14,7 @@ import {
   type MeasurePayload,
   type ProgramRepeat,
   type TaskTypeKey,
+  type TFunction,
   type WorkoutOptions,
   type WorkoutPayload,
 } from "@alaris/shared";
@@ -38,6 +33,7 @@ import {
   updateProgramMeta,
   type HabitInput,
 } from "@/app/panel/program-actions";
+import { useI18n } from "@/components/i18n";
 import { MealEditor, MeasureEditor, Toggle, WorkoutEditor, inputCls, Label } from "./editors";
 
 type Task = {
@@ -79,23 +75,34 @@ const TYPE_STYLE: Record<string, string> = {
   measure: "border-l-sky-600",
 };
 
-function taskMeta(t: { task_type_key: string; payload: Json }) {
-  const p = t.payload as Record<string, unknown>;
-  if (t.task_type_key === "workout") {
+function taskMeta(tk: { task_type_key: string; payload: Json }, t: TFunction) {
+  const p = tk.payload as Record<string, unknown>;
+  if (tk.task_type_key === "workout") {
     const w = p as unknown as WorkoutPayload;
-    return [`${w.exercises?.length ?? 0} hareket`, w.duration_min ? `${w.duration_min} dk` : null, INTENSITY_LABELS[w.intensity]]
+    return [t("b.meta.exercises", { n: w.exercises?.length ?? 0 }), w.duration_min ? t("b.meta.minutes", { n: w.duration_min }) : null, t(`intensity.${w.intensity}`)]
       .filter(Boolean)
       .join(" · ");
   }
-  if (t.task_type_key === "meal") {
+  if (tk.task_type_key === "meal") {
     const m = p as unknown as MealPayload;
-    return [`${m.meals?.length ?? 0} öğün`, m.kcal_target ? `${m.kcal_target} kcal` : null].filter(Boolean).join(" · ");
+    return [t("b.meta.meals", { n: m.meals?.length ?? 0 }), m.kcal_target ? `${m.kcal_target} kcal` : null].filter(Boolean).join(" · ");
   }
-  if (t.task_type_key === "measure") {
+  if (tk.task_type_key === "measure") {
     const m = p as unknown as MeasurePayload;
-    return (m.metrics ?? []).map((x) => MEASURE_METRIC_LABELS[x].split(" ")[0]).join(", ");
+    return (m.metrics ?? []).map((x) => t(`metricShort.${x}`)).join(", ");
   }
   return "";
+}
+
+/** Varsayılan görev içeriğindeki metinleri (öğün adları, ölçüm zamanı) seçili dile çevirir. */
+function localizeDefaults(type: BuilderTaskType, payload: unknown, t: TFunction) {
+  if (type === "meal") {
+    const p = payload as MealPayload;
+    const names = [t("default.breakfast"), t("default.lunch"), t("default.dinner")];
+    p.meals = p.meals.map((m, i) => ({ ...m, name: names[i] ?? m.name }));
+  }
+  if (type === "measure") (payload as MeasurePayload).when = t("default.measureWhen");
+  return payload;
 }
 
 function today() {
@@ -125,6 +132,7 @@ export function Builder({
   exercises: { id: string; name: string }[];
 }) {
   const router = useRouter();
+  const { t, intl } = useI18n();
   const [pending, start] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [draft, setDraft] = useState<Draft | null>(null);
@@ -147,11 +155,11 @@ export function Builder({
     const id = dragId.current;
     dragId.current = null;
     setOverDay(null);
-    const t = local.find((x) => x.id === id);
-    if (!t || t.day_of_week === day) return;
+    const tk = local.find((x) => x.id === id);
+    if (!tk || tk.day_of_week === day) return;
     const before = local;
-    setLocal(local.map((x) => (x.id === t.id ? { ...x, day_of_week: day } : x)));
-    moveTask(t.id, day).then((r) => {
+    setLocal(local.map((x) => (x.id === tk.id ? { ...x, day_of_week: day } : x)));
+    moveTask(tk.id, day).then((r) => {
       if (r.error) {
         setError(r.error);
         setLocal(before);
@@ -160,13 +168,13 @@ export function Builder({
   }
 
   // Hafta: kendi görevi varsa onlar, yoksa 1. hafta şablonu (salt okunur gösterilir).
-  const weeksWithOwn = new Set(local.map((t) => t.week_no));
+  const weeksWithOwn = new Set(local.map((x) => x.week_no));
   const ownWeek = week === 1 || weeksWithOwn.has(week);
-  const weekTasks = local.filter((t) => t.week_no === (ownWeek ? week : 1));
+  const weekTasks = local.filter((x) => x.week_no === (ownWeek ? week : 1));
   const editable = ownWeek;
 
   const domainInfo = DOMAINS[domain];
-  const taskTypes = domainInfo.taskTypes.filter((t): t is BuilderTaskType => t in DEFAULT_TASK);
+  const taskTypes = domainInfo.taskTypes.filter((x): x is BuilderTaskType => x in DEFAULT_TASK);
 
   function run(fn: () => Promise<{ error?: string }>, after?: () => void) {
     setError(null);
@@ -187,8 +195,8 @@ export function Builder({
       week_no: week,
       day_of_week: day,
       task_type_key: type,
-      title: def.title,
-      payload: structuredClone(def.payload) as unknown as Json,
+      title: t(`default.${type}`),
+      payload: localizeDefaults(type, structuredClone(def.payload), t) as unknown as Json,
       options: structuredClone(def.options) as unknown as Json,
       client_note: "",
     });
@@ -196,18 +204,18 @@ export function Builder({
 
   const status =
     program.status === "active"
-      ? `Aktif · ${program.start_date ?? ""} başladı · ${PROGRAM_REPEAT_LABELS[program.repeat]}`
-      : "Taslak · danışan henüz görmüyor";
+      ? t("b.status.active", { date: program.start_date ?? "", repeat: t(`repeat.${program.repeat}`) })
+      : t("b.status.draft");
 
   return (
     <div className="flex flex-col gap-6">
       {/* Üst çubuk */}
       <div className="flex flex-wrap items-end gap-3 rounded-2xl border border-line bg-surface p-4">
-        <Label text="Program adı">
+        <Label text={t("b.programName")}>
           <input className={`${inputCls} w-64`} value={meta.name} onChange={(e) => setMeta({ ...meta, name: e.target.value })}
             onBlur={() => meta.name !== program.name && run(() => updateProgramMeta(program.id, meta, path))} />
         </Label>
-        <Label text="Süre (hafta)">
+        <Label text={t("b.weeks")}>
           <input className={`${inputCls} w-24`} type="number" min={1} max={52} value={meta.weeks}
             onChange={(e) => setMeta({ ...meta, weeks: Number(e.target.value) || 1 })}
             onBlur={() => meta.weeks !== program.weeks && run(() => updateProgramMeta(program.id, meta, path))} />
@@ -218,7 +226,7 @@ export function Builder({
           className="rounded-lg px-4 py-2 text-sm font-medium text-white"
           style={{ backgroundColor: domainInfo.color }}
         >
-          {program.status === "active" ? "Yeniden gönder" : "Danışana gönder"}
+          {program.status === "active" ? t("b.resend") : t("b.send")}
         </button>
       </div>
 
@@ -244,7 +252,7 @@ export function Builder({
           {/* Haftalık takvim */}
           <div>
             <div className="mb-3 flex flex-wrap items-center gap-2">
-              <div className="flex flex-wrap gap-1" role="tablist" aria-label="Haftalar">
+              <div className="flex flex-wrap gap-1" role="tablist" aria-label={t("b.weeksTabs")}>
                 {Array.from({ length: program.weeks }, (_, i) => i + 1).map((w) => (
                   <button
                     key={w}
@@ -257,7 +265,7 @@ export function Builder({
                     className={`h-8 min-w-8 rounded-lg border px-2 text-xs font-medium ${
                       w === week ? "border-ink bg-ink text-white" : "border-line bg-surface hover:bg-soft"
                     }`}
-                    title={w === 1 || weeksWithOwn.has(w) ? `${w}. hafta` : `${w}. hafta (1. hafta şablonu)`}
+                    title={w === 1 || weeksWithOwn.has(w) ? t("b.weekN", { n: w }) : t("b.weekNTemplate", { n: w })}
                   >
                     {w}
                     {w > 1 && weeksWithOwn.has(w) ? "•" : ""}
@@ -270,47 +278,47 @@ export function Builder({
                 disabled={pending}
                 onChange={(e) => {
                   const to = Number(e.target.value);
-                  if (to && confirm(`${week}. haftanın görevleri ${to}. haftaya kopyalansın mı? ${to}. haftadaki mevcut görevler silinir.`))
+                  if (to && confirm(t("b.copyWeekConfirm", { from: week, to })))
                     run(() => copyWeek(program.id, ownWeek ? week : 1, to, path), () => setWeek(to));
                 }}
               >
-                <option value="">Bu haftayı kopyala…</option>
+                <option value="">{t("b.copyWeek")}</option>
                 {Array.from({ length: program.weeks }, (_, i) => i + 1)
                   .filter((w) => w !== week)
                   .map((w) => (
                     <option key={w} value={w}>
-                      {w}. haftaya
+                      {t("b.toWeek", { n: w })}
                     </option>
                   ))}
               </select>
             </div>
             {!editable ? (
               <div className="mb-3 flex flex-wrap items-center gap-3 rounded-xl border border-dashed border-line bg-surface px-4 py-3 text-sm">
-                <span className="flex-1 text-muted">{week}. hafta, 1. hafta şablonunu kullanıyor.</span>
+                <span className="flex-1 text-muted">{t("b.usesTemplate", { n: week })}</span>
                 <button
                   disabled={pending}
                   onClick={() => run(() => copyWeek(program.id, 1, week, path))}
                   className="rounded-lg bg-ink px-3 py-1.5 text-xs font-medium text-white disabled:opacity-50"
                 >
-                  Bu haftayı ayrı düzenle
+                  {t("b.editSeparately")}
                 </button>
               </div>
             ) : week > 1 ? (
               <p className="mb-3 text-xs text-muted">
-                {week}. hafta ayrı düzenleniyor.{" "}
-                <button className="underline" disabled={pending} onClick={() => confirm(`${week}. haftanın kendi görevleri silinip 1. hafta şablonuna dönülsün mü?`) && run(() => resetWeek(program.id, week, path))}>
-                  1. hafta şablonuna dön
+                {t("b.editingSeparately", { n: week })}{" "}
+                <button className="underline" disabled={pending} onClick={() => confirm(t("b.resetConfirm", { n: week })) && run(() => resetWeek(program.id, week, path))}>
+                  {t("b.reset")}
                 </button>
               </p>
             ) : (
               <p className="mb-3 text-xs text-muted">
-                1. hafta şablondur: ayrıca düzenlemediğin haftalar bunu kullanır. Görevleri sürükleyip başka güne taşıyabilirsin.
+                {t("b.templateHint")}
               </p>
             )}
             <div className="grid grid-cols-7 gap-2">
-              {WEEKDAYS.map((dayName, i) => {
+              {[0, 1, 2, 3, 4, 5, 6].map((i) => {
                 const day = i + 1;
-                const dayTasks = weekTasks.filter((t) => t.day_of_week === day);
+                const dayTasks = weekTasks.filter((x) => x.day_of_week === day);
                 return (
                   <div
                     key={day}
@@ -328,14 +336,14 @@ export function Builder({
                       overDay === day ? "border-ink bg-soft" : "border-line bg-surface"
                     } ${editable ? "" : "opacity-60"}`}
                   >
-                    <p className="text-xs font-semibold text-muted" title={dayName}>
-                      {WEEKDAYS_SHORT[i]}
+                    <p className="text-xs font-semibold text-muted" title={weekdayName(intl, i)}>
+                      {weekdayName(intl, i, "short")}
                     </p>
-                    {dayTasks.map((t) => (
+                    {dayTasks.map((tk) => (
                       <button
-                        key={t.id}
+                        key={tk.id}
                         draggable={editable}
-                        onDragStart={() => (dragId.current = t.id)}
+                        onDragStart={() => (dragId.current = tk.id)}
                         onDragEnd={() => {
                           dragId.current = null;
                           setOverDay(null);
@@ -343,17 +351,17 @@ export function Builder({
                         disabled={!editable}
                         onClick={() => {
                           setHabitDraft(null);
-                          setDraft({ ...t, client_note: t.client_note ?? "" });
+                          setDraft({ ...tk, client_note: tk.client_note ?? "" });
                         }}
                         className={`rounded-md border border-l-4 border-line bg-page p-2 text-left text-xs hover:bg-soft ${
-                          TYPE_STYLE[t.task_type_key] ?? ""
-                        } ${draft?.id === t.id ? "ring-2 ring-ink" : ""}`}
+                          TYPE_STYLE[tk.task_type_key] ?? ""
+                        } ${draft?.id === tk.id ? "ring-2 ring-ink" : ""}`}
                       >
                         <span className="block text-[10px] uppercase tracking-wide text-muted">
-                          {TASK_TYPE_LABELS[t.task_type_key as TaskTypeKey]}
+                          {t(`taskType.${tk.task_type_key as TaskTypeKey}`)}
                         </span>
-                        <span className="block font-medium">{t.title}</span>
-                        <span className="block text-muted">{taskMeta(t)}</span>
+                        <span className="block font-medium">{tk.title}</span>
+                        <span className="block text-muted">{taskMeta(tk, t)}</span>
                       </button>
                     ))}
                     {editable && <AddMenu types={taskTypes} onPick={(type) => newTask(day, type)} />}
@@ -366,7 +374,7 @@ export function Builder({
           {/* Alışkanlık şeridi */}
           <div className="rounded-2xl border border-line bg-surface p-4">
             <div className="mb-3 flex items-center justify-between">
-              <h3 className="text-sm font-semibold">Alışkanlıklar</h3>
+              <h3 className="text-sm font-semibold">{t("web.tab.habits")}</h3>
               <button
                 className="text-sm font-medium underline"
                 onClick={() => {
@@ -374,11 +382,11 @@ export function Builder({
                   setHabitDraft({ title: "", frequency: "daily", show_streak: true, client_can_edit_target: false });
                 }}
               >
-                + Alışkanlık ekle
+                {t("b.addHabit")}
               </button>
             </div>
             {habits.length === 0 ? (
-              <p className="text-sm text-muted">Haftaya bağlı alışkanlık yok (ör. günde 8 bardak su).</p>
+              <p className="text-sm text-muted">{t("b.noHabits")}</p>
             ) : (
               <div className="flex flex-wrap gap-2">
                 {habits.map((h) => (
@@ -393,7 +401,7 @@ export function Builder({
                     {h.title}
                     <span className="text-muted">
                       {" "}
-                      · {HABIT_FREQUENCY_LABELS[h.frequency]}
+                      · {t(`freq.${h.frequency}`)}
                       {h.target ? ` · ${h.target}${h.unit ? " " + h.unit : ""}` : ""}
                     </span>
                   </button>
@@ -446,7 +454,7 @@ export function Builder({
             />
           ) : (
             <div className="rounded-xl border border-dashed border-line p-6 text-sm text-muted">
-              Bir güne görev eklemek için &quot;+ Görev&quot;e, düzenlemek için bir karta tıkla.
+              {t("b.emptyPanel")}
             </div>
           )}
         </div>
@@ -455,25 +463,26 @@ export function Builder({
   );
 }
 
-function AddMenu({ types, onPick }: { types: BuilderTaskType[]; onPick: (t: BuilderTaskType) => void }) {
+function AddMenu({ types, onPick }: { types: BuilderTaskType[]; onPick: (type: BuilderTaskType) => void }) {
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   return (
     <div className="relative mt-auto">
       <button onClick={() => setOpen((v) => !v)} className="w-full rounded-md py-1 text-xs text-muted hover:bg-soft">
-        + Görev
+        {t("b.addTask")}
       </button>
       {open && (
         <div className="absolute z-10 mt-1 w-40 rounded-lg border border-line bg-white p-1 shadow-lg">
-          {types.map((t) => (
+          {types.map((type) => (
             <button
-              key={t}
+              key={type}
               className="block w-full rounded px-2 py-1.5 text-left text-sm hover:bg-soft"
               onClick={() => {
                 setOpen(false);
-                onPick(t);
+                onPick(type);
               }}
             >
-              {TASK_TYPE_LABELS[t]}
+              {t(`taskType.${type}`)}
             </button>
           ))}
         </div>
@@ -501,6 +510,7 @@ function TaskPanel({
   onDelete?: () => void;
   onCopy?: (day: number) => void;
 }) {
+  const { t, intl } = useI18n();
   const [d, setD] = useState<Draft>(draft);
   const setPO = (payload: unknown, options: unknown) =>
     setD({ ...d, payload: payload as Json, options: options as Json });
@@ -509,21 +519,21 @@ function TaskPanel({
     <div className="flex flex-col gap-4 rounded-2xl border border-line bg-surface p-4">
       <div className="flex items-center justify-between">
         <p className="text-xs font-semibold uppercase tracking-wide text-muted">
-          {TASK_TYPE_LABELS[d.task_type_key as TaskTypeKey]}
+          {t(`taskType.${d.task_type_key as TaskTypeKey}`)}
         </p>
-        <button onClick={onClose} className="text-muted hover:text-ink" aria-label="Kapat">
+        <button onClick={onClose} className="text-muted hover:text-ink" aria-label={t("common.close")}>
           ✕
         </button>
       </div>
       <div className="grid grid-cols-[1fr_130px] gap-3">
-        <Label text="Başlık">
+        <Label text={t("b.title")}>
           <input className={inputCls} value={d.title} onChange={(e) => setD({ ...d, title: e.target.value })} />
         </Label>
-        <Label text="Gün">
+        <Label text={t("b.day")}>
           <select className={inputCls} value={d.day_of_week} onChange={(e) => setD({ ...d, day_of_week: Number(e.target.value) })}>
-            {WEEKDAYS.map((w, i) => (
-              <option key={w} value={i + 1}>
-                {w}
+            {[0, 1, 2, 3, 4, 5, 6].map((i) => (
+              <option key={i} value={i + 1}>
+                {weekdayName(intl, i)}
               </option>
             ))}
           </select>
@@ -549,7 +559,7 @@ function TaskPanel({
         />
       )}
 
-      <Label text="Danışana not">
+      <Label text={t("b.clientNote")}>
         <textarea className={inputCls} rows={2} value={d.client_note ?? ""}
           onChange={(e) => setD({ ...d, client_note: e.target.value })} />
       </Label>
@@ -562,7 +572,7 @@ function TaskPanel({
           onClick={() => onSave(d)}
           className="rounded-lg bg-ink px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
         >
-          {pending ? "Kaydediliyor…" : "Kaydet"}
+          {pending ? t("common.saving") : t("common.save")}
         </button>
         {onCopy && (
           <select
@@ -570,10 +580,10 @@ function TaskPanel({
             value=""
             onChange={(e) => e.target.value && onCopy(Number(e.target.value))}
           >
-            <option value="">Başka güne kopyala…</option>
-            {WEEKDAYS.map((w, i) => (
-              <option key={w} value={i + 1}>
-                {w}
+            <option value="">{t("b.copyToDay")}</option>
+            {[0, 1, 2, 3, 4, 5, 6].map((i) => (
+              <option key={i} value={i + 1}>
+                {weekdayName(intl, i)}
               </option>
             ))}
           </select>
@@ -590,13 +600,14 @@ function TaskPanel({
 
 /** "Danışan uygulamasında böyle görünür" önizlemesi. */
 function Preview({ draft, color }: { draft: Draft; color: string }) {
+  const { t } = useI18n();
   return (
     <div>
-      <p className="mb-1 text-xs font-medium text-muted">Danışan uygulamasında böyle görünür</p>
+      <p className="mb-1 text-xs font-medium text-muted">{t("b.preview")}</p>
       <div className="rounded-2xl p-4 text-white" style={{ backgroundColor: color }}>
-        <p className="text-xs opacity-80">{TASK_TYPE_LABELS[draft.task_type_key as TaskTypeKey]}</p>
-        <p className="text-lg font-bold leading-6">{draft.title || "Görev"}</p>
-        <p className="text-xs opacity-90">{taskMeta(draft)}</p>
+        <p className="text-xs opacity-80">{t(`taskType.${draft.task_type_key as TaskTypeKey}`)}</p>
+        <p className="text-lg font-bold leading-6">{draft.title || t("b.task")}</p>
+        <p className="text-xs opacity-90">{taskMeta(draft, t)}</p>
         {draft.client_note && <p className="mt-2 rounded-lg bg-white/15 p-2 text-xs">“{draft.client_note}”</p>}
       </div>
     </div>
@@ -616,6 +627,7 @@ function HabitPanel({
   onSave: (h: Omit<HabitInput, "coaching_id" | "client_id" | "program_id" | "domain_key">) => void;
   onDelete?: () => void;
 }) {
+  const { t } = useI18n();
   const [h, setH] = useState({
     id: habit.id,
     title: habit.title,
@@ -629,40 +641,40 @@ function HabitPanel({
   return (
     <div className="flex flex-col gap-4 rounded-2xl border border-line bg-surface p-4">
       <div className="flex items-center justify-between">
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted">Alışkanlık</p>
-        <button onClick={onClose} className="text-muted hover:text-ink" aria-label="Kapat">
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted">{t("taskType.habit")}</p>
+        <button onClick={onClose} className="text-muted hover:text-ink" aria-label={t("common.close")}>
           ✕
         </button>
       </div>
-      <Label text="Ad">
-        <input className={inputCls} placeholder="ör. Su iç" value={h.title} onChange={(e) => setH({ ...h, title: e.target.value })} />
+      <Label text={t("b.habitName")}>
+        <input className={inputCls} placeholder={t("b.habitNamePh")} value={h.title} onChange={(e) => setH({ ...h, title: e.target.value })} />
       </Label>
       <div className="grid grid-cols-3 gap-2">
-        <Label text="Sıklık">
+        <Label text={t("b.frequency")}>
           <select className={inputCls} value={h.frequency} onChange={(e) => setH({ ...h, frequency: e.target.value as HabitFrequency })}>
-            {Object.entries(HABIT_FREQUENCY_LABELS).map(([k, v]) => (
+            {(["daily", "weekdays", "three_per_week"] as const).map((k) => (
               <option key={k} value={k}>
-                {v}
+                {t(`freq.${k}`)}
               </option>
             ))}
           </select>
         </Label>
-        <Label text="Günlük hedef">
-          <input className={inputCls} type="number" min={0} placeholder="boşsa tek dokunuş" value={h.target ?? ""}
+        <Label text={t("b.dailyTarget")}>
+          <input className={inputCls} type="number" min={0} placeholder={t("b.dailyTargetPh")} value={h.target ?? ""}
             onChange={(e) => setH({ ...h, target: e.target.value === "" ? null : Number(e.target.value) })} />
         </Label>
-        <Label text="Birim">
-          <input className={inputCls} placeholder="bardak, adım" value={h.unit} onChange={(e) => setH({ ...h, unit: e.target.value })} />
+        <Label text={t("b.unit")}>
+          <input className={inputCls} placeholder={t("b.unitPh")} value={h.unit} onChange={(e) => setH({ ...h, unit: e.target.value })} />
         </Label>
       </div>
-      <Label text="Hatırlatma saati">
+      <Label text={t("b.reminder")}>
         <input className={`${inputCls} w-32`} type="time" value={h.reminder_time}
           onChange={(e) => setH({ ...h, reminder_time: e.target.value })} />
       </Label>
       <div className="flex flex-col gap-1.5">
-        <Toggle label="Danışan hedefi değiştirebilsin" checked={h.client_can_edit_target}
+        <Toggle label={t("b.clientCanEdit")} checked={h.client_can_edit_target}
           onChange={(v) => setH({ ...h, client_can_edit_target: v })} />
-        <Toggle label="Seri sayacını göster" checked={h.show_streak} onChange={(v) => setH({ ...h, show_streak: v })} />
+        <Toggle label={t("b.showStreak")} checked={h.show_streak} onChange={(v) => setH({ ...h, show_streak: v })} />
       </div>
       <div className="flex items-center gap-2">
         <button
@@ -670,11 +682,11 @@ function HabitPanel({
           onClick={() => onSave(h)}
           className="rounded-lg bg-ink px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
         >
-          {pending ? "Kaydediliyor…" : "Kaydet"}
+          {pending ? t("common.saving") : t("common.save")}
         </button>
         {onDelete && (
           <button disabled={pending} onClick={onDelete} className="ml-auto text-sm text-red-600 underline">
-            Kaldır
+            {t("common.remove")}
           </button>
         )}
       </div>
@@ -695,22 +707,22 @@ function SendPanel({
   pending: boolean;
   onSend: (startDate: string, repeat: ProgramRepeat) => void;
 }) {
+  const { t } = useI18n();
   const [startDate, setStartDate] = useState(defaultStart);
   const [repeat, setRepeat] = useState<ProgramRepeat>(defaultRepeat);
   return (
     <div className="flex flex-wrap items-end gap-4 rounded-xl border border-ink bg-white p-4">
       <p className="w-full text-sm">
-        <span className="font-medium">{clientName || "Danışan"}</span> bu programı uygulamasında görecek. Aynı alandaki
-        önceki aktif program tamamlandı olarak kapanır.
+        {t("b.sendInfo", { name: clientName || t("web.col.client") })}
       </p>
-      <Label text="Başlangıç tarihi">
+      <Label text={t("b.startDate")}>
         <input className={`${inputCls} w-44`} type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
       </Label>
-      <Label text="Tekrar">
+      <Label text={t("b.repeat")}>
         <select className={`${inputCls} w-64`} value={repeat} onChange={(e) => setRepeat(e.target.value as ProgramRepeat)}>
-          {Object.entries(PROGRAM_REPEAT_LABELS).map(([k, v]) => (
+          {(["once", "four_weeks", "until_end"] as const).map((k) => (
             <option key={k} value={k}>
-              {v}
+              {t(`repeat.${k}`)}
             </option>
           ))}
         </select>
@@ -720,9 +732,9 @@ function SendPanel({
         onClick={() => onSend(startDate, repeat)}
         className="rounded-lg bg-ink px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
       >
-        {pending ? "Gönderiliyor…" : "Gönder"}
+        {pending ? t("b.sending") : t("b.sendShort")}
       </button>
-      <p className="w-full text-xs text-muted">Bildirim gönderme 6. adımda (mesajlar ve bildirimler) eklenecek.</p>
+      <p className="w-full text-xs text-muted">{t("b.sendNotify")}</p>
     </div>
   );
 }
