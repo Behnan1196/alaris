@@ -389,3 +389,18 @@ test("ilerleme yorumu: koç yazar, danışan okur, diğer koç göremez", async 
   assert.equal((await as(zehra, `select * from progress_comments`)).length, 0);
   await rejects(as(can, `insert into progress_comments (coaching_id, domain_key, body) values ($1, 'nutrition', 'x')`, [canDenizCoaching]), /row-level security/);
 });
+
+test("kayıtta seçilen dil profile yazılır", async () => {
+  const { rows } = await db.query(
+    `insert into auth.users (email, raw_user_meta_data) values ('eng@test.local', $1) returning id`,
+    [{ full_name: "John", locale: "en" }],
+  );
+  const [p] = await as(rows[0].id, `select locale from profiles where id = $1`, [rows[0].id]);
+  assert.equal(p.locale, "en");
+  const { rows: r2 } = await db.query(
+    `insert into auth.users (email, raw_user_meta_data) values ('xx@test.local', $1) returning id`,
+    [{ full_name: "X", locale: "de" }],
+  );
+  const [p2] = await as(r2[0].id, `select locale from profiles where id = $1`, [r2[0].id]);
+  assert.equal(p2.locale, "tr");
+});

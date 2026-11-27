@@ -357,6 +357,7 @@ export type Database = {
           id: string
           muscles: string[]
           name: string
+          name_i18n: Json
           owner_coach_id: string | null
           steps: string[]
           video_paths: Json
@@ -367,6 +368,7 @@ export type Database = {
           id?: string
           muscles?: string[]
           name: string
+          name_i18n?: Json
           owner_coach_id?: string | null
           steps?: string[]
           video_paths?: Json
@@ -377,6 +379,7 @@ export type Database = {
           id?: string
           muscles?: string[]
           name?: string
+          name_i18n?: Json
           owner_coach_id?: string | null
           steps?: string[]
           video_paths?: Json
@@ -399,6 +402,7 @@ export type Database = {
           id: string
           kcal: number | null
           name: string
+          name_i18n: Json
           owner_coach_id: string | null
           portion: string | null
           protein_g: number | null
@@ -410,6 +414,7 @@ export type Database = {
           id?: string
           kcal?: number | null
           name: string
+          name_i18n?: Json
           owner_coach_id?: string | null
           portion?: string | null
           protein_g?: number | null
@@ -421,6 +426,7 @@ export type Database = {
           id?: string
           kcal?: number | null
           name?: string
+          name_i18n?: Json
           owner_coach_id?: string | null
           portion?: string | null
           protein_g?: number | null

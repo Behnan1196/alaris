@@ -11,6 +11,27 @@ const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPAB
   auth: { persistSession: false },
 });
 
+// Bildirim metinleri alıcının diline göre (profiles.locale).
+const TEXT = {
+  tr: {
+    newMessage: "Yeni mesaj",
+    newProgram: "Yeni program",
+    programBody: (coach: string, name: string) => `${coach} sana "${name}" programını gönderdi.`,
+    yourCoach: "Koçun",
+  },
+  en: {
+    newMessage: "New message",
+    newProgram: "New program",
+    programBody: (coach: string, name: string) => `${coach} sent you the program "${name}".`,
+    yourCoach: "Your coach",
+  },
+} as const;
+
+async function localeOf(userId: string): Promise<keyof typeof TEXT> {
+  const { data } = await supabase.from("profiles").select("locale").eq("id", userId).maybeSingle();
+  return data?.locale === "en" ? "en" : "tr";
+}
+
 type Push = { to: string; title: string; body: string; data: Record<string, string>; sound: "default" };
 
 async function tokensOf(userId: string) {
@@ -53,10 +74,11 @@ async function handleMessage(id: string) {
 
   const { data: sender } = await supabase.from("profiles").select("full_name").eq("id", m.sender_id).single();
   const tokens = await tokensOf(recipient);
+  const lang = await localeOf(recipient);
   await send(
     tokens.map((to) => ({
       to,
-      title: sender?.full_name || "Yeni mesaj",
+      title: sender?.full_name || TEXT[lang].newMessage,
       body: m.body.length > 140 ? m.body.slice(0, 137) + "…" : m.body,
       data: { url: `/sohbet/${thread.id}` },
       sound: "default",
@@ -79,11 +101,12 @@ async function handleProgram(ref: string) {
 
   const { data: coach } = await supabase.from("profiles").select("full_name").eq("id", p.coach_id).single();
   const tokens = await tokensOf(clientId);
+  const lang = await localeOf(clientId);
   await send(
     tokens.map((to) => ({
       to,
-      title: "Yeni program",
-      body: `${coach?.full_name ?? "Koçun"} sana "${p.name}" programını gönderdi.`,
+      title: TEXT[lang].newProgram,
+      body: TEXT[lang].programBody(coach?.full_name ?? TEXT[lang].yourCoach, p.name),
       data: { url: "/" },
       sound: "default",
     })),

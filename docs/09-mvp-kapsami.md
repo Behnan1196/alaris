@@ -33,8 +33,7 @@ Odak: **Fitness ve Beslenme**. Sınav ve Gitar yalnızca yer tutucu (ör. "Yakı
 - Koçun danışandan ücret tahsil etmesi.
 - Ekip / stüdyo hesapları, admin paneli (temel bir yönetim aracı dışında).
 - Sağlık uygulaması entegrasyonu, canlı ders / görüntülü görüşme.
-- Çoklu dil.
-
+- ~~Çoklu dil~~: 27 Kasım 2026 itibarıyla MVP'de (Türkçe + İngilizce).
 ## Başarı ölçütleri [VARSAYIM]
 
 - Koç: ilk danışanına program göndermesi 15 dakikanın altında.

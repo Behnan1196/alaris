@@ -15,6 +15,11 @@ Cevaplanınca soruyu buradan kaldır, kararı `karar-gunlugu.md` dosyasına ve i
 12. Koçluk bitince koçun eski danışan verisine erişimi ne olur?
 13. Danışanın başka hangi alanlarda koçluk aldığını (yalnızca alan adı) koçun görmesi de rızaya bağlı mı?
 
+## İçerik
+
+22. Hazır hareket video seti: lisanslı kütüphane (ör. MuscleWiki, ExerciseDB; video hakları sözleşmeyle doğrulanmalı) mi, kendi çekimimiz (150–300 temel hareket, kısa iki açılı döngüler) mi, ikisi birden mi? Başka platformların (Everfit, Hubfit) videoları kullanılamaz. Döngüler kendi depomuzda; YouTube yalnızca uzun anlatım ve tanıtım için önerilir.
+23. Besin veritabanı kaynağı: USDA FoodData Central (kamu malı, İngilizce), TürKomp (ticari kullanım için TAGEM'den yazılı izin gerekir), barkod için Open Food Facts (ODbL, kaynak gösterilmeli).
+
 ## Tasarım
 
 14. Widget arka planları için gerçek fotoğraflar, marka ve logo.

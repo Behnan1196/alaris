@@ -19,3 +19,10 @@ Karar tarihi: 26 Kasım 2026. [KARAR]
 - Supabase projesinin bölgesi ve KVKK açısından verinin nerede tutulacağı.
 - Video barındırma: Supabase Storage mı, ayrı bir video servisi mi.
 - ~~Kod deposu~~: GitHub `Behnan1196/alaris`, npm workspaces ile tek depo. [KARAR]
+
+## Çok dil [KARAR 27 Kasım 2026]
+
+- Sözlük: `packages/shared/src/i18n` (`tr.ts` kaynak, `en.ts` aynı anahtarlarla; eksik anahtar derlemede hata verir). Çevirici `createT(locale)`, `{ad}` yer tutucuları.
+- Panel: dil `locale` çerezinden, yoksa `Accept-Language`; `I18nProvider` kök yerleşimde, sunucu bileşenlerinde `getT()`, istemcide `useI18n()`, sunucu sayfasında metin için `<T k="..." />`.
+- Uygulama: cihaz dili (Intl) + `AsyncStorage` ile elle seçim; seçim `profiles.locale`e yazılır.
+- Veritabanının Türkçe hata iletileri istemcide `translateError` ile çevrilir.

@@ -10,6 +10,7 @@ export type Exercise = {
   id: string;
   owner_coach_id: string | null;
   name: string;
+  name_i18n?: unknown;
   muscles: string[];
   equipment: string | null;
   steps: string[];

@@ -8,7 +8,7 @@ async function Content() {
   const { supabase, userId } = await requireCoach();
   const { data } = await supabase
     .from("exercises")
-    .select("id, owner_coach_id, name, muscles, equipment, steps, video_paths")
+    .select("id, owner_coach_id, name, name_i18n, muscles, equipment, steps, video_paths")
     .or(`owner_coach_id.is.null,owner_coach_id.eq.${userId}`)
     .order("name");
 

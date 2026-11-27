@@ -42,7 +42,8 @@ Alaris, birden çok alanda (fitness, beslenme, sınav koçluğu, gitar ve ilerid
 ## Çalışma kuralları
 
 - Kullanıcı (Behnan) Türkçe yazar. Belgeler, arayüz metinleri ve commit dışı yazışmalar Türkçe.
-- Kod içi isimler (değişken, tablo, API) İngilizce olabilir; arayüz metni Türkçe kalır. [VARSAYIM]
+- Kod içi isimler (değişken, tablo, API) İngilizce olabilir.
+- Arayüz Türkçe + İngilizce (27 Kasım 2026). Arayüze sabit metin yazılmaz: yeni metin önce `packages/shared/src/i18n/tr.ts`e, aynı anahtarla `en.ts`e eklenir; bileşende `t("anahtar")` kullanılır.
 - Belgede **[VARSAYIM]** ile işaretli bir şeyi kesinmiş gibi uygulamadan önce kullanıcıya sor ya da varsayımı açıkça belirterek ilerle.
 - Yeni bir karar alındığında `docs/karar-gunlugu.md` dosyasına tarihli satır ekle; ilgili belgeyi de güncelle.
 - Onay (26 Kasım 2026, Behnan): GitHub'a push, Supabase migration'ları ve Edge Function yüklemesi için ayrıca onay istenmez. Geri alınamayan işler (veri silme, üretim verisini değiştiren toplu işlem, proje dışına mesaj) yine sorulur.

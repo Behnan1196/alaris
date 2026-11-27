@@ -1,4 +1,4 @@
-import { DOMAINS, type DomainKey } from "@alaris/shared";
+import { DOMAINS, localizedName, type DomainKey } from "@alaris/shared";
 import { getT } from "@/lib/i18n";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -12,7 +12,7 @@ type Params = PageProps<"/panel/danisan/[coachingId]/program/[domain]">["params"
 
 async function Content({ params }: { params: Params }) {
   const { coachingId, domain } = await params;
-  const { t } = await getT();
+  const { t, locale } = await getT();
   const { supabase, userId } = await requireCoach();
   const d = DOMAINS[domain as DomainKey];
   if (!d) notFound();
@@ -80,7 +80,7 @@ async function Content({ params }: { params: Params }) {
       .eq("domain_key", domain)
       .eq("active", true)
       .order("created_at"),
-    supabase.from("exercises").select("id, name").order("name"),
+    supabase.from("exercises").select("id, name, name_i18n").order("name"),
   ]);
 
   return (
@@ -95,7 +95,7 @@ async function Content({ params }: { params: Params }) {
         program={program}
         tasks={tasks ?? []}
         habits={habits ?? []}
-        exercises={exercises ?? []}
+        exercises={(exercises ?? []).map((e) => ({ id: e.id, name: localizedName(e, locale) }))}
       />
     </div>
   );
