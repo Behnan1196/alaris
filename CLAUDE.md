@@ -35,6 +35,7 @@ Alaris, birden çok alanda (fitness, beslenme, sınav koçluğu, gitar ve ilerid
 | [docs/11-teknik-yigin.md](docs/11-teknik-yigin.md) | Next.js + Expo + Supabase kararları |
 | [docs/12-yol-haritasi.md](docs/12-yol-haritasi.md) | Kilometre taşları (öneri) |
 | [docs/13-yayin.md](docs/13-yayin.md) | Vercel ve TestFlight yayın adımları |
+| [docs/14-panel-arayuz.md](docs/14-panel-arayuz.md) | Koç paneli arayüzü: Everfit/Hubfit kalıpları ve öneri |
 | [docs/karar-gunlugu.md](docs/karar-gunlugu.md) | Alınan kararlar, tarihleriyle |
 | [docs/mockups/](docs/mockups/) | Onaylı mockup'ların HTML yedekleri |
 
