@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { useI18n } from "@/components/i18n";
 import { createClient } from "@/lib/supabase/client";
 
 export type ChatMessage = {
@@ -12,7 +13,6 @@ export type ChatMessage = {
   read_at: string | null;
 };
 
-const timeFmt = new Intl.DateTimeFormat("tr-TR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 
 export function Chat({
   threadId,
@@ -25,6 +25,8 @@ export function Chat({
   otherName: string;
   initial: ChatMessage[];
 }) {
+  const { t, intl } = useI18n();
+  const timeFmt = new Intl.DateTimeFormat(intl, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
   const router = useRouter();
   const [messages, setMessages] = useState(initial);
   const [text, setText] = useState("");
@@ -83,7 +85,7 @@ export function Chat({
     <div className="flex h-[70vh] flex-col rounded-xl border border-line bg-white">
       <div className="border-b border-line px-4 py-3 font-semibold">{otherName}</div>
       <div className="flex flex-1 flex-col gap-2 overflow-y-auto p-4">
-        {messages.length === 0 && <p className="text-sm text-muted">Henüz mesaj yok. İlk mesajı sen yaz.</p>}
+        {messages.length === 0 && <p className="text-sm text-muted">{t("msg.emptyCoach")}</p>}
         {messages.map((m) => {
           const mine = m.sender_id === me;
           return (
@@ -97,7 +99,7 @@ export function Chat({
               </div>
               <span className="mt-0.5 text-[10px] text-muted">
                 {timeFmt.format(new Date(m.created_at))}
-                {mine && (m.read_at ? " · Okundu" : " · Gönderildi")}
+                {mine && ` · ${m.read_at ? t("msg.read") : t("msg.sent")}`}
               </span>
             </div>
           );
@@ -115,7 +117,7 @@ export function Chat({
         <textarea
           className="flex-1 resize-none rounded-lg border border-line px-3 py-2 text-sm outline-none focus:border-ink"
           rows={2}
-          placeholder="Mesaj yaz… (Enter gönderir, Shift+Enter yeni satır)"
+          placeholder={t("msg.placeholderWeb")}
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => {
@@ -129,7 +131,7 @@ export function Chat({
           disabled={sending || !text.trim()}
           className="rounded-lg bg-ink px-4 text-sm font-medium text-white disabled:opacity-40"
         >
-          Gönder
+          {t("b.sendShort")}
         </button>
       </form>
     </div>

@@ -4,6 +4,7 @@ import type { Json, ProgramRepeat } from "@alaris/shared";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/coach";
+import { getT } from "@/lib/i18n";
 
 export type Result = { error?: string; ok?: boolean };
 
@@ -48,7 +49,7 @@ export async function saveTask(input: TaskInput, path: string): Promise<Result &
     week_no: input.week_no ?? 1,
     day_of_week: input.day_of_week,
     task_type_key: input.task_type_key,
-    title: input.title.trim() || "Görev",
+    title: input.title.trim() || (await getT()).t("b.task"),
     payload: input.payload,
     options: input.options,
     client_note: input.client_note?.trim() || null,
@@ -103,7 +104,7 @@ export async function saveHabit(input: HabitInput, path: string): Promise<Result
   const { id, ...rest } = input;
   const row = {
     ...rest,
-    title: rest.title.trim() || "Alışkanlık",
+    title: rest.title.trim() || (await getT()).t("taskType.habit"),
     unit: rest.unit?.trim() || null,
     reminder_time: rest.reminder_time || null,
   };
@@ -145,13 +146,14 @@ export async function sendProgram(
   path: string,
 ): Promise<Result> {
   const { supabase } = await requireUser();
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(input.startDate)) return { error: "Başlangıç tarihi seç." };
+  const { t } = await getT();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(input.startDate)) return { error: t("b.err.startDate") };
 
   const { count } = await supabase
     .from("program_tasks")
     .select("id", { count: "exact", head: true })
     .eq("program_id", input.programId);
-  if (!count) return { error: "Göndermeden önce en az bir görev ekle." };
+  if (!count) return { error: t("b.err.noTasks") };
 
   const prev = await supabase
     .from("programs")
@@ -222,7 +224,7 @@ export async function copyWeek(programId: string, fromWeek: number, toWeek: numb
 
 /** Haftanın kendi görevlerini siler; hafta yeniden 1. hafta şablonunu kullanır. */
 export async function resetWeek(programId: string, week: number, path: string): Promise<Result> {
-  if (week <= 1) return { error: "1. hafta şablondur, sıfırlanamaz." };
+  if (week <= 1) return { error: (await getT()).t("b.err.resetTemplate") };
   const { supabase } = await requireUser();
   const { error } = await supabase.from("program_tasks").delete().eq("program_id", programId).eq("week_no", week);
   if (error) return { error: error.message };

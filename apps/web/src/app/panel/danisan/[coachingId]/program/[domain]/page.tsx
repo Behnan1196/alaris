@@ -38,7 +38,7 @@ async function Content({ params }: { params: Params }) {
     <PageHeader
       crumb={
         <Link href={`/panel/danisan/${coachingId}`} className="hover:underline">
-          {coaching.client?.full_name || "Danışan"}
+          {coaching.client?.full_name || t("web.col.client")}
         </Link>
       }
       title={

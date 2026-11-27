@@ -1,5 +1,6 @@
 import { Suspense } from "react";
-import { PageBody, PageHeader, Loading } from "@/components/ui";
+import { T } from "@/components/t";
+import { Loading, PageBody, PageHeader } from "@/components/ui";
 import { requireCoach } from "@/lib/coach";
 import { Library, type Exercise } from "./library";
 
@@ -13,9 +14,9 @@ async function Content() {
 
   return (
     <PageBody>
-      <PageHeader crumb="Kütüphane" title="Hareketler" />
+      <PageHeader crumb={<T k="nav.library" />} title={<T k="e.exercises" />} />
       <p className="-mt-3 text-sm text-muted">
-        Programda hareket adını yazarken bu listeden seçebilirsin. Videolar danışan uygulamasında hareket ekranında oynar.
+        <T k="lib.hint" />
       </p>
       <Library coachId={userId} exercises={(data ?? []) as unknown as Exercise[]} />
     </PageBody>

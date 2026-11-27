@@ -1,4 +1,5 @@
-import { DOMAINS, type DomainKey } from "@alaris/shared";
+import { DOMAINS, intlLocale, type DomainKey } from "@alaris/shared";
+import { getT } from "@/lib/i18n";
 import Link from "next/link";
 import { Suspense } from "react";
 import { DomainTag } from "@/components/domain-tag";
@@ -8,19 +9,20 @@ import { loadThreads, type ThreadSummary } from "@/lib/messages";
 import { loadWeek, pct } from "@/lib/tracking";
 import { Chat } from "./chat";
 
-const timeFmt = new Intl.DateTimeFormat("tr-TR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 
 /** Son mesaj danışandansa yanıt bekliyor sayılır. */
 const awaitingReply = (th: ThreadSummary, coachId: string) => !!th.last && th.last.sender_id !== coachId;
 
 async function Content({ searchParams }: { searchParams: PageProps<"/panel/mesajlar">["searchParams"] }) {
-  const { t, f } = await searchParams;
+  const { t: threadParam, f } = await searchParams;
   const filter = f === "bekleyen" ? "bekleyen" : "tumu";
   const { supabase, userId } = await requireCoach();
+  const { t, locale } = await getT();
+  const timeFmt = new Intl.DateTimeFormat(intlLocale(locale), { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
   const threads = await loadThreads(supabase, userId);
   const waiting = threads.filter((th) => awaitingReply(th, userId));
   const shown = filter === "bekleyen" ? waiting : threads;
-  const selectedId = typeof t === "string" ? t : shown[0]?.id;
+  const selectedId = typeof threadParam === "string" ? threadParam : shown[0]?.id;
   const selected = threads.find((x) => x.id === selectedId);
 
   const [{ data: messages }, { data: coaching }] = selected
@@ -46,16 +48,16 @@ async function Content({ searchParams }: { searchParams: PageProps<"/panel/mesaj
 
   return (
     <PageBody wide>
-      <PageHeader crumb={`${threads.reduce((n, th) => n + th.unread, 0)} okunmamış`} title="Mesajlar" />
+      <PageHeader crumb={t("msg.unreadCount", { n: threads.reduce((n, th) => n + th.unread, 0) })} title={t("nav.messages")} />
       {threads.length === 0 ? (
-        <p className="text-sm text-muted">Henüz sohbet yok. Danışan davet koduyla bağlanınca sohbet açılır.</p>
+        <p className="text-sm text-muted">{t("msg.noThreadsCoach")}</p>
       ) : (
         <div className="grid gap-6 lg:grid-cols-[280px_1fr] xl:grid-cols-[280px_1fr_280px]">
           <div className="flex flex-col gap-3">
             <div className="flex gap-1 rounded-xl border border-line bg-surface p-1 text-sm">
               {[
-                ["tumu", `Tümü ${threads.length}`],
-                ["bekleyen", `Yanıt bekleyen ${waiting.length}`],
+                ["tumu", `${t("web.clients.all")} ${threads.length}`],
+                ["bekleyen", `${t("msg.awaiting")} ${waiting.length}`],
               ].map(([k, label]) => (
                 <Link
                   key={k}
@@ -67,7 +69,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/panel/mesaj
               ))}
             </div>
             <ul className="flex flex-col gap-1">
-              {shown.length === 0 && <li className="px-1 text-sm text-muted">Yanıt bekleyen sohbet yok.</li>}
+              {shown.length === 0 && <li className="px-1 text-sm text-muted">{t("msg.noneAwaiting")}</li>}
               {shown.map((th) => (
                 <li key={th.id}>
                   <Link
@@ -77,15 +79,15 @@ async function Content({ searchParams }: { searchParams: PageProps<"/panel/mesaj
                     }`}
                   >
                     <span className="flex items-center justify-between font-medium">
-                      {th.otherName}
+                      {th.otherName === "–" ? t("common.unnamed") : th.otherName}
                       {th.unread > 0 ? (
                         <span className="rounded-full bg-accent px-1.5 text-xs text-white">{th.unread}</span>
                       ) : awaitingReply(th, userId) ? (
-                        <span className={`text-xs ${th.id === selected?.id ? "text-white/70" : "text-accent"}`}>yanıt bekliyor</span>
+                        <span className={`text-xs ${th.id === selected?.id ? "text-white/70" : "text-accent"}`}>{t("msg.awaitingShort")}</span>
                       ) : null}
                     </span>
                     <span className={`truncate text-xs ${th.id === selected?.id ? "text-white/70" : "text-muted"}`}>
-                      {th.last ? `${timeFmt.format(new Date(th.last.created_at))} · ${th.last.body}` : "Henüz mesaj yok"}
+                      {th.last ? `${timeFmt.format(new Date(th.last.created_at))} · ${th.last.body}` : t("msg.noMessages")}
                     </span>
                   </Link>
                 </li>
@@ -105,11 +107,11 @@ async function Content({ searchParams }: { searchParams: PageProps<"/panel/mesaj
                 </div>
                 <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
                   <div>
-                    <dt className="text-xs text-muted">Bu hafta uyum</dt>
+                    <dt className="text-xs text-muted">{t("web.kpi.adherence")}</dt>
                     <dd className="font-display text-xl font-semibold">{pct(week?.adherence ?? null)}</dd>
                   </div>
                   <div>
-                    <dt className="text-xs text-muted">Kaçırılan</dt>
+                    <dt className="text-xs text-muted">{t("taskStatus.missed")}</dt>
                     <dd className={`font-display text-xl font-semibold ${week?.missed ? "text-red-700" : ""}`}>{week?.missed ?? 0}</dd>
                   </div>
                 </dl>
@@ -119,17 +121,17 @@ async function Content({ searchParams }: { searchParams: PageProps<"/panel/mesaj
                     return (
                       <li key={domain_key} className="flex items-center gap-2">
                         <span className="h-2 w-2 rounded-full" style={{ backgroundColor: DOMAINS[domain_key as DomainKey]?.color }} />
-                        <span className={p ? "" : "text-muted"}>{p?.name ?? "Program yok"}</span>
+                        <span className={p ? "" : "text-muted"}>{p?.name ?? t("flag.no_program")}</span>
                       </li>
                     );
                   })}
                 </ul>
                 <Link href={`/panel/danisan/${coaching.id}`} className="mt-4 block text-sm font-medium underline">
-                  Profili aç
+                  {t("msg.openProfile")}
                 </Link>
               </Card>
               {!!week?.tasks.length && (
-                <Card title="Bugün ve yarın">
+                <Card title={t("msg.todayTomorrow")}>
                   <ul className="flex flex-col gap-2 text-sm">
                     {week.tasks
                       .filter((x) => {
@@ -139,7 +141,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/panel/mesaj
                       .map((x) => (
                         <li key={x.programTaskId + x.date} className="flex items-center justify-between gap-2">
                           <span>{x.title}</span>
-                          <span className="text-xs text-muted">{x.status === "done" ? "✓ Tamam" : x.status === "in_progress" ? "Devam ediyor" : "Bekliyor"}</span>
+                          <span className="text-xs text-muted">{x.status === "done" ? `✓ ${t("taskStatus.done")}` : x.status === "in_progress" ? t("taskStatus.in_progress") : t("taskStatus.pending")}</span>
                         </li>
                       ))}
                   </ul>

@@ -43,7 +43,7 @@ export async function loadThreads(supabase: Supabase, coachId: string): Promise<
     .map((t) => ({
       id: t.id,
       clientId: t.client_id,
-      otherName: t.client?.full_name || "İsimsiz",
+      otherName: t.client?.full_name || "–",
       unread: unreadOf.get(t.id) ?? 0,
       last: lastOf.get(t.id) ?? null,
     }))
