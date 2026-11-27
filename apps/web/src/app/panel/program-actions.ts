@@ -32,6 +32,7 @@ export async function createProgram(formData: FormData) {
 export type TaskInput = {
   id?: string;
   program_id: string;
+  week_no?: number;
   day_of_week: number;
   task_type_key: string;
   title: string;
@@ -44,6 +45,7 @@ export async function saveTask(input: TaskInput, path: string): Promise<Result &
   const { supabase } = await requireUser();
   const row = {
     program_id: input.program_id,
+    week_no: input.week_no ?? 1,
     day_of_week: input.day_of_week,
     task_type_key: input.task_type_key,
     title: input.title.trim() || "Görev",
@@ -71,7 +73,7 @@ export async function copyTask(id: string, dayOfWeek: number, path: string): Pro
   const { supabase } = await requireUser();
   const { data, error } = await supabase
     .from("program_tasks")
-    .select("program_id, task_type_key, title, payload, options, client_note")
+    .select("program_id, week_no, task_type_key, title, payload, options, client_note")
     .eq("id", id)
     .single();
   if (error) return { error: error.message };
@@ -185,5 +187,45 @@ export async function saveProgressComment(coachingId: string, domain: string, bo
     .from("progress_comments")
     .upsert({ coaching_id: coachingId, domain_key: domain, body, updated_at: new Date().toISOString() });
   if (error) return { error: error.message };
+  return { ok: true };
+}
+
+export async function moveTask(id: string, dayOfWeek: number, path: string): Promise<Result> {
+  const { supabase } = await requireUser();
+  const { error } = await supabase.from("program_tasks").update({ day_of_week: dayOfWeek }).eq("id", id);
+  if (error) return { error: error.message };
+  revalidatePath(path);
+  return { ok: true };
+}
+
+/** Bir haftanın görevlerini başka haftaya kopyalar; hedef haftanın kendi görevleri silinir. */
+export async function copyWeek(programId: string, fromWeek: number, toWeek: number, path: string): Promise<Result> {
+  if (fromWeek === toWeek) return { ok: true };
+  const { supabase } = await requireUser();
+  const { data: source, error } = await supabase
+    .from("program_tasks")
+    .select("task_type_key, title, payload, options, client_note, day_of_week, sort_order")
+    .eq("program_id", programId)
+    .eq("week_no", fromWeek);
+  if (error) return { error: error.message };
+  const del = await supabase.from("program_tasks").delete().eq("program_id", programId).eq("week_no", toWeek);
+  if (del.error) return { error: del.error.message };
+  if (source.length) {
+    const ins = await supabase
+      .from("program_tasks")
+      .insert(source.map((t) => ({ ...t, program_id: programId, week_no: toWeek })));
+    if (ins.error) return { error: ins.error.message };
+  }
+  revalidatePath(path);
+  return { ok: true };
+}
+
+/** Haftanın kendi görevlerini siler; hafta yeniden 1. hafta şablonunu kullanır. */
+export async function resetWeek(programId: string, week: number, path: string): Promise<Result> {
+  if (week <= 1) return { error: "1. hafta şablondur, sıfırlanamaz." };
+  const { supabase } = await requireUser();
+  const { error } = await supabase.from("program_tasks").delete().eq("program_id", programId).eq("week_no", week);
+  if (error) return { error: error.message };
+  revalidatePath(path);
   return { ok: true };
 }

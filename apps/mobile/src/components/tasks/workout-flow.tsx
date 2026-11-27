@@ -117,7 +117,10 @@ export function WorkoutFlow({ task, instance: initial, color }: TaskProps) {
         </ThemedText>
         {exercises.map((e, i) => (
           <View key={i} style={styles.summaryRow}>
-            <ThemedText style={{ flex: 1 }}>{e.name || `Hareket ${i + 1}`}</ThemedText>
+            <ThemedText style={{ flex: 1 }}>
+              {e.superset ? "↳ " : ""}
+              {e.name || `Hareket ${i + 1}`}
+            </ThemedText>
             <ThemedText type="small" themeColor="textSecondary">
               {e.sets} × {target(e)}
             </ThemedText>
@@ -205,6 +208,7 @@ function ExerciseStep({
     <Screen>
       <ThemedText type="small" themeColor="textSecondary">
         Hareket {index + 1} / {exercises.length}
+        {e.superset ? " · önceki hareketle süperset" : exercises[index + 1]?.superset ? " · sonraki hareketle süperset" : ""}
       </ThemedText>
       <ThemedText type="subtitle">{e.name || `Hareket ${index + 1}`}</ThemedText>
       <ExerciseMedia exerciseId={e.exercise_id} />

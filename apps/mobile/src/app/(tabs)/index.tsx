@@ -4,6 +4,7 @@ import {
   activeWeeks,
   localDate,
   programDay,
+  tasksForDay,
   type DomainKey,
   type ProgramRepeat,
   type TaskTypeKey,
@@ -89,7 +90,7 @@ export default function KocluklarimScreen() {
         const pos = program?.start_date ? programDay(program.start_date, total) : null;
         const today = pos
           ? program!.program_tasks
-              .filter((t) => t.week_no === 1 && t.day_of_week === pos.dayOfWeek)
+              .filter((t) => tasksForDay(program!.program_tasks, pos.week, pos.dayOfWeek).includes(t))
               .sort((a, b) => a.sort_order - b.sort_order)
               .map((t) => ({ id: t.id, type: t.task_type_key, title: t.title, status: statusOf.get(t.id) ?? null }))
           : [];

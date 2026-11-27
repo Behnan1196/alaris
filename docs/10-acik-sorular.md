@@ -11,7 +11,6 @@ Cevaplanınca soruyu buradan kaldır, kararı `karar-gunlugu.md` dosyasına ve i
 
 5. Danışan başına koçluk sayısı sınırı olacak mı?
 9. Aynı danışanın iki koçu da ölçüm isterse: tek ölçüm kaydı ortak mı kullanılır (rızayla)?
-10. Çok haftalı program düzenleme (hafta geçişi, hafta kopyalama) nasıl olacak?
 11. Koçların mobil uygulaması olacak mı, yoksa yalnızca web paneli mi (mobil uyumlu)?
 12. Koçluk bitince koçun eski danışan verisine erişimi ne olur?
 13. Danışanın başka hangi alanlarda koçluk aldığını (yalnızca alan adı) koçun görmesi de rızaya bağlı mı?

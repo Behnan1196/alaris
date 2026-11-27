@@ -61,3 +61,4 @@ Birden çok haftalık programın düzenlenmesi (hafta 1..12 arası geçiş, haft
 - **Danışan sayfası:** alan kartları, Bu hafta (günlere göre görev durumları), İlerleme (ölçüm başına son değer, değişim ve çizgi grafik), koç notu, Son kayıtlar (set, zorluk puanı, öğün), Alışkanlıklar (son 7 gün), Başka koçlardan aldığı.
 - Henüz yok: "Mesaja yanıt ver" ve okunmamış mesaj göstergesi (6. adım), filtreler ve arama.
 - (7. adım) Kütüphane: sistem ve kendi hareketlerin; yeni hareket, sistem hareketini kopyalayıp düzenleme, video yükleme (en fazla 50 MB). Danışan sayfasında Fotoğraflar ve alan başına "ilerleme yorumu" (danışan İlerleme ekranında görür). Öğün ve şablon kütüphanesi sekmeleri henüz yok.
+- (27 Kasım) Program oluşturucu: hafta seçici (1..N), 1. hafta şablon, "Bu haftayı ayrı düzenle", "Bu haftayı kopyala", "1. hafta şablonuna dön"; görevleri sürükleyip başka güne taşıma; antrenmanda "öncekiyle süperset".

@@ -66,9 +66,9 @@ async function Content({ params }: { params: Params }) {
   const [{ data: tasks }, { data: habits }, { data: exercises }] = await Promise.all([
     supabase
       .from("program_tasks")
-      .select("id, day_of_week, task_type_key, title, payload, options, client_note, sort_order")
+      .select("id, week_no, day_of_week, task_type_key, title, payload, options, client_note, sort_order")
       .eq("program_id", program.id)
-      .eq("week_no", 1)
+      .order("week_no")
       .order("sort_order")
       .order("created_at"),
     supabase

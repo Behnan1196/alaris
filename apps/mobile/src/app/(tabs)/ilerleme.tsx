@@ -5,6 +5,7 @@ import {
   activeWeeks,
   localDate,
   programDay,
+  tasksForDay,
   type DomainKey,
   type MealPayload,
   type MealProgress,
@@ -45,7 +46,8 @@ async function plannedThisWeek(coachingId: string, domain: string, type: string)
   const total = activeWeeks(data.repeat as ProgramRepeat, data.weeks);
   return weekDays().reduce((n, d, i) => {
     if (!programDay(data.start_date!, total, d)) return n;
-    return n + data.program_tasks.filter((t) => t.week_no === 1 && t.day_of_week === i + 1 && t.task_type_key === type).length;
+    const pos = programDay(data.start_date!, total, d)!;
+    return n + tasksForDay(data.program_tasks, pos.week, i + 1).filter((t) => t.task_type_key === type).length;
   }, 0);
 }
 

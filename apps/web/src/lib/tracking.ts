@@ -3,6 +3,7 @@ import {
   habitDueOn,
   localDate,
   programDay,
+  tasksForDay,
   type HabitFrequency,
   type ProgramRepeat,
 } from "@alaris/shared";
@@ -88,7 +89,8 @@ export async function loadWeek(supabase: Supabase, coachingIds: string[], now = 
     days.forEach((day, i) => {
       if (!programDay(p.start_date!, total, day)) return;
       const key = localDate(day);
-      for (const t of p.program_tasks.filter((x) => x.week_no === 1 && x.day_of_week === i + 1)) {
+      const pos = programDay(p.start_date!, total, day)!;
+      for (const t of tasksForDay(p.program_tasks, pos.week, i + 1)) {
         const s = statusOf.get(`${t.id}:${key}`);
         const status: DayStatus =
           s === "done" ? "done" : key < todayKey ? "missed" : s === "in_progress" ? "in_progress" : "pending";

@@ -25,3 +25,4 @@ Yeni kararı en alta, tarihiyle ekle.
 | 2026-11-26 | Bildirimler: danışana yeni mesaj ve yeni program için uzaktan bildirim (Supabase tetikleyici → notify Edge Function → Expo Push); alışkanlık hatırlatmaları telefonda yerel. Koçlara bildirim yok (web paneli). iPhone geliştirme derlemesi EAS ile, paket kimliği com.behnan.alaris. |
 | 2026-11-27 | Koç paneli Vercel'de (kök dizin `apps/web`), danışan uygulaması TestFlight'a EAS `production` profiliyle. Ayrıntı: `docs/13-yayin.md`. |
 | 2026-11-27 | Koç paneli arayüzü Everfit/Hubfit'te standartlaşmış iskelete göre iyileştirilecek; sıra `docs/14-panel-arayuz.md` §5. Görsel dil onaylı mockup (sıcak nötrler, Inter + Space Grotesk). |
+| 2026-11-27 | Çok haftalı program: 1. hafta şablondur; koç herhangi bir haftayı "ayrı düzenle" ile kopyalayıp değiştirebilir, ayrı düzenlenmeyen haftalar şablonu kullanır. Hafta kopyalama, görev sürükle-bırak ve süperset eklendi. |

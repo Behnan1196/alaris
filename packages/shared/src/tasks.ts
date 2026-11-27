@@ -21,6 +21,8 @@ export interface WorkoutExercise {
   weight_kg?: number | null;
   rest_sec: number;
   note?: string;
+  /** Bir önceki hareketle süperset: aralarında dinlenmeden art arda yapılır. */
+  superset?: boolean;
 }
 
 export interface WorkoutPayload {
@@ -184,4 +186,14 @@ export interface WorkoutProgress {
 export interface MealProgress {
   eaten: number[]; // öğün indeksleri
   water?: number; // bardak
+}
+
+/**
+ * Bir program haftasının bir günündeki görevler. Koç o haftayı ayrıca düzenlediyse
+ * (o hafta numarasıyla görev varsa) o haftanın görevleri, yoksa 1. hafta şablonu kullanılır.
+ */
+export function tasksForDay<T extends { week_no: number; day_of_week: number }>(tasks: T[], week: number, dayOfWeek: number) {
+  const ownWeek = tasks.some((t) => t.week_no === week);
+  const w = ownWeek ? week : 1;
+  return tasks.filter((t) => t.week_no === w && t.day_of_week === dayOfWeek);
 }

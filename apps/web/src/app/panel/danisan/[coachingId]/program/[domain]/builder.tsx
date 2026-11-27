@@ -27,6 +27,9 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import {
   copyTask,
+  copyWeek,
+  moveTask,
+  resetWeek,
   deleteHabit,
   deleteTask,
   saveHabit,
@@ -39,6 +42,7 @@ import { MealEditor, MeasureEditor, Toggle, WorkoutEditor, inputCls, Label } fro
 
 type Task = {
   id: string;
+  week_no: number;
   day_of_week: number;
   task_type_key: string;
   title: string;
@@ -127,6 +131,15 @@ export function Builder({
   const [habitDraft, setHabitDraft] = useState<(Partial<Habit> & { title: string }) | null>(null);
   const [sendOpen, setSendOpen] = useState(false);
   const [meta, setMeta] = useState({ name: program.name, weeks: program.weeks });
+  const [week, setWeek] = useState(1);
+  const [dragId, setDragId] = useState<string | null>(null);
+  const [overDay, setOverDay] = useState<number | null>(null);
+
+  // Hafta: kendi görevi varsa onlar, yoksa 1. hafta şablonu (salt okunur gösterilir).
+  const weeksWithOwn = new Set(tasks.map((t) => t.week_no));
+  const ownWeek = week === 1 || weeksWithOwn.has(week);
+  const weekTasks = tasks.filter((t) => t.week_no === (ownWeek ? week : 1));
+  const editable = ownWeek;
 
   const domainInfo = DOMAINS[domain];
   const taskTypes = domainInfo.taskTypes.filter((t): t is BuilderTaskType => t in DEFAULT_TASK);
@@ -147,6 +160,7 @@ export function Builder({
     const def = DEFAULT_TASK[type];
     setHabitDraft(null);
     setDraft({
+      week_no: week,
       day_of_week: day,
       task_type_key: type,
       title: def.title,
@@ -164,7 +178,7 @@ export function Builder({
   return (
     <div className="flex flex-col gap-6">
       {/* Üst çubuk */}
-      <div className="flex flex-wrap items-end gap-3 rounded-xl border border-line bg-white p-4">
+      <div className="flex flex-wrap items-end gap-3 rounded-2xl border border-line bg-surface p-4">
         <Label text="Program adı">
           <input className={`${inputCls} w-64`} value={meta.name} onChange={(e) => setMeta({ ...meta, name: e.target.value })}
             onBlur={() => meta.name !== program.name && run(() => updateProgramMeta(program.id, meta, path))} />
@@ -205,21 +219,108 @@ export function Builder({
         <div className="flex flex-col gap-6">
           {/* Haftalık takvim */}
           <div>
-            <p className="mb-2 text-xs text-muted">
-              Haftalık şablon. Gönderirken seçtiğin tekrar biçimine göre her hafta uygulanır.
-            </p>
+            <div className="mb-3 flex flex-wrap items-center gap-2">
+              <div className="flex flex-wrap gap-1" role="tablist" aria-label="Haftalar">
+                {Array.from({ length: program.weeks }, (_, i) => i + 1).map((w) => (
+                  <button
+                    key={w}
+                    role="tab"
+                    aria-selected={w === week}
+                    onClick={() => {
+                      setWeek(w);
+                      setDraft(null);
+                    }}
+                    className={`h-8 min-w-8 rounded-lg border px-2 text-xs font-medium ${
+                      w === week ? "border-ink bg-ink text-white" : "border-line bg-surface hover:bg-soft"
+                    }`}
+                    title={w === 1 || weeksWithOwn.has(w) ? `${w}. hafta` : `${w}. hafta (1. hafta şablonu)`}
+                  >
+                    {w}
+                    {w > 1 && weeksWithOwn.has(w) ? "•" : ""}
+                  </button>
+                ))}
+              </div>
+              <select
+                className="ml-auto h-8 rounded-lg border border-line bg-surface px-2 text-xs"
+                value=""
+                disabled={pending}
+                onChange={(e) => {
+                  const to = Number(e.target.value);
+                  if (to && confirm(`${week}. haftanın görevleri ${to}. haftaya kopyalansın mı? ${to}. haftadaki mevcut görevler silinir.`))
+                    run(() => copyWeek(program.id, ownWeek ? week : 1, to, path), () => setWeek(to));
+                }}
+              >
+                <option value="">Bu haftayı kopyala…</option>
+                {Array.from({ length: program.weeks }, (_, i) => i + 1)
+                  .filter((w) => w !== week)
+                  .map((w) => (
+                    <option key={w} value={w}>
+                      {w}. haftaya
+                    </option>
+                  ))}
+              </select>
+            </div>
+            {!editable ? (
+              <div className="mb-3 flex flex-wrap items-center gap-3 rounded-xl border border-dashed border-line bg-surface px-4 py-3 text-sm">
+                <span className="flex-1 text-muted">{week}. hafta, 1. hafta şablonunu kullanıyor.</span>
+                <button
+                  disabled={pending}
+                  onClick={() => run(() => copyWeek(program.id, 1, week, path))}
+                  className="rounded-lg bg-ink px-3 py-1.5 text-xs font-medium text-white disabled:opacity-50"
+                >
+                  Bu haftayı ayrı düzenle
+                </button>
+              </div>
+            ) : week > 1 ? (
+              <p className="mb-3 text-xs text-muted">
+                {week}. hafta ayrı düzenleniyor.{" "}
+                <button className="underline" disabled={pending} onClick={() => confirm(`${week}. haftanın kendi görevleri silinip 1. hafta şablonuna dönülsün mü?`) && run(() => resetWeek(program.id, week, path))}>
+                  1. hafta şablonuna dön
+                </button>
+              </p>
+            ) : (
+              <p className="mb-3 text-xs text-muted">
+                1. hafta şablondur: ayrıca düzenlemediğin haftalar bunu kullanır. Görevleri sürükleyip başka güne taşıyabilirsin.
+              </p>
+            )}
             <div className="grid grid-cols-7 gap-2">
               {WEEKDAYS.map((dayName, i) => {
                 const day = i + 1;
-                const dayTasks = tasks.filter((t) => t.day_of_week === day);
+                const dayTasks = weekTasks.filter((t) => t.day_of_week === day);
                 return (
-                  <div key={day} className="flex min-h-56 flex-col gap-2 rounded-xl border border-line bg-white p-2">
+                  <div
+                    key={day}
+                    onDragOver={(e) => {
+                      if (!dragId || !editable) return;
+                      e.preventDefault();
+                      setOverDay(day);
+                    }}
+                    onDragLeave={() => setOverDay((d) => (d === day ? null : d))}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      const id = dragId;
+                      setDragId(null);
+                      setOverDay(null);
+                      const t = weekTasks.find((x) => x.id === id);
+                      if (t && t.day_of_week !== day) run(() => moveTask(t.id, day, path));
+                    }}
+                    className={`flex min-h-56 flex-col gap-2 rounded-xl border p-2 ${
+                      overDay === day ? "border-ink bg-soft" : "border-line bg-surface"
+                    } ${editable ? "" : "opacity-60"}`}
+                  >
                     <p className="text-xs font-semibold text-muted" title={dayName}>
                       {WEEKDAYS_SHORT[i]}
                     </p>
                     {dayTasks.map((t) => (
                       <button
                         key={t.id}
+                        draggable={editable}
+                        onDragStart={() => setDragId(t.id)}
+                        onDragEnd={() => {
+                          setDragId(null);
+                          setOverDay(null);
+                        }}
+                        disabled={!editable}
                         onClick={() => {
                           setHabitDraft(null);
                           setDraft({ ...t, client_note: t.client_note ?? "" });
@@ -235,7 +336,7 @@ export function Builder({
                         <span className="block text-muted">{taskMeta(t)}</span>
                       </button>
                     ))}
-                    <AddMenu types={taskTypes} onPick={(type) => newTask(day, type)} />
+                    {editable && <AddMenu types={taskTypes} onPick={(type) => newTask(day, type)} />}
                   </div>
                 );
               })}
@@ -243,7 +344,7 @@ export function Builder({
           </div>
 
           {/* Alışkanlık şeridi */}
-          <div className="rounded-xl border border-line bg-white p-4">
+          <div className="rounded-2xl border border-line bg-surface p-4">
             <div className="mb-3 flex items-center justify-between">
               <h3 className="text-sm font-semibold">Alışkanlıklar</h3>
               <button
@@ -385,7 +486,7 @@ function TaskPanel({
     setD({ ...d, payload: payload as Json, options: options as Json });
 
   return (
-    <div className="flex flex-col gap-4 rounded-xl border border-line bg-white p-4">
+    <div className="flex flex-col gap-4 rounded-2xl border border-line bg-surface p-4">
       <div className="flex items-center justify-between">
         <p className="text-xs font-semibold uppercase tracking-wide text-muted">
           {TASK_TYPE_LABELS[d.task_type_key as TaskTypeKey]}
@@ -506,7 +607,7 @@ function HabitPanel({
     show_streak: habit.show_streak ?? true,
   });
   return (
-    <div className="flex flex-col gap-4 rounded-xl border border-line bg-white p-4">
+    <div className="flex flex-col gap-4 rounded-2xl border border-line bg-surface p-4">
       <div className="flex items-center justify-between">
         <p className="text-xs font-semibold uppercase tracking-wide text-muted">Alışkanlık</p>
         <button onClick={onClose} className="text-muted hover:text-ink" aria-label="Kapat">

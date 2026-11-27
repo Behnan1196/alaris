@@ -95,7 +95,7 @@ export function WorkoutEditor({
           ))}
         </datalist>
         {payload.exercises.map((e, i) => (
-          <div key={i} className="flex flex-col gap-2 rounded-lg border border-line p-2">
+          <div key={i} className={`flex flex-col gap-2 rounded-lg border p-2 ${e.superset ? "-mt-2 border-t-0 border-l-4 border-l-ink border-line" : "border-line"}`}>
             <div className="flex gap-2">
               <input
                 className={inputCls}
@@ -134,6 +134,9 @@ export function WorkoutEditor({
                   onChange={(ev) => setEx(i, { rest_sec: Number(ev.target.value) || 0 })} />
               </Label>
             </div>
+            {i > 0 && (
+              <Toggle label="Öncekiyle süperset (arada dinlenme yok)" checked={!!e.superset} onChange={(v) => setEx(i, { superset: v })} />
+            )}
             <div className="grid grid-cols-[1fr_3fr] gap-2">
               <Label text="Süre (sn)">
                 <input className={inputCls} type="number" min={0} value={e.duration_sec ?? ""}
