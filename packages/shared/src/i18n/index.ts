@@ -78,3 +78,19 @@ export function weekdayName(intl: string, i: number, style: "long" | "short" = "
   // 1 Ocak 2024 pazartesi
   return new Intl.DateTimeFormat(intl, { weekday: style }).format(new Date(2024, 0, 1 + i));
 }
+
+export function hasMessage(key: string): key is MessageKey {
+  return key in tr;
+}
+
+/** Kas / ekipman anahtarını çevirir; koçun serbest yazdığı değer olduğu gibi kalır. */
+export function tagLabel(prefix: "muscle" | "equipment" | "exCat", value: string, t: TFunction) {
+  const k = `${prefix}.${value}`;
+  return hasMessage(k) ? t(k) : value;
+}
+
+/** İçerikte dil başına metin: {tr: ..., en: ...}[locale], yoksa yedek. */
+export function localized<T>(map: unknown, locale: Locale, fallback: T): T {
+  const m = map as Record<string, T> | null | undefined;
+  return (m && m[locale]) || (m && m.tr) || fallback;
+}

@@ -285,7 +285,10 @@ test("kütüphane: sistem + kendi + koçunun", async () => {
   const canSees = await as(can, `select name from exercises where owner_coach_id is not null`);
   assert.deepEqual(canSees.map((e) => e.name), ["Deniz özel hareket"]);
   assert.equal((await as(zehra, `select * from exercises where owner_coach_id is not null`)).length, 0);
-  assert.equal((await as(burak, `select * from exercises`)).length, 4);
+  assert.equal((await as(burak, `select * from exercises where owner_coach_id is not null`)).length, 0);
+  const sys = await as(burak, `select key, name_i18n, steps_i18n from exercises where owner_coach_id is null`);
+  assert.ok(sys.length >= 60, "sistem kütüphanesi yüklenmeli");
+  assert.ok(sys.every((e) => e.key && e.name_i18n.en && e.steps_i18n.tr.length && e.steps_i18n.en.length));
 });
 
 test("bütünlük: değişmemesi gereken sütunlar korunur", async () => {

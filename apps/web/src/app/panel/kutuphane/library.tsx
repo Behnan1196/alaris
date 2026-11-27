@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { localizedName } from "@alaris/shared";
+import { localized, localizedName, tagLabel } from "@alaris/shared";
 import { useI18n } from "@/components/i18n";
 import { createClient } from "@/lib/supabase/client";
 
@@ -11,6 +11,11 @@ export type Exercise = {
   owner_coach_id: string | null;
   name: string;
   name_i18n?: unknown;
+  key?: string | null;
+  category?: string | null;
+  secondary_muscles?: string[];
+  steps_i18n?: unknown;
+  benefits_i18n?: unknown;
   muscles: string[];
   equipment: string | null;
   steps: string[];
@@ -32,18 +37,25 @@ export function Library({ coachId, exercises }: { coachId: string; exercises: Ex
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
+  const [cat, setCat] = useState<string>("all");
+  const [viewing, setViewing] = useState<Exercise | null>(null);
+
+  const muscleText = (list: string[] = []) => list.map((m) => tagLabel("muscle", m, t)).join(", ");
+  const stepsOf = (e: Exercise) => localized<string[]>(e.steps_i18n, locale, e.steps);
+  const categories = [...new Set(exercises.map((e) => e.category).filter((c): c is string => !!c))];
 
   const open = (e?: Exercise, copy = false) => {
+    setViewing(null);
     setError(null);
     setFile(null);
     setDraft(
       e
         ? {
             id: copy ? undefined : e.id,
-            name: e.name,
-            muscles: e.muscles.join(", "),
-            equipment: e.equipment ?? "",
-            steps: e.steps.join("\n"),
+            name: copy ? localizedName(e, locale) : e.name,
+            muscles: copy ? muscleText([...e.muscles, ...(e.secondary_muscles ?? [])]) : e.muscles.join(", "),
+            equipment: copy && e.equipment ? tagLabel("equipment", e.equipment, t) : (e.equipment ?? ""),
+            steps: (copy ? stepsOf(e) : e.steps).join("\n"),
             video_path: copy ? null : (e.video_paths?.front ?? null),
           }
         : { name: "", muscles: "", equipment: "", steps: "", video_path: null },
@@ -95,7 +107,12 @@ export function Library({ coachId, exercises }: { coachId: string; exercises: Ex
     router.refresh();
   }
 
-  const list = exercises.filter((e) => e.name.toLocaleLowerCase("tr").includes(query.toLocaleLowerCase("tr")));
+  const q = query.toLocaleLowerCase(locale);
+  const list = exercises.filter(
+    (e) =>
+      (cat === "all" || (cat === "mine" ? e.owner_coach_id === coachId : e.category === cat)) &&
+      (!q || localizedName(e, locale).toLocaleLowerCase(locale).includes(q) || e.name.toLocaleLowerCase(locale).includes(q) || muscleText(e.muscles).toLocaleLowerCase(locale).includes(q)),
+  );
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_420px]">
@@ -105,6 +122,18 @@ export function Library({ coachId, exercises }: { coachId: string; exercises: Ex
           <button onClick={() => open()} className="shrink-0 rounded-lg bg-ink px-3 text-sm font-medium text-white">
             {t("lib.new")}
           </button>
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          {["all", "mine", ...categories].map((c) => (
+            <button
+              key={c}
+              onClick={() => setCat(c)}
+              className={`rounded-full border px-3 py-1 text-xs font-medium ${cat === c ? "border-ink bg-ink text-white" : "border-line bg-surface hover:bg-soft"}`}
+            >
+              {c === "all" ? t("lib.allCategories") : c === "mine" ? t("lib.mine") : tagLabel("exCat", c, t)}
+            </button>
+          ))}
+          <span className="ml-auto self-center text-xs text-muted">{t("lib.count", { n: list.length })}</span>
         </div>
         <ul className="flex flex-col divide-y divide-line rounded-xl border border-line bg-white">
           {list.map((e) => {
@@ -119,7 +148,7 @@ export function Library({ coachId, exercises }: { coachId: string; exercises: Ex
                     )}
                   </p>
                   <p className="text-xs text-muted">
-                    {[e.muscles.join(", "), e.equipment, mine ? t("lib.yours") : t("lib.system")].filter(Boolean).join(" · ")}
+                    {[muscleText(e.muscles), e.equipment ? tagLabel("equipment", e.equipment, t) : null, e.category ? tagLabel("exCat", e.category, t) : null, mine ? t("lib.yours") : t("lib.system")].filter(Boolean).join(" · ")}
                   </p>
                 </div>
                 {mine ? (
@@ -128,7 +157,10 @@ export function Library({ coachId, exercises }: { coachId: string; exercises: Ex
                     <button onClick={() => remove(e)} className="text-xs text-red-600 underline">{t("common.delete")}</button>
                   </>
                 ) : (
-                  <button onClick={() => open(e, true)} className="text-xs underline">{t("lib.copyEdit")}</button>
+                  <>
+                    <button onClick={() => { setDraft(null); setViewing(e); }} className="text-xs underline">{t("lib.view")}</button>
+                    <button onClick={() => open(e, true)} className="text-xs underline">{t("lib.copyEdit")}</button>
+                  </>
                 )}
               </li>
             );
@@ -136,6 +168,48 @@ export function Library({ coachId, exercises }: { coachId: string; exercises: Ex
           {list.length === 0 && <li className="px-4 py-3 text-sm text-muted">{t("lib.noResults")}</li>}
         </ul>
       </div>
+
+      {viewing && !draft && (
+        <div className="flex flex-col gap-3 self-start rounded-xl border border-line bg-white p-4 text-sm lg:sticky lg:top-6">
+          <div className="flex items-start justify-between gap-2">
+            <div>
+              <p className="text-xs uppercase tracking-wide text-muted">
+                {[viewing.category ? tagLabel("exCat", viewing.category, t) : null, viewing.equipment ? tagLabel("equipment", viewing.equipment, t) : null].filter(Boolean).join(" · ")}
+              </p>
+              <h3 className="text-lg font-semibold">{localizedName(viewing, locale)}</h3>
+            </div>
+            <button onClick={() => setViewing(null)} className="text-muted hover:text-ink" aria-label={t("common.close")}>
+              ✕
+            </button>
+          </div>
+          <p>
+            <span className="font-medium">{t("lib.primary")}:</span> {muscleText(viewing.muscles)}
+          </p>
+          {!!viewing.secondary_muscles?.length && (
+            <p>
+              <span className="font-medium">{t("lib.secondary")}:</span> {muscleText(viewing.secondary_muscles)}
+            </p>
+          )}
+          {localized<string>(viewing.benefits_i18n, locale, "") && (
+            <div>
+              <p className="font-medium">{t("lib.benefits")}</p>
+              <p className="text-ink-2">{localized<string>(viewing.benefits_i18n, locale, "")}</p>
+            </div>
+          )}
+          <div>
+            <p className="font-medium">{t("m.ex.howTo")}</p>
+            <ol className="ml-4 list-decimal text-ink-2">
+              {stepsOf(viewing).map((st, i) => (
+                <li key={i}>{st}</li>
+              ))}
+            </ol>
+          </div>
+          <p className="text-xs text-muted">{t("lib.reviewNote")}</p>
+          <button onClick={() => open(viewing, true)} className="self-start rounded-lg bg-ink px-3 py-1.5 text-xs font-medium text-white">
+            {t("lib.copyEdit")}
+          </button>
+        </div>
+      )}
 
       {draft && (
         <div className="flex flex-col gap-3 self-start rounded-xl border border-line bg-white p-4 lg:sticky lg:top-6">

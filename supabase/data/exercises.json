@@ -1,0 +1,625 @@
+{
+  "_note": "Alaris sistem hareket kütüphanesi. Kaynak dosya: değişiklikten sonra `npm run db:exercises` ile migration üretilir. İçerik genel antrenman bilgisidir; yayından önce bir antrenör tarafından gözden geçirilmelidir. muscles: birincil kaslar, secondary: yardımcı kaslar (anahtarlar i18n sözlüğünde muscle.*). equipment: equipment.* anahtarı.",
+  "exercises": [
+    {
+      "key": "barbell_back_squat", "category": "legs", "equipment": "barbell",
+      "name": { "tr": "Barbell Squat", "en": "Barbell Back Squat" },
+      "muscles": ["quads", "glutes"], "secondary": ["hamstrings", "adductors", "lower_back", "abs"],
+      "benefits": { "tr": "Alt vücut kuvvetini ve kas kütlesini geliştirir; günlük hareketlerde (oturma, kalkma) güç sağlar.", "en": "Builds lower-body strength and muscle; carries over to everyday movements like sitting and standing." },
+      "steps": {
+        "tr": ["Barı omuzların arkasına, trapez üzerine yerleştir; ayaklar omuz genişliğinde.", "Göğsü dik tutup kalçayı geriye iterek çömel.", "Dizler ayak uçlarıyla aynı yönü göstersin; uyluklar en az yere paralel olsun.", "Topuklardan iterek başlangıç pozisyonuna kalk."],
+        "en": ["Rest the bar on your upper back; feet shoulder-width apart.", "Keep your chest up and sit back with your hips.", "Keep knees tracking over your toes; go to at least parallel.", "Drive through your heels to stand back up."]
+      }
+    },
+    {
+      "key": "goblet_squat", "category": "legs", "equipment": "dumbbell",
+      "name": { "tr": "Goblet Squat", "en": "Goblet Squat" },
+      "muscles": ["quads", "glutes"], "secondary": ["abs", "adductors"],
+      "benefits": { "tr": "Squat tekniğini öğrenmek için güvenli bir başlangıç; gövde dengesini geliştirir.", "en": "A safe way to learn the squat pattern; improves trunk control." },
+      "steps": {
+        "tr": ["Dambılı ya da kettlebell'i göğüs hizasında iki elle tut.", "Ayaklar omuz genişliğinde, parmak uçları hafif dışa dönük.", "Dirsekler dizlerin içinden geçecek şekilde derin çömel.", "Göğsü dik tutarak yukarı kalk."],
+        "en": ["Hold a dumbbell or kettlebell at chest height with both hands.", "Feet shoulder-width apart, toes slightly out.", "Squat deep so your elbows pass inside your knees.", "Stand up keeping your chest tall."]
+      }
+    },
+    {
+      "key": "front_squat", "category": "legs", "equipment": "barbell",
+      "name": { "tr": "Front Squat", "en": "Front Squat" },
+      "muscles": ["quads"], "secondary": ["glutes", "abs", "upper_back"],
+      "benefits": { "tr": "Ön bacağı daha çok çalıştırır ve dik gövde duruşu gerektirdiği için core'u güçlendirir.", "en": "Emphasizes the quads and builds core strength through an upright torso." },
+      "steps": {
+        "tr": ["Barı omuzların önüne, köprücük kemiklerine yasla; dirsekler yukarıda.", "Gövde dik, çömelmeye başla.", "Dirsekleri düşürmeden derine in.", "Ayak ortasından iterek kalk."],
+        "en": ["Rest the bar on the front of your shoulders; elbows high.", "Keep your torso upright as you descend.", "Go deep without letting your elbows drop.", "Push through mid-foot to stand."]
+      }
+    },
+    {
+      "key": "bulgarian_split_squat", "category": "legs", "equipment": "dumbbell",
+      "name": { "tr": "Bulgar Split Squat", "en": "Bulgarian Split Squat" },
+      "muscles": ["quads", "glutes"], "secondary": ["hamstrings", "adductors"],
+      "benefits": { "tr": "Tek bacak kuvvetini ve dengeyi geliştirir; iki bacak arasındaki farkları azaltır.", "en": "Builds single-leg strength and balance; reduces side-to-side imbalances." },
+      "steps": {
+        "tr": ["Arka ayağın üstünü bir sehpaya koy, öndeki ayak bir adım önde.", "Gövde dik, arka diz yere yaklaşana kadar in.", "Ön diz ayak ucu yönünde kalsın.", "Ön ayak topuğundan iterek kalk; setin sonunda bacak değiştir."],
+        "en": ["Place the top of your rear foot on a bench; front foot a stride ahead.", "Lower until your back knee nearly touches the floor.", "Keep the front knee in line with your toes.", "Drive through the front heel; switch legs after the set."]
+      }
+    },
+    {
+      "key": "walking_lunge", "category": "legs", "equipment": "dumbbell",
+      "name": { "tr": "Yürüyen Lunge", "en": "Walking Lunge" },
+      "muscles": ["quads", "glutes"], "secondary": ["hamstrings", "calves"],
+      "benefits": { "tr": "Bacak kuvveti, denge ve koordinasyonu birlikte geliştirir.", "en": "Develops leg strength, balance and coordination together." },
+      "steps": {
+        "tr": ["Dambılları yanlarda tut, dik dur.", "Uzun bir adım at ve iki dizi de yaklaşık 90 dereceye bük.", "Ön topuktan iterek arka bacağı öne getir.", "Diğer bacakla devam et."],
+        "en": ["Hold dumbbells at your sides and stand tall.", "Take a long step and bend both knees to about 90 degrees.", "Push through the front heel and bring the back leg forward.", "Continue with the other leg."]
+      }
+    },
+    {
+      "key": "leg_press", "category": "legs", "equipment": "machine",
+      "name": { "tr": "Leg Press", "en": "Leg Press" },
+      "muscles": ["quads", "glutes"], "secondary": ["hamstrings", "adductors"],
+      "benefits": { "tr": "Belde az yükle bacakları yoğun çalıştırır; yeni başlayanlar için uygundur.", "en": "Trains the legs hard with little load on the lower back; beginner friendly." },
+      "steps": {
+        "tr": ["Sırtını ve kalçanı mindere tam yasla; ayaklar platformda omuz genişliğinde.", "Kilidi aç ve dizleri göğse doğru kontrollü bük.", "Kalça minderden kalkmadan en alt noktada dur.", "Dizleri tam kilitlemeden platformu it."],
+        "en": ["Keep your back and hips against the pad; feet shoulder-width on the platform.", "Release the safety and bend your knees toward your chest under control.", "Stop before your hips lift off the pad.", "Press the platform without locking your knees."]
+      }
+    },
+    {
+      "key": "leg_extension", "category": "legs", "equipment": "machine",
+      "name": { "tr": "Leg Extension", "en": "Leg Extension" },
+      "muscles": ["quads"], "secondary": [],
+      "benefits": { "tr": "Ön bacağı izole çalıştırır; ısınma ve rehabilitasyonda kullanılır.", "en": "Isolates the quads; useful for warm-ups and rehab." },
+      "steps": {
+        "tr": ["Diz eklemini makinenin dönme noktasıyla hizala.", "Bacakları kontrollü şekilde düzleştir.", "Üstte bir an sık.", "Yavaşça indir."],
+        "en": ["Line up your knee with the machine's pivot.", "Straighten your legs under control.", "Squeeze briefly at the top.", "Lower slowly."]
+      }
+    },
+    {
+      "key": "lying_leg_curl", "category": "legs", "equipment": "machine",
+      "name": { "tr": "Leg Curl", "en": "Lying Leg Curl" },
+      "muscles": ["hamstrings"], "secondary": ["calves"],
+      "benefits": { "tr": "Arka bacağı güçlendirir; diz sağlığı ve sprint performansı için önemlidir.", "en": "Strengthens the hamstrings; important for knee health and sprinting." },
+      "steps": {
+        "tr": ["Yüzüstü uzan, ped bileklerinin hemen üstünde.", "Kalçayı minderden kaldırmadan topukları kalçaya doğru çek.", "Üstte kısa bir duraklama yap.", "Kontrollü indir."],
+        "en": ["Lie face down with the pad just above your ankles.", "Curl your heels toward your glutes without lifting your hips.", "Pause briefly at the top.", "Lower under control."]
+      }
+    },
+    {
+      "key": "romanian_deadlift", "category": "legs", "equipment": "barbell",
+      "name": { "tr": "Romanian Deadlift", "en": "Romanian Deadlift" },
+      "muscles": ["hamstrings", "glutes"], "secondary": ["lower_back", "forearms"],
+      "benefits": { "tr": "Arka zinciri (arka bacak, kalça, bel) güçlendirir; kalça menteşe hareketini öğretir.", "en": "Strengthens the posterior chain and teaches the hip hinge." },
+      "steps": {
+        "tr": ["Barı kalça hizasında tut, dizler hafif bükük.", "Kalçayı geriye iterek gövdeyi öne eğ; sırt düz.", "Bar bacaklara yakın, arka bacakta gerilme hissedene kadar in.", "Kalçayı öne iterek dikleş."],
+        "en": ["Hold the bar at hip height, knees slightly bent.", "Push your hips back and hinge forward with a flat back.", "Keep the bar close until you feel a hamstring stretch.", "Drive your hips forward to stand tall."]
+      }
+    },
+    {
+      "key": "deadlift", "category": "legs", "equipment": "barbell",
+      "name": { "tr": "Deadlift", "en": "Deadlift" },
+      "muscles": ["glutes", "hamstrings", "lower_back"], "secondary": ["quads", "upper_back", "forearms"],
+      "benefits": { "tr": "Tüm vücudu çalıştıran temel kuvvet hareketi; tutuş ve duruş gücünü artırır.", "en": "A foundational full-body strength lift; builds grip and posture." },
+      "steps": {
+        "tr": ["Bar ayak ortasının üstünde, ayaklar kalça genişliğinde.", "Eğil, barı omuz genişliğinde tut; sırt düz, göğüs açık.", "Bacaklarla zemini iterek barı bacaklara yakın kaldır.", "Üstte kalçayı kilitle, aynı yoldan kontrollü indir."],
+        "en": ["Bar over mid-foot, feet hip-width apart.", "Hinge down and grip just outside your legs; flat back, chest up.", "Push the floor away and keep the bar close as you lift.", "Lock out your hips, then lower along the same path."]
+      }
+    },
+    {
+      "key": "hip_thrust", "category": "glutes", "equipment": "barbell",
+      "name": { "tr": "Hip Thrust", "en": "Barbell Hip Thrust" },
+      "muscles": ["glutes"], "secondary": ["hamstrings", "abs"],
+      "benefits": { "tr": "Kalça kaslarını en etkili çalıştıran hareketlerden; sprint ve sıçrama gücünü destekler.", "en": "One of the most effective glute builders; supports sprint and jump power." },
+      "steps": {
+        "tr": ["Sırtının üst kısmını sehpaya yasla, barı kalça kıvrımına koy.", "Ayaklar yerde, dizler yaklaşık 90 derece.", "Kalçayı yukarı it; üstte gövde yere paralel.", "Kalçayı sıkıp kontrollü indir."],
+        "en": ["Rest your upper back on a bench with the bar over your hip crease.", "Feet flat, knees at about 90 degrees.", "Drive your hips up until your torso is parallel to the floor.", "Squeeze your glutes, then lower under control."]
+      }
+    },
+    {
+      "key": "glute_bridge", "category": "glutes", "equipment": "bodyweight",
+      "name": { "tr": "Kalça Köprüsü", "en": "Glute Bridge" },
+      "muscles": ["glutes"], "secondary": ["hamstrings", "abs"],
+      "benefits": { "tr": "Kalçayı aktive eder, bel ağrısına karşı destek olur; ekipmansız yapılır.", "en": "Activates the glutes and supports a healthy lower back; no equipment needed." },
+      "steps": {
+        "tr": ["Sırtüstü uzan, dizler bükük, ayaklar yerde.", "Karnı sıkıp kalçayı yukarı kaldır.", "Omuzdan dizlere düz bir çizgi oluştur.", "Kısa bir duraklamadan sonra indir."],
+        "en": ["Lie on your back, knees bent, feet flat.", "Brace your core and lift your hips.", "Form a straight line from shoulders to knees.", "Pause briefly, then lower."]
+      }
+    },
+    {
+      "key": "standing_calf_raise", "category": "legs", "equipment": "machine",
+      "name": { "tr": "Ayakta Kalf Raise", "en": "Standing Calf Raise" },
+      "muscles": ["calves"], "secondary": [],
+      "benefits": { "tr": "Baldırları güçlendirir; yürüme, koşma ve ayak bileği dengesine katkı sağlar.", "en": "Strengthens the calves; helps walking, running and ankle stability." },
+      "steps": {
+        "tr": ["Ayak uçları basamakta, topuklar boşlukta dur.", "Topukları olabildiğince yükselt.", "Üstte bir an bekle.", "Topukları basamak hizasının altına kadar yavaşça indir."],
+        "en": ["Stand with the balls of your feet on a step, heels hanging.", "Rise up as high as you can.", "Hold briefly at the top.", "Lower your heels slowly below the step."]
+      }
+    },
+    {
+      "key": "barbell_bench_press", "category": "chest", "equipment": "barbell",
+      "name": { "tr": "Bench Press", "en": "Barbell Bench Press" },
+      "muscles": ["chest"], "secondary": ["triceps", "front_delts"],
+      "benefits": { "tr": "Üst vücut itme kuvvetini ve göğüs kaslarını geliştirir.", "en": "Builds upper-body pressing strength and chest muscle." },
+      "steps": {
+        "tr": ["Sehpaya uzan, gözler barın altında; kürek kemiklerini sıkıştır.", "Barı omuzdan biraz geniş tut.", "Barı göğsün alt kısmına kontrollü indir.", "Ayakları yere basarak barı yukarı it."],
+        "en": ["Lie on the bench with eyes under the bar; pull your shoulder blades together.", "Grip slightly wider than shoulder-width.", "Lower the bar to your lower chest under control.", "Press up while driving your feet into the floor."]
+      }
+    },
+    {
+      "key": "incline_dumbbell_press", "category": "chest", "equipment": "dumbbell",
+      "name": { "tr": "Eğimli Dambıl Press", "en": "Incline Dumbbell Press" },
+      "muscles": ["upper_chest"], "secondary": ["front_delts", "triceps"],
+      "benefits": { "tr": "Göğsün üst kısmını hedefler; dambıllar sayesinde iki taraf eşit çalışır.", "en": "Targets the upper chest; dumbbells make each side work equally." },
+      "steps": {
+        "tr": ["Sehpayı 30–45 dereceye ayarla, dambılları omuz hizasında tut.", "Dambılları yukarı ve hafif içe doğru it.", "Üstte dirsekleri kilitlemeden dur.", "Göğsün yanlarına kontrollü indir."],
+        "en": ["Set the bench to 30–45 degrees and hold dumbbells at shoulder level.", "Press up and slightly inward.", "Stop just short of locking your elbows.", "Lower to the sides of your chest under control."]
+      }
+    },
+    {
+      "key": "dumbbell_bench_press", "category": "chest", "equipment": "dumbbell",
+      "name": { "tr": "Dambıl Bench Press", "en": "Dumbbell Bench Press" },
+      "muscles": ["chest"], "secondary": ["triceps", "front_delts"],
+      "benefits": { "tr": "Bar'a göre daha geniş hareket açıklığı ve omuz için daha rahat bir yol sağlar.", "en": "Offers a larger range of motion and a more shoulder-friendly path than a barbell." },
+      "steps": {
+        "tr": ["Düz sehpaya uzan, dambılları göğüs hizasında tut.", "Kürek kemikleri geride, ayaklar yerde.", "Dambılları yukarı it.", "Göğüs hizasına kontrollü indir."],
+        "en": ["Lie on a flat bench holding dumbbells at chest level.", "Keep shoulder blades back and feet planted.", "Press the dumbbells up.", "Lower back to chest level under control."]
+      }
+    },
+    {
+      "key": "push_up", "category": "chest", "equipment": "bodyweight",
+      "name": { "tr": "Şınav", "en": "Push-up" },
+      "muscles": ["chest"], "secondary": ["triceps", "front_delts", "abs"],
+      "benefits": { "tr": "Her yerde yapılabilen itme hareketi; göğüs, kol ve core'u birlikte çalıştırır.", "en": "A pressing move you can do anywhere; works chest, arms and core together." },
+      "steps": {
+        "tr": ["Eller omuz genişliğinden biraz geniş, vücut baştan topuğa düz.", "Karnı ve kalçayı sık.", "Göğüs yere yaklaşana kadar in; dirsekler gövdeye yaklaşık 45 derece.", "Yerden iterek başlangıca dön."],
+        "en": ["Hands slightly wider than shoulders; body straight from head to heels.", "Brace your abs and glutes.", "Lower until your chest is near the floor, elbows about 45 degrees from your body.", "Push the floor away to return."]
+      }
+    },
+    {
+      "key": "cable_fly", "category": "chest", "equipment": "cable",
+      "name": { "tr": "Kablo Fly", "en": "Cable Fly" },
+      "muscles": ["chest"], "secondary": ["front_delts"],
+      "benefits": { "tr": "Göğsü izole çalıştırır; hareket boyunca sabit gerilim sağlar.", "en": "Isolates the chest with constant tension through the range." },
+      "steps": {
+        "tr": ["Makaraları omuz hizasına ayarla, iki kolu da tut, bir adım öne çık.", "Dirsekler hafif bükük, kolları yanlara aç.", "Kolları göğsün önünde birleştir.", "Kontrollü şekilde aç."],
+        "en": ["Set pulleys at shoulder height, hold both handles and step forward.", "With a slight elbow bend, open your arms out to the sides.", "Bring your hands together in front of your chest.", "Open back up under control."]
+      }
+    },
+    {
+      "key": "dips", "category": "chest", "equipment": "bodyweight",
+      "name": { "tr": "Dips", "en": "Dips" },
+      "muscles": ["chest", "triceps"], "secondary": ["front_delts"],
+      "benefits": { "tr": "Göğsün alt kısmı ve arka kol için güçlü bir vücut ağırlığı hareketi.", "en": "A strong bodyweight move for the lower chest and triceps." },
+      "steps": {
+        "tr": ["Paralel barlarda kollar düz, vücudu taşı.", "Gövdeyi hafif öne eğerek dirsekleri bük.", "Omuzlar dirsek hizasına gelene kadar in.", "Kolları düzleştirerek yukarı it."],
+        "en": ["Support yourself on parallel bars with straight arms.", "Lean slightly forward and bend your elbows.", "Lower until your shoulders reach elbow height.", "Press back up to straight arms."]
+      }
+    },
+    {
+      "key": "pull_up", "category": "back", "equipment": "pullup_bar",
+      "name": { "tr": "Barfiks", "en": "Pull-up" },
+      "muscles": ["lats"], "secondary": ["biceps", "upper_back", "forearms"],
+      "benefits": { "tr": "Sırt genişliğini ve üst vücut çekme kuvvetini geliştirir.", "en": "Builds back width and upper-body pulling strength." },
+      "steps": {
+        "tr": ["Barı avuç içleri öne bakacak şekilde, omuzdan geniş tut.", "Kürek kemiklerini aşağı çekerek başla.", "Çene barın üstüne çıkana kadar kendini çek.", "Kolları tamamen açana kadar kontrollü in."],
+        "en": ["Grip the bar palms forward, wider than shoulders.", "Start by pulling your shoulder blades down.", "Pull until your chin clears the bar.", "Lower under control to full arm extension."]
+      }
+    },
+    {
+      "key": "chin_up", "category": "back", "equipment": "pullup_bar",
+      "name": { "tr": "Ters Tutuş Barfiks", "en": "Chin-up" },
+      "muscles": ["lats", "biceps"], "secondary": ["upper_back"],
+      "benefits": { "tr": "Sırt ile birlikte ön kolu da güçlü çalıştırır; barfikse göre biraz daha kolaydır.", "en": "Works the back and biceps; usually a bit easier than a pull-up." },
+      "steps": {
+        "tr": ["Barı avuç içleri sana bakacak şekilde omuz genişliğinde tut.", "Göğsü bara doğru çek.", "Çene barı geçsin.", "Kontrollü in."],
+        "en": ["Grip the bar palms facing you, shoulder-width.", "Pull your chest toward the bar.", "Get your chin over the bar.", "Lower under control."]
+      }
+    },
+    {
+      "key": "lat_pulldown", "category": "back", "equipment": "cable",
+      "name": { "tr": "Lat Pulldown", "en": "Lat Pulldown" },
+      "muscles": ["lats"], "secondary": ["biceps", "upper_back"],
+      "benefits": { "tr": "Barfiks yapamayanlar için sırt genişliği çalışması; yük ayarlanabilir.", "en": "Builds back width for those not yet doing pull-ups; load is adjustable." },
+      "steps": {
+        "tr": ["Dizleri pedin altına sabitle, barı geniş tut.", "Göğsü hafif yukarı kaldır, hafif geriye yaslan.", "Barı göğsün üst kısmına çek.", "Kolları kontrollü şekilde yukarı bırak."],
+        "en": ["Lock your knees under the pad and take a wide grip.", "Lift your chest and lean back slightly.", "Pull the bar to your upper chest.", "Let your arms return up under control."]
+      }
+    },
+    {
+      "key": "barbell_row", "category": "back", "equipment": "barbell",
+      "name": { "tr": "Barbell Row", "en": "Bent-over Barbell Row" },
+      "muscles": ["upper_back", "lats"], "secondary": ["biceps", "rear_delts", "lower_back"],
+      "benefits": { "tr": "Sırt kalınlığını ve duruşu iyileştirir.", "en": "Builds back thickness and improves posture." },
+      "steps": {
+        "tr": ["Kalçadan öne eğil, sırt düz, gövde yaklaşık 45 derece.", "Barı omuz genişliğinde tut.", "Barı karnın üst kısmına çek; dirsekler geriye.", "Kontrollü indir."],
+        "en": ["Hinge forward with a flat back, torso about 45 degrees.", "Grip the bar shoulder-width.", "Row it to your upper stomach, elbows driving back.", "Lower under control."]
+      }
+    },
+    {
+      "key": "one_arm_dumbbell_row", "category": "back", "equipment": "dumbbell",
+      "name": { "tr": "Tek Kol Dambıl Row", "en": "One-arm Dumbbell Row" },
+      "muscles": ["lats", "upper_back"], "secondary": ["biceps", "rear_delts"],
+      "benefits": { "tr": "Her sırt yarısını ayrı çalıştırır; beli destekli olduğu için güvenlidir.", "en": "Trains each side of the back separately; supported position keeps the lower back safe." },
+      "steps": {
+        "tr": ["Bir el ve diz sehpada, diğer ayak yerde; sırt düz.", "Dambılı serbest kolla aşağıda tut.", "Dirseği kalçaya doğru çekerek dambılı kaldır.", "Kontrollü indir; setin sonunda taraf değiştir."],
+        "en": ["One hand and knee on a bench, other foot on the floor; flat back.", "Hold the dumbbell hanging with the free arm.", "Row it by driving your elbow toward your hip.", "Lower under control; switch sides after the set."]
+      }
+    },
+    {
+      "key": "seated_cable_row", "category": "back", "equipment": "cable",
+      "name": { "tr": "Oturarak Kablo Row", "en": "Seated Cable Row" },
+      "muscles": ["upper_back", "lats"], "secondary": ["biceps", "rear_delts"],
+      "benefits": { "tr": "Sırt ortasını güçlendirir ve omuzları geriye toplayan duruşu destekler.", "en": "Strengthens the mid-back and supports a shoulders-back posture." },
+      "steps": {
+        "tr": ["Otur, ayakları platforma koy, dizler hafif bükük.", "Gövde dik, tutacağı karnına doğru çek.", "Kürek kemiklerini birbirine yaklaştır.", "Kolları kontrollü uzat."],
+        "en": ["Sit with feet on the platform, knees slightly bent.", "Keep your torso upright and pull the handle to your stomach.", "Squeeze your shoulder blades together.", "Extend your arms under control."]
+      }
+    },
+    {
+      "key": "face_pull", "category": "shoulders", "equipment": "cable",
+      "name": { "tr": "Face Pull", "en": "Face Pull" },
+      "muscles": ["rear_delts", "upper_back"], "secondary": [],
+      "benefits": { "tr": "Arka omuz ve üst sırtı güçlendirir; omuz sağlığı ve duruş için faydalıdır.", "en": "Strengthens the rear delts and upper back; good for shoulder health and posture." },
+      "steps": {
+        "tr": ["Halatı yüz hizasındaki makaraya tak, iki ucundan tut.", "Bir adım geri çekil.", "Halatı yüzüne doğru çekerken elleri dışa aç.", "Kontrollü bırak."],
+        "en": ["Attach a rope to a pulley at face height and hold both ends.", "Step back.", "Pull toward your face while spreading your hands apart.", "Return under control."]
+      }
+    },
+    {
+      "key": "overhead_press", "category": "shoulders", "equipment": "barbell",
+      "name": { "tr": "Overhead Press", "en": "Overhead Press" },
+      "muscles": ["front_delts", "side_delts"], "secondary": ["triceps", "upper_chest", "abs"],
+      "benefits": { "tr": "Omuz kuvvetini ve gövde dengesini geliştirir.", "en": "Builds shoulder strength and full-body stability." },
+      "steps": {
+        "tr": ["Ayakta, barı köprücük kemiği hizasında tut.", "Karnı ve kalçayı sık.", "Barı başın üstüne düz bir çizgide it.", "Kontrollü şekilde omuz hizasına indir."],
+        "en": ["Stand holding the bar at collarbone height.", "Brace your abs and glutes.", "Press the bar straight overhead.", "Lower back to shoulder height under control."]
+      }
+    },
+    {
+      "key": "seated_dumbbell_press", "category": "shoulders", "equipment": "dumbbell",
+      "name": { "tr": "Oturarak Dambıl Omuz Press", "en": "Seated Dumbbell Shoulder Press" },
+      "muscles": ["front_delts", "side_delts"], "secondary": ["triceps"],
+      "benefits": { "tr": "Omuzları sırt destekli ve dengeli şekilde çalıştırır.", "en": "Works the shoulders evenly with back support." },
+      "steps": {
+        "tr": ["Dik sehpaya otur, dambıllar omuz hizasında.", "Dambılları başın üstüne it.", "Üstte dirsekleri kilitlemeden dur.", "Omuz hizasına kontrollü indir."],
+        "en": ["Sit on an upright bench with dumbbells at shoulder height.", "Press them overhead.", "Stop just short of locking out.", "Lower back to shoulder height."]
+      }
+    },
+    {
+      "key": "lateral_raise", "category": "shoulders", "equipment": "dumbbell",
+      "name": { "tr": "Yana Açış", "en": "Lateral Raise" },
+      "muscles": ["side_delts"], "secondary": [],
+      "benefits": { "tr": "Omzun yan kısmını hedefler; omuzlara genişlik kazandırır.", "en": "Targets the side delts for broader-looking shoulders." },
+      "steps": {
+        "tr": ["Dambılları yanlarda tut, dirsekler hafif bükük.", "Kolları omuz hizasına kadar yanlara kaldır.", "Üstte kısa bekle.", "Yavaşça indir."],
+        "en": ["Hold dumbbells at your sides, elbows slightly bent.", "Raise your arms out to shoulder height.", "Pause briefly.", "Lower slowly."]
+      }
+    },
+    {
+      "key": "rear_delt_fly", "category": "shoulders", "equipment": "dumbbell",
+      "name": { "tr": "Arka Omuz Açış", "en": "Rear Delt Fly" },
+      "muscles": ["rear_delts"], "secondary": ["upper_back"],
+      "benefits": { "tr": "Arka omzu çalıştırır; omuz dengesini sağlar.", "en": "Works the rear delts and balances the shoulders." },
+      "steps": {
+        "tr": ["Kalçadan öne eğil, sırt düz, dambıllar aşağıda.", "Dirsekler hafif bükük, kolları yanlara aç.", "Kürek kemiklerini sık.", "Kontrollü indir."],
+        "en": ["Hinge forward with a flat back, dumbbells hanging.", "With soft elbows, open your arms out to the sides.", "Squeeze your shoulder blades.", "Lower under control."]
+      }
+    },
+    {
+      "key": "barbell_curl", "category": "arms", "equipment": "barbell",
+      "name": { "tr": "Barbell Curl", "en": "Barbell Curl" },
+      "muscles": ["biceps"], "secondary": ["forearms"],
+      "benefits": { "tr": "Ön kol (biceps) kuvvetini ve kütlesini artırır.", "en": "Builds biceps strength and size." },
+      "steps": {
+        "tr": ["Barı avuç içleri öne bakacak şekilde omuz genişliğinde tut.", "Dirsekler gövdenin yanında sabit.", "Barı omuzlara doğru kaldır.", "Kontrollü indir."],
+        "en": ["Hold the bar palms forward, shoulder-width.", "Keep your elbows pinned to your sides.", "Curl the bar toward your shoulders.", "Lower under control."]
+      }
+    },
+    {
+      "key": "dumbbell_curl", "category": "arms", "equipment": "dumbbell",
+      "name": { "tr": "Dambıl Curl", "en": "Dumbbell Curl" },
+      "muscles": ["biceps"], "secondary": ["forearms"],
+      "benefits": { "tr": "Her kolu ayrı çalıştırarak dengesizlikleri azaltır.", "en": "Trains each arm separately to reduce imbalances." },
+      "steps": {
+        "tr": ["Dambılları yanlarda, avuç içleri öne bakacak şekilde tut.", "Dirsekleri sabit tutarak dambılları kaldır.", "Üstte biceps'i sık.", "Yavaşça indir."],
+        "en": ["Hold dumbbells at your sides, palms forward.", "Curl them up keeping your elbows still.", "Squeeze at the top.", "Lower slowly."]
+      }
+    },
+    {
+      "key": "hammer_curl", "category": "arms", "equipment": "dumbbell",
+      "name": { "tr": "Hammer Curl", "en": "Hammer Curl" },
+      "muscles": ["biceps", "forearms"], "secondary": [],
+      "benefits": { "tr": "Ön kol ve kavrama kuvvetini de geliştirir.", "en": "Also builds forearm and grip strength." },
+      "steps": {
+        "tr": ["Dambılları avuç içleri birbirine bakacak şekilde tut.", "Dirsekleri sabit tutarak kaldır.", "Üstte kısa bekle.", "Kontrollü indir."],
+        "en": ["Hold dumbbells with palms facing each other.", "Curl up keeping your elbows still.", "Pause briefly at the top.", "Lower under control."]
+      }
+    },
+    {
+      "key": "triceps_pushdown", "category": "arms", "equipment": "cable",
+      "name": { "tr": "Triceps Pushdown", "en": "Triceps Pushdown" },
+      "muscles": ["triceps"], "secondary": [],
+      "benefits": { "tr": "Arka kolu izole çalıştırır; itme hareketlerine destek olur.", "en": "Isolates the triceps and supports pressing strength." },
+      "steps": {
+        "tr": ["Yüksek makaraya bar ya da halat tak, dirsekler gövdenin yanında.", "Kolları tamamen düzleşene kadar aşağı it.", "Altta arka kolu sık.", "Dirsekleri oynatmadan kontrollü bırak."],
+        "en": ["Attach a bar or rope to a high pulley; elbows at your sides.", "Push down until your arms are straight.", "Squeeze your triceps at the bottom.", "Return under control without moving your elbows."]
+      }
+    },
+    {
+      "key": "overhead_triceps_extension", "category": "arms", "equipment": "dumbbell",
+      "name": { "tr": "Baş Üstü Triceps Extension", "en": "Overhead Triceps Extension" },
+      "muscles": ["triceps"], "secondary": [],
+      "benefits": { "tr": "Arka kolun uzun başını uzamış pozisyonda çalıştırır.", "en": "Works the long head of the triceps in a stretched position." },
+      "steps": {
+        "tr": ["Dambılı iki elle başın üstünde tut.", "Dirsekleri yukarıda sabit tutarak dambılı başın arkasına indir.", "Kolları düzleştirerek yukarı kaldır.", "Hareketi kontrollü tekrarla."],
+        "en": ["Hold one dumbbell overhead with both hands.", "Keep elbows pointing up and lower it behind your head.", "Extend your arms to lift it back up.", "Repeat under control."]
+      }
+    },
+    {
+      "key": "skull_crusher", "category": "arms", "equipment": "ez_bar",
+      "name": { "tr": "Skull Crusher", "en": "Skull Crusher" },
+      "muscles": ["triceps"], "secondary": [],
+      "benefits": { "tr": "Arka kol kütlesi için etkili bir yatay hareket.", "en": "An effective lying move for triceps size." },
+      "steps": {
+        "tr": ["Sehpaya uzan, EZ barı kollar düz şekilde göğsün üstünde tut.", "Dirsekleri sabit tutarak barı alnın üstüne indir.", "Kolları düzleştirerek kaldır.", "Kontrollü tekrarla."],
+        "en": ["Lie on a bench holding an EZ bar above your chest, arms straight.", "Keep your elbows still and lower the bar toward your forehead.", "Extend your arms to lift it.", "Repeat under control."]
+      }
+    },
+    {
+      "key": "plank", "category": "core", "equipment": "bodyweight",
+      "name": { "tr": "Plank", "en": "Plank" },
+      "muscles": ["abs"], "secondary": ["obliques", "front_delts", "glutes"],
+      "benefits": { "tr": "Gövde stabilitesini ve duruşu geliştirir; belin korunmasına yardımcı olur.", "en": "Improves trunk stability and posture; helps protect the lower back." },
+      "steps": {
+        "tr": ["Dirsekler omuzların altında, ön kollar yerde.", "Vücut baştan topuğa düz bir çizgi.", "Karnı ve kalçayı sık, nefesi tutma.", "Belirlenen süre boyunca pozisyonu koru."],
+        "en": ["Elbows under shoulders, forearms on the floor.", "Body in a straight line from head to heels.", "Brace your abs and glutes; keep breathing.", "Hold for the set time."]
+      }
+    },
+    {
+      "key": "side_plank", "category": "core", "equipment": "bodyweight",
+      "name": { "tr": "Yan Plank", "en": "Side Plank" },
+      "muscles": ["obliques"], "secondary": ["abs", "glutes"],
+      "benefits": { "tr": "Yan karın kaslarını ve kalça stabilitesini güçlendirir.", "en": "Strengthens the obliques and hip stability." },
+      "steps": {
+        "tr": ["Yan yat, dirsek omzun altında.", "Kalçayı kaldırarak vücudu düz bir çizgi yap.", "Pozisyonu süre boyunca koru.", "Diğer tarafa geç."],
+        "en": ["Lie on your side with your elbow under your shoulder.", "Lift your hips so your body forms a straight line.", "Hold for the set time.", "Switch sides."]
+      }
+    },
+    {
+      "key": "dead_bug", "category": "core", "equipment": "bodyweight",
+      "name": { "tr": "Dead Bug", "en": "Dead Bug" },
+      "muscles": ["abs"], "secondary": ["hip_flexors"],
+      "benefits": { "tr": "Beli koruyarak derin karın kaslarını çalıştırır; koordinasyonu geliştirir.", "en": "Trains the deep abs while protecting the lower back; improves coordination." },
+      "steps": {
+        "tr": ["Sırtüstü uzan, kollar tavana, dizler 90 derece havada.", "Beli yere bastır.", "Karşı kol ve bacağı yavaşça uzat.", "Başlangıca dön, diğer tarafla tekrarla."],
+        "en": ["Lie on your back, arms up, knees bent at 90 degrees in the air.", "Press your lower back into the floor.", "Slowly extend the opposite arm and leg.", "Return and repeat on the other side."]
+      }
+    },
+    {
+      "key": "crunch", "category": "core", "equipment": "bodyweight",
+      "name": { "tr": "Mekik", "en": "Crunch" },
+      "muscles": ["abs"], "secondary": [],
+      "benefits": { "tr": "Karın kaslarını hedefleyen temel hareket.", "en": "A basic move that targets the abs." },
+      "steps": {
+        "tr": ["Sırtüstü uzan, dizler bükük, eller göğüste ya da şakaklarda.", "Karnı sıkarak omuzları yerden kaldır.", "Boynu çekmeden üstte kısa bekle.", "Kontrollü indir."],
+        "en": ["Lie on your back, knees bent, hands on chest or temples.", "Contract your abs to lift your shoulders off the floor.", "Pause without pulling on your neck.", "Lower under control."]
+      }
+    },
+    {
+      "key": "hanging_leg_raise", "category": "core", "equipment": "pullup_bar",
+      "name": { "tr": "Asılı Bacak Kaldırma", "en": "Hanging Leg Raise" },
+      "muscles": ["abs"], "secondary": ["hip_flexors", "forearms"],
+      "benefits": { "tr": "Alt karın ve kavrama kuvveti için zorlu bir hareket.", "en": "A challenging move for the lower abs and grip." },
+      "steps": {
+        "tr": ["Bara asıl, omuzlar aktif.", "Sallanmadan bacakları kalça hizasına ya da daha yukarı kaldır.", "Üstte kısa bekle.", "Kontrollü indir."],
+        "en": ["Hang from a bar with active shoulders.", "Raise your legs to hip height or higher without swinging.", "Pause briefly.", "Lower under control."]
+      }
+    },
+    {
+      "key": "russian_twist", "category": "core", "equipment": "bodyweight",
+      "name": { "tr": "Russian Twist", "en": "Russian Twist" },
+      "muscles": ["obliques"], "secondary": ["abs"],
+      "benefits": { "tr": "Gövdenin dönme kuvvetini ve yan karın kaslarını geliştirir.", "en": "Builds rotational strength and the obliques." },
+      "steps": {
+        "tr": ["Otur, dizler bükük, gövdeyi hafif geriye yasla.", "Ellerini birleştir ya da ağırlık tut.", "Gövdeyi bir sağa bir sola döndür.", "Sırtı düz tut."],
+        "en": ["Sit with knees bent and lean back slightly.", "Clasp your hands or hold a weight.", "Rotate your torso side to side.", "Keep your back straight."]
+      }
+    },
+    {
+      "key": "mountain_climber", "category": "conditioning", "equipment": "bodyweight",
+      "name": { "tr": "Mountain Climber", "en": "Mountain Climber" },
+      "muscles": ["abs", "full_body"], "secondary": ["front_delts", "hip_flexors"],
+      "benefits": { "tr": "Kalp atışını yükseltir; core'u ve koordinasyonu çalıştırır.", "en": "Raises your heart rate while working the core and coordination." },
+      "steps": {
+        "tr": ["Şınav pozisyonu al, eller omuzların altında.", "Bir dizi göğse doğru çek.", "Hızla bacak değiştir.", "Kalçayı yükseltmeden ritmi koru."],
+        "en": ["Start in a push-up position, hands under shoulders.", "Drive one knee toward your chest.", "Switch legs quickly.", "Keep the rhythm without lifting your hips."]
+      }
+    },
+    {
+      "key": "burpee", "category": "conditioning", "equipment": "bodyweight",
+      "name": { "tr": "Burpee", "en": "Burpee" },
+      "muscles": ["full_body"], "secondary": ["chest", "quads"],
+      "benefits": { "tr": "Tüm vücudu çalıştıran yüksek yoğunluklu kondisyon hareketi.", "en": "A high-intensity full-body conditioning move." },
+      "steps": {
+        "tr": ["Ayakta başla, çömel ve ellerini yere koy.", "Ayakları geriye atıp şınav pozisyonuna geç.", "Ayakları ellere doğru getir.", "Yukarı sıçra."],
+        "en": ["Start standing, squat down and place your hands on the floor.", "Jump your feet back to a push-up position.", "Jump your feet back toward your hands.", "Jump up."]
+      }
+    },
+    {
+      "key": "jumping_jack", "category": "conditioning", "equipment": "bodyweight",
+      "name": { "tr": "Jumping Jack", "en": "Jumping Jack" },
+      "muscles": ["full_body"], "secondary": ["calves"],
+      "benefits": { "tr": "Isınma ve kardiyo için basit, etkili bir hareket.", "en": "A simple, effective warm-up and cardio move." },
+      "steps": {
+        "tr": ["Ayaklar bitişik, kollar yanlarda başla.", "Sıçrayarak ayakları aç, kolları başın üstüne kaldır.", "Sıçrayarak başlangıca dön.", "Ritmi koru."],
+        "en": ["Start with feet together and arms at your sides.", "Jump your feet out and raise your arms overhead.", "Jump back to the start.", "Keep a steady rhythm."]
+      }
+    },
+    {
+      "key": "kettlebell_swing", "category": "conditioning", "equipment": "kettlebell",
+      "name": { "tr": "Kettlebell Swing", "en": "Kettlebell Swing" },
+      "muscles": ["glutes", "hamstrings"], "secondary": ["lower_back", "abs", "forearms"],
+      "benefits": { "tr": "Kalça patlayıcı gücünü ve kondisyonu birlikte geliştirir.", "en": "Builds explosive hip power and conditioning together." },
+      "steps": {
+        "tr": ["Kettlebell'i iki elle tut, ayaklar omuzdan geniş.", "Kalçadan menteşe yaparak kettlebell'i bacak arasına salla.", "Kalçayı güçlü şekilde öne iterek göğüs hizasına savur.", "Kolları değil kalçayı kullan."],
+        "en": ["Hold the kettlebell with both hands, feet wider than shoulders.", "Hinge and swing it back between your legs.", "Snap your hips forward to swing it to chest height.", "Power comes from the hips, not the arms."]
+      }
+    },
+    {
+      "key": "box_jump", "category": "conditioning", "equipment": "box",
+      "name": { "tr": "Kutu Sıçrama", "en": "Box Jump" },
+      "muscles": ["quads", "glutes"], "secondary": ["calves"],
+      "benefits": { "tr": "Bacaklarda patlayıcı gücü ve sıçrama kabiliyetini geliştirir.", "en": "Develops explosive leg power and jumping ability." },
+      "steps": {
+        "tr": ["Kutunun önünde dur, ayaklar kalça genişliğinde.", "Kolları savurarak çömel ve sıçra.", "Kutuya iki ayakla yumuşak in.", "Kutudan adımlayarak in."],
+        "en": ["Stand facing the box, feet hip-width.", "Swing your arms, dip and jump.", "Land softly on the box with both feet.", "Step down."]
+      }
+    },
+    {
+      "key": "farmers_walk", "category": "conditioning", "equipment": "dumbbell",
+      "name": { "tr": "Farmer's Walk", "en": "Farmer's Walk" },
+      "muscles": ["forearms", "upper_back"], "secondary": ["abs", "glutes"],
+      "benefits": { "tr": "Kavrama kuvveti, duruş ve gövde dayanıklılığı kazandırır.", "en": "Builds grip strength, posture and trunk endurance." },
+      "steps": {
+        "tr": ["Her elde ağır bir dambıl ya da kettlebell tut.", "Dik dur, omuzlar geride.", "Kısa ve kontrollü adımlarla yürü.", "Belirlenen mesafe ya da süre boyunca devam et."],
+        "en": ["Hold a heavy dumbbell or kettlebell in each hand.", "Stand tall with shoulders back.", "Walk with short, controlled steps.", "Continue for the set distance or time."]
+      }
+    },
+    {
+      "key": "step_up", "category": "legs", "equipment": "dumbbell",
+      "name": { "tr": "Step Up", "en": "Step-up" },
+      "muscles": ["quads", "glutes"], "secondary": ["hamstrings", "calves"],
+      "benefits": { "tr": "Tek bacak kuvveti ve dengesi; merdiven çıkma gibi günlük hareketlere doğrudan katkı.", "en": "Single-leg strength and balance that carries over to climbing stairs." },
+      "steps": {
+        "tr": ["Bir ayağını sehpaya koy.", "Öndeki bacakla iterek sehpaya çık.", "Kontrollü şekilde in.", "Setin sonunda bacak değiştir."],
+        "en": ["Place one foot on a box or bench.", "Drive through that leg to step up.", "Step down under control.", "Switch legs after the set."]
+      }
+    },
+    {
+      "key": "bodyweight_squat", "category": "legs", "equipment": "bodyweight",
+      "name": { "tr": "Vücut Ağırlığı Squat", "en": "Bodyweight Squat" },
+      "muscles": ["quads", "glutes"], "secondary": ["hamstrings"],
+      "benefits": { "tr": "Başlangıç seviyesi için bacak kuvveti ve hareketlilik; her yerde yapılır.", "en": "Beginner-friendly leg strength and mobility you can do anywhere." },
+      "steps": {
+        "tr": ["Ayaklar omuz genişliğinde, kollar önde.", "Kalçayı geriye iterek çömel.", "Topuklar yerde, göğüs dik.", "Yukarı kalk."],
+        "en": ["Feet shoulder-width, arms out in front.", "Sit back with your hips.", "Keep heels down and chest up.", "Stand back up."]
+      }
+    },
+    {
+      "key": "inverted_row", "category": "back", "equipment": "bodyweight",
+      "name": { "tr": "Ters Row", "en": "Inverted Row" },
+      "muscles": ["upper_back", "lats"], "secondary": ["biceps", "rear_delts"],
+      "benefits": { "tr": "Barfikse hazırlık; sırt ve duruş için vücut ağırlığıyla çekme hareketi.", "en": "Builds toward pull-ups; a bodyweight pull for back and posture." },
+      "steps": {
+        "tr": ["Bel hizasındaki bir barın altına uzan, barı tut.", "Vücut topuklardan omuzlara düz.", "Göğsü bara doğru çek.", "Kontrollü in."],
+        "en": ["Lie under a waist-high bar and grab it.", "Keep your body straight from heels to shoulders.", "Pull your chest to the bar.", "Lower under control."]
+      }
+    },
+    {
+      "key": "band_pull_apart", "category": "shoulders", "equipment": "band",
+      "name": { "tr": "Lastik Pull Apart", "en": "Band Pull-apart" },
+      "muscles": ["rear_delts", "upper_back"], "secondary": [],
+      "benefits": { "tr": "Omuz ısınması ve duruş için kolay ve etkili.", "en": "An easy, effective shoulder warm-up and posture drill." },
+      "steps": {
+        "tr": ["Lastiği omuz hizasında, kollar düz önde tut.", "Lastiği göğse doğru yanlara aç.", "Kürek kemiklerini sık.", "Kontrollü bırak."],
+        "en": ["Hold a band at shoulder height with straight arms.", "Pull it apart toward your chest.", "Squeeze your shoulder blades.", "Return under control."]
+      }
+    },
+    {
+      "key": "hip_flexor_stretch", "category": "mobility", "equipment": "mat",
+      "name": { "tr": "Kalça Fleksör Esnetme", "en": "Hip Flexor Stretch" },
+      "muscles": ["hip_flexors"], "secondary": ["quads"],
+      "benefits": { "tr": "Uzun süre oturmanın gerdiği kalça önünü açar; bel rahatlığına katkı sağlar.", "en": "Opens the front of the hips tightened by sitting; can ease lower-back tension." },
+      "steps": {
+        "tr": ["Bir diz yerde, diğer ayak önde yarım diz çökme pozisyonu al.", "Kalçayı sıkıp hafifçe öne kaydır.", "Arka bacak kalçasının önünde gerilme hisset.", "30 saniye tut, taraf değiştir."],
+        "en": ["Kneel on one knee with the other foot in front.", "Squeeze your glutes and shift your hips slightly forward.", "Feel the stretch at the front of the back hip.", "Hold 30 seconds, then switch sides."]
+      }
+    },
+    {
+      "key": "cat_cow", "category": "mobility", "equipment": "mat",
+      "name": { "tr": "Kedi-İnek", "en": "Cat-Cow" },
+      "muscles": ["lower_back", "abs"], "secondary": [],
+      "benefits": { "tr": "Omurga hareketliliğini artırır; ısınma ve soğuma için uygundur.", "en": "Improves spinal mobility; good for warm-ups and cool-downs." },
+      "steps": {
+        "tr": ["Eller ve dizler üzerinde dur.", "Nefes alırken beli çukurlaştırıp başı kaldır.", "Nefes verirken sırtı yukarı yuvarlayıp başı indir.", "Yavaş tempoda tekrarla."],
+        "en": ["Start on hands and knees.", "Inhale as you arch your back and lift your head.", "Exhale as you round your back and tuck your chin.", "Repeat slowly."]
+      }
+    },
+    {
+      "key": "worlds_greatest_stretch", "category": "mobility", "equipment": "mat",
+      "name": { "tr": "Dünyanın En İyi Esnetmesi", "en": "World's Greatest Stretch" },
+      "muscles": ["full_body"], "secondary": ["hip_flexors", "hamstrings"],
+      "benefits": { "tr": "Kalça, göğüs ve sırt hareketliliğini tek harekette geliştirir.", "en": "Improves hip, chest and upper-back mobility in one move." },
+      "steps": {
+        "tr": ["Uzun bir lunge pozisyonuna geç, arka diz düz.", "Öndeki ayağın içine aynı taraftaki dirseği indir.", "Aynı kolu tavana doğru açarak gövdeyi döndür.", "Birkaç tekrar sonra taraf değiştir."],
+        "en": ["Step into a long lunge, back leg straight.", "Drop the same-side elbow inside your front foot.", "Rotate and reach that arm toward the ceiling.", "After a few reps, switch sides."]
+      }
+    },
+    {
+      "key": "treadmill_walk", "category": "cardio", "equipment": "machine",
+      "name": { "tr": "Koşu Bandında Yürüyüş", "en": "Treadmill Walk" },
+      "muscles": ["full_body"], "secondary": ["calves", "glutes"],
+      "benefits": { "tr": "Eklemleri yormadan kalp-damar sağlığını ve günlük enerji harcamasını artırır.", "en": "Improves heart health and daily energy expenditure with low joint stress." },
+      "steps": {
+        "tr": ["Rahat bir tempoyla başla.", "Hızı ya da eğimi kademeli artır.", "Dik dur, korkuluklara yüklenme.", "Son birkaç dakikada tempoyu düşürerek soğu."],
+        "en": ["Start at an easy pace.", "Gradually increase speed or incline.", "Stand tall without leaning on the rails.", "Slow down for the last few minutes to cool down."]
+      }
+    },
+    {
+      "key": "stationary_bike", "category": "cardio", "equipment": "machine",
+      "name": { "tr": "Sabit Bisiklet", "en": "Stationary Bike" },
+      "muscles": ["quads"], "secondary": ["glutes", "calves", "hamstrings"],
+      "benefits": { "tr": "Dize az yükle kardiyo; aralıklı antrenman için uygundur.", "en": "Knee-friendly cardio; great for intervals." },
+      "steps": {
+        "tr": ["Seleyi bacak altta neredeyse düz olacak yüksekliğe ayarla.", "Hafif dirençle 5 dakika ısın.", "Programdaki süre ve yoğunlukta pedal çevir.", "Hafif dirençle soğu."],
+        "en": ["Set the saddle so your leg is almost straight at the bottom.", "Warm up for 5 minutes at low resistance.", "Ride at the time and intensity in your program.", "Cool down at low resistance."]
+      }
+    },
+    {
+      "key": "rowing_machine", "category": "cardio", "equipment": "machine",
+      "name": { "tr": "Kürek Makinesi", "en": "Rowing Machine" },
+      "muscles": ["full_body"], "secondary": ["upper_back", "quads", "lats"],
+      "benefits": { "tr": "Tüm vücudu çalıştıran, eklemlere nazik bir kardiyo.", "en": "Full-body, joint-friendly cardio." },
+      "steps": {
+        "tr": ["Ayakları sabitle, tutacağı kollar düz şekilde tut.", "Önce bacaklarla it, sonra gövdeyi hafif geriye yasla.", "En son kolları karnına çek.", "Aynı sırayı tersine izleyerek öne dön."],
+        "en": ["Strap your feet in and hold the handle with straight arms.", "Push with your legs first, then lean back slightly.", "Finally pull the handle to your stomach.", "Return in reverse order."]
+      }
+    },
+    {
+      "key": "jump_rope", "category": "cardio", "equipment": "jump_rope",
+      "name": { "tr": "İp Atlama", "en": "Jump Rope" },
+      "muscles": ["calves", "full_body"], "secondary": ["front_delts"],
+      "benefits": { "tr": "Koordinasyon, ayak bileği dayanıklılığı ve kondisyon kazandırır.", "en": "Builds coordination, ankle resilience and conditioning." },
+      "steps": {
+        "tr": ["İpin saplarını kalça hizasında tut.", "İpi bileklerle çevir.", "Ayak uçlarında, alçak ve ritmik sıçra.", "Dizleri hafif bükük tut."],
+        "en": ["Hold the handles at hip height.", "Turn the rope with your wrists.", "Jump low and rhythmically on the balls of your feet.", "Keep your knees soft."]
+      }
+    },
+    {
+      "key": "cable_crunch", "category": "core", "equipment": "cable",
+      "name": { "tr": "Kablo Crunch", "en": "Cable Crunch" },
+      "muscles": ["abs"], "secondary": ["obliques"],
+      "benefits": { "tr": "Karın kaslarını ağırlıkla ve artırılabilir yükle çalıştırır.", "en": "Trains the abs with adjustable, progressive load." },
+      "steps": {
+        "tr": ["Yüksek makaraya halat tak, makaraya dönük diz çök.", "Halatı başının yanında tut.", "Kalçayı sabit tutarak gövdeyi karnınla aşağı kıvır.", "Kontrollü dikleş."],
+        "en": ["Attach a rope to a high pulley and kneel facing it.", "Hold the rope beside your head.", "Keep hips still and curl your torso down with your abs.", "Rise back up under control."]
+      }
+    },
+    {
+      "key": "good_morning", "category": "legs", "equipment": "barbell",
+      "name": { "tr": "Good Morning", "en": "Good Morning" },
+      "muscles": ["hamstrings", "lower_back"], "secondary": ["glutes"],
+      "benefits": { "tr": "Arka bacak ve bel kaslarını güçlendirir; menteşe hareketini pekiştirir.", "en": "Strengthens the hamstrings and lower back; reinforces the hip hinge." },
+      "steps": {
+        "tr": ["Barı squat'taki gibi sırta yerleştir, dizler hafif bükük.", "Sırtı düz tutarak kalçadan öne eğil.", "Arka bacakta gerilme hissedince dur.", "Kalçayı öne iterek dikleş."],
+        "en": ["Place the bar on your upper back as in a squat, knees soft.", "Hinge forward at the hips with a flat back.", "Stop when you feel a hamstring stretch.", "Drive your hips forward to stand."]
+      }
+    },
+    {
+      "key": "arnold_press", "category": "shoulders", "equipment": "dumbbell",
+      "name": { "tr": "Arnold Press", "en": "Arnold Press" },
+      "muscles": ["front_delts", "side_delts"], "secondary": ["triceps"],
+      "benefits": { "tr": "Dönüşlü itme ile omzun ön ve yan kısmını birlikte çalıştırır.", "en": "A rotating press that works the front and side delts together." },
+      "steps": {
+        "tr": ["Otur, dambılları avuç içleri sana bakacak şekilde göğüs önünde tut.", "İterken avuç içlerini öne çevir.", "Kolları başın üstünde uzat.", "Dönerek başlangıca indir."],
+        "en": ["Sit holding dumbbells in front of your chest, palms facing you.", "Rotate your palms forward as you press.", "Extend your arms overhead.", "Rotate back as you lower."]
+      }
+    }
+  ]
+}

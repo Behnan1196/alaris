@@ -352,36 +352,51 @@ export type Database = {
       }
       exercises: {
         Row: {
+          benefits_i18n: Json
+          category: string | null
           created_at: string
           equipment: string | null
           id: string
+          key: string | null
           muscles: string[]
           name: string
           name_i18n: Json
           owner_coach_id: string | null
+          secondary_muscles: string[]
           steps: string[]
+          steps_i18n: Json
           video_paths: Json
         }
         Insert: {
+          benefits_i18n?: Json
+          category?: string | null
           created_at?: string
           equipment?: string | null
           id?: string
+          key?: string | null
           muscles?: string[]
           name: string
           name_i18n?: Json
           owner_coach_id?: string | null
+          secondary_muscles?: string[]
           steps?: string[]
+          steps_i18n?: Json
           video_paths?: Json
         }
         Update: {
+          benefits_i18n?: Json
+          category?: string | null
           created_at?: string
           equipment?: string | null
           id?: string
+          key?: string | null
           muscles?: string[]
           name?: string
           name_i18n?: Json
           owner_coach_id?: string | null
+          secondary_muscles?: string[]
           steps?: string[]
+          steps_i18n?: Json
           video_paths?: Json
         }
         Relationships: [

@@ -85,6 +85,7 @@ Kök klasörde çalıştırılır (Node 20+, npm).
 | `npm run test:db` | Migration'ları PGlite (Docker'sız Postgres) üzerinde kurar, RLS ve RPC testlerini çalıştırır |
 | `npm run db:push` | Migration'ları bağlı Supabase projesine uygular |
 | `npm run functions:deploy` | `notify` Edge Function'ını yükler |
+| `npm run db:exercises` | `supabase/data/exercises.json`dan sistem hareket kütüphanesi migration'ı üretir (sonra `db:push`) |
 | `npm run db:types` | Uzak şemadan `packages/shared/src/database.types.ts` üretir |
 | `npx supabase ...` | Supabase CLI (yerel geliştirme Docker ister) |
 | `cd apps/mobile && npx eas-cli@latest build --profile development --platform ios` | iPhone geliştirme derlemesi (EAS projesi @behnan/alaris) |

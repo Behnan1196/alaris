@@ -62,3 +62,4 @@ Birden çok haftalık programın düzenlenmesi (hafta 1..12 arası geçiş, haft
 - Henüz yok: "Mesaja yanıt ver" ve okunmamış mesaj göstergesi (6. adım), filtreler ve arama.
 - (7. adım) Kütüphane: sistem ve kendi hareketlerin; yeni hareket, sistem hareketini kopyalayıp düzenleme, video yükleme (en fazla 50 MB). Danışan sayfasında Fotoğraflar ve alan başına "ilerleme yorumu" (danışan İlerleme ekranında görür). Öğün ve şablon kütüphanesi sekmeleri henüz yok.
 - (27 Kasım) Program oluşturucu: hafta seçici (1..N), 1. hafta şablon, "Bu haftayı ayrı düzenle", "Bu haftayı kopyala", "1. hafta şablonuna dön"; görevleri sürükleyip başka güne taşıma; antrenmanda "öncekiyle süperset".
+- (27 Kasım) Kütüphanede 62 hareketlik sistem kataloğu: kategori filtreleri (Bacak, Kalça, Göğüs, Sırt, Omuz, Kol, Karın, Kondisyon, Kardiyo, Mobilite, Benim hareketlerim), "İncele" panelinde hedef/yardımcı kaslar, yararlar ve adımlar; "Kopyala ve düzenle" ile koç kendi sürümünü oluşturur.

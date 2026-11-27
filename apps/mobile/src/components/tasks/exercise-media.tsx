@@ -1,3 +1,4 @@
+import { localized, tagLabel } from '@alaris/shared';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -10,7 +11,7 @@ import { supabase } from '@/lib/supabase';
 
 import { Panel } from './common';
 
-type Info = { muscles: string[]; equipment: string | null; steps: string[]; videoUrl: string | null };
+type Info = { muscles: string[]; equipment: string | null; steps: string[]; benefits: string; videoUrl: string | null };
 
 function LoopingVideo({ url }: { url: string }) {
   // Koçun videosu: döngüde ve sessiz oynar.
@@ -24,7 +25,7 @@ function LoopingVideo({ url }: { url: string }) {
 
 /** Kütüphanedeki hareketin videosu, çalışan kasları ve "Nasıl yapılır" adımları. */
 export function ExerciseMedia({ exerciseId }: { exerciseId?: string | null }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [info, setInfo] = useState<Info | null>(null);
 
   useEffect(() => {
@@ -33,19 +34,25 @@ export function ExerciseMedia({ exerciseId }: { exerciseId?: string | null }) {
     (async () => {
       const { data } = await supabase
         .from('exercises')
-        .select('muscles, equipment, steps, video_paths')
+        .select('muscles, equipment, steps, steps_i18n, benefits_i18n, video_paths')
         .eq('id', exerciseId)
         .maybeSingle();
       if (!data || !alive) return;
       const path = (data.video_paths as Record<string, string> | null)?.front;
       const urls = path ? await signedUrls([path]) : new Map<string, string>();
       if (alive)
-        setInfo({ muscles: data.muscles, equipment: data.equipment, steps: data.steps, videoUrl: path ? (urls.get(path) ?? null) : null });
+        setInfo({
+          muscles: data.muscles.map((m) => tagLabel('muscle', m, t)),
+          equipment: data.equipment ? tagLabel('equipment', data.equipment, t) : null,
+          steps: localized<string[]>(data.steps_i18n, locale, data.steps),
+          benefits: localized<string>(data.benefits_i18n, locale, ''),
+          videoUrl: path ? (urls.get(path) ?? null) : null,
+        });
     })();
     return () => {
       alive = false;
     };
-  }, [exerciseId]);
+  }, [exerciseId, locale, t]);
 
   if (!info) return null;
   return (
@@ -56,6 +63,11 @@ export function ExerciseMedia({ exerciseId }: { exerciseId?: string | null }) {
           {[info.muscles.join(', '), info.equipment].filter(Boolean).join(' · ')}
         </ThemedText>
       )}
+      {info.benefits ? (
+        <ThemedText type="small" themeColor="textSecondary">
+          {info.benefits}
+        </ThemedText>
+      ) : null}
       {info.steps.length > 0 && (
         <Panel>
           <ThemedText type="smallBold">{t('m.ex.howTo')}</ThemedText>

@@ -16,7 +16,8 @@
     "db:types": "supabase gen types --remote --lang typescript > packages/shared/src/database.types.ts",
     "db:push": "supabase db push --remote",
     "dev:mobile:tunnel": "npm run env:sync && npm run start -w @alaris/mobile -- --tunnel",
-    "functions:deploy": "supabase functions deploy notify --no-verify-jwt --use-api"
+    "functions:deploy": "supabase functions deploy notify --no-verify-jwt --use-api",
+    "db:exercises": "node scripts/gen-exercises.mjs"
   },
   "engines": {
     "node": ">=20"

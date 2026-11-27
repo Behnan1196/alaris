@@ -2,15 +2,7 @@
 -- Demo kullanıcılar (koç, danışan) kayıt akışı hazır olunca uygulama üzerinden oluşturulacak.
 -- Sistem kütüphanesinin kaynağı henüz açık (docs/10-acik-sorular.md, soru 7); bunlar yer tutucudur.
 
-insert into public.exercises (name, name_i18n, muscles, equipment, steps) values
-  ('Squat', '{"tr": "Squat", "en": "Squat"}', '{quadriceps,glutes,hamstrings}', 'Barbell',
-   '{"Ayaklar omuz genişliğinde","Kalçayı geriye iterek çömel","Dizler ayak uçlarıyla aynı yönde","Topuklardan iterek kalk"}'),
-  ('Bench Press', '{"tr": "Bench Press", "en": "Bench Press"}', '{chest,triceps,front_delts}', 'Barbell',
-   '{"Sırt üstü uzan, kürek kemiklerini sıkıştır","Barı göğüs hizasına indir","Kontrollü it"}'),
-  ('Romanian Deadlift', '{"tr": "Romanian Deadlift", "en": "Romanian Deadlift"}', '{hamstrings,glutes,lower_back}', 'Barbell',
-   '{"Dizler hafif bükük","Kalçadan menteşe hareketi","Sırt düz, bar bacağa yakın"}'),
-  ('Plank', '{"tr": "Plank", "en": "Plank"}', '{core}', 'Vücut ağırlığı',
-   '{"Dirsekler omuz altında","Vücut düz bir çizgide","Karın sıkı, nefesi tutma"}');
+-- Sistem hareketleri migration ile gelir (supabase/data/exercises.json).
 
 insert into public.foods (name, name_i18n, portion, kcal, protein_g, carb_g, fat_g) values
   ('Yulaf ezmesi', '{"tr": "Yulaf ezmesi", "en": "Oats"}', '50 g', 190, 6.5, 33, 3.5),
