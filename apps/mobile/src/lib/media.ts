@@ -10,6 +10,33 @@ function randomId() {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 }
 
+/**
+ * Dosyayı Storage'a yükler. React Native'de dosyayı bellekten (ArrayBuffer) göndermek iOS'ta
+ * 520 hatasına yol açtı; supabase-js'in FormData yolu da RN FormData'sında çalışmıyor.
+ * Bu yüzden dosya adresiyle çok parçalı (multipart) istek doğrudan gönderilir; RN dosyayı akıtır.
+ */
+async function uploadFile(path: string, uri: string, contentType: string) {
+  const { data } = await supabase.auth.getSession();
+  const token = data.session?.access_token;
+  if (!token) throw new Error('Oturum bulunamadı, yeniden giriş yap.');
+  const form = new FormData();
+  form.append('cacheControl', '3600');
+  form.append('', { uri, name: path.split('/').pop()!, type: contentType } as unknown as Blob);
+  const res = await fetch(`${process.env.EXPO_PUBLIC_SUPABASE_URL}/storage/v1/object/media/${path}`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      apikey: process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+      'x-upsert': 'false',
+    },
+    body: form,
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new Error(`Fotoğraf yüklenemedi (${res.status}) ${text.slice(0, 120)}`);
+  }
+}
+
 /** Kamera mı galeri mi diye sorar; seçilen fotoğrafın yerel adresini döndürür. */
 function chooseSource(): Promise<'camera' | 'library' | null> {
   return new Promise((resolve) =>
@@ -52,9 +79,7 @@ export async function addPhoto(input: {
   const asset = await pickImage();
   if (!asset) return null;
   const path = `${input.clientId}/${input.coachingId ?? 'self'}/${randomId()}.jpg`;
-  const body = await (await fetch(asset.uri)).arrayBuffer();
-  const up = await supabase.storage.from('media').upload(path, body, { contentType: asset.mimeType ?? 'image/jpeg' });
-  if (up.error) throw up.error;
+  await uploadFile(path, asset.uri, asset.mimeType ?? 'image/jpeg');
   const { data, error } = await supabase
     .from('photos')
     .insert({
