@@ -190,11 +190,11 @@ export async function saveProgressComment(coachingId: string, domain: string, bo
   return { ok: true };
 }
 
-export async function moveTask(id: string, dayOfWeek: number, path: string): Promise<Result> {
+/** Görevi başka güne taşır. İstemci zaten yerelde güncellediği için sayfa yeniden yüklenmez. */
+export async function moveTask(id: string, dayOfWeek: number): Promise<Result> {
   const { supabase } = await requireUser();
   const { error } = await supabase.from("program_tasks").update({ day_of_week: dayOfWeek }).eq("id", id);
   if (error) return { error: error.message };
-  revalidatePath(path);
   return { ok: true };
 }
 

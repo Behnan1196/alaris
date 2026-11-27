@@ -24,7 +24,7 @@ import {
   type WorkoutPayload,
 } from "@alaris/shared";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import {
   copyTask,
   copyWeek,
@@ -132,13 +132,37 @@ export function Builder({
   const [sendOpen, setSendOpen] = useState(false);
   const [meta, setMeta] = useState({ name: program.name, weeks: program.weeks });
   const [week, setWeek] = useState(1);
-  const [dragId, setDragId] = useState<string | null>(null);
+  // Sürükle-bırak: sürüklenen kart ref'te (her olayda yeniden çizim yok), taşıma anında yerelde
+  // uygulanır, sunucuya arka planda yazılır (sayfanın tamamı yeniden yüklenmez).
+  const dragId = useRef<string | null>(null);
   const [overDay, setOverDay] = useState<number | null>(null);
+  const [local, setLocal] = useState(tasks);
+  const [prevTasks, setPrevTasks] = useState(tasks);
+  if (tasks !== prevTasks) {
+    setPrevTasks(tasks);
+    setLocal(tasks);
+  }
+
+  function dropOn(day: number) {
+    const id = dragId.current;
+    dragId.current = null;
+    setOverDay(null);
+    const t = local.find((x) => x.id === id);
+    if (!t || t.day_of_week === day) return;
+    const before = local;
+    setLocal(local.map((x) => (x.id === t.id ? { ...x, day_of_week: day } : x)));
+    moveTask(t.id, day).then((r) => {
+      if (r.error) {
+        setError(r.error);
+        setLocal(before);
+      }
+    });
+  }
 
   // Hafta: kendi görevi varsa onlar, yoksa 1. hafta şablonu (salt okunur gösterilir).
-  const weeksWithOwn = new Set(tasks.map((t) => t.week_no));
+  const weeksWithOwn = new Set(local.map((t) => t.week_no));
   const ownWeek = week === 1 || weeksWithOwn.has(week);
-  const weekTasks = tasks.filter((t) => t.week_no === (ownWeek ? week : 1));
+  const weekTasks = local.filter((t) => t.week_no === (ownWeek ? week : 1));
   const editable = ownWeek;
 
   const domainInfo = DOMAINS[domain];
@@ -291,18 +315,14 @@ export function Builder({
                   <div
                     key={day}
                     onDragOver={(e) => {
-                      if (!dragId || !editable) return;
+                      if (!dragId.current || !editable) return;
                       e.preventDefault();
-                      setOverDay(day);
+                      if (overDay !== day) setOverDay(day);
                     }}
                     onDragLeave={() => setOverDay((d) => (d === day ? null : d))}
                     onDrop={(e) => {
                       e.preventDefault();
-                      const id = dragId;
-                      setDragId(null);
-                      setOverDay(null);
-                      const t = weekTasks.find((x) => x.id === id);
-                      if (t && t.day_of_week !== day) run(() => moveTask(t.id, day, path));
+                      dropOn(day);
                     }}
                     className={`flex min-h-56 flex-col gap-2 rounded-xl border p-2 ${
                       overDay === day ? "border-ink bg-soft" : "border-line bg-surface"
@@ -315,9 +335,9 @@ export function Builder({
                       <button
                         key={t.id}
                         draggable={editable}
-                        onDragStart={() => setDragId(t.id)}
+                        onDragStart={() => (dragId.current = t.id)}
                         onDragEnd={() => {
-                          setDragId(null);
+                          dragId.current = null;
                           setOverDay(null);
                         }}
                         disabled={!editable}
