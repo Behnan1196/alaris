@@ -34,6 +34,7 @@ Alaris, birden çok alanda (fitness, beslenme, sınav koçluğu, gitar ve ilerid
 | [docs/10-acik-sorular.md](docs/10-acik-sorular.md) | Cevap bekleyen sorular |
 | [docs/11-teknik-yigin.md](docs/11-teknik-yigin.md) | Next.js + Expo + Supabase kararları |
 | [docs/12-yol-haritasi.md](docs/12-yol-haritasi.md) | Kilometre taşları (öneri) |
+| [docs/13-yayin.md](docs/13-yayin.md) | Vercel ve TestFlight yayın adımları |
 | [docs/karar-gunlugu.md](docs/karar-gunlugu.md) | Alınan kararlar, tarihleriyle |
 | [docs/mockups/](docs/mockups/) | Onaylı mockup'ların HTML yedekleri |
 
@@ -85,4 +86,5 @@ Kök klasörde çalıştırılır (Node 20+, npm).
 | `npm run db:types` | Uzak şemadan `packages/shared/src/database.types.ts` üretir |
 | `npx supabase ...` | Supabase CLI (yerel geliştirme Docker ister) |
 | `cd apps/mobile && npx eas-cli@latest build --profile development --platform ios` | iPhone geliştirme derlemesi (EAS projesi @behnan/alaris) |
+| `cd apps/mobile && npx eas-cli@latest build --profile production --platform ios --auto-submit` | TestFlight için production derlemesi ve yükleme (Supabase değişkenleri EAS `production` ortamında) |
 | `cd apps/mobile && npx expo install <paket>` | Mobil pakete SDK uyumlu bağımlılık ekler |
