@@ -1,13 +1,16 @@
+import { translateError } from '@alaris/shared';
 import { Link } from 'expo-router';
 import { useState } from 'react';
 
 import { Message, PrimaryButton, TextField } from '@/components/form';
+import { LanguagePicker } from '@/components/language-picker';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
-import { translateAuthError } from '@/lib/auth';
+import { useI18n } from '@/lib/i18n';
 import { supabase } from '@/lib/supabase';
 
 export default function GirisScreen() {
+  const { t } = useI18n();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -18,16 +21,17 @@ export default function GirisScreen() {
     setError(null);
     const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
     setLoading(false);
-    if (error) setError(translateAuthError(error.message));
+    if (error) setError(translateError(error.message, t));
     // Başarılıysa oturum değişir ve kök yerleşim Koçluklarım'a geçer.
   }
 
   return (
     <Screen>
+      <LanguagePicker />
       <ThemedText type="subtitle">Alaris</ThemedText>
-      <ThemedText themeColor="textSecondary">Koçlarınla çalışmaya devam etmek için giriş yap.</ThemedText>
+      <ThemedText themeColor="textSecondary">{t('m.auth.signInIntro')}</ThemedText>
       <TextField
-        label="E-posta"
+        label={t('auth.email')}
         value={email}
         onChangeText={setEmail}
         autoCapitalize="none"
@@ -36,7 +40,7 @@ export default function GirisScreen() {
         textContentType="emailAddress"
       />
       <TextField
-        label="Şifre"
+        label={t('auth.password')}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
@@ -44,9 +48,9 @@ export default function GirisScreen() {
         textContentType="password"
       />
       {error && <Message kind="error" text={error} />}
-      <PrimaryButton title="Giriş yap" onPress={submit} loading={loading} disabled={!email || !password} />
+      <PrimaryButton title={t('auth.signIn')} onPress={submit} loading={loading} disabled={!email || !password} />
       <Link href="/kayit">
-        <ThemedText type="linkPrimary">Hesabın yok mu? Kaydol</ThemedText>
+        <ThemedText type="linkPrimary">{t('m.auth.toSignUp')}</ThemedText>
       </Link>
     </Screen>
   );

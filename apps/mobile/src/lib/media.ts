@@ -1,10 +1,17 @@
-import { localDate, type Json } from '@alaris/shared';
+import { createT, isLocale, localDate, type Json, type TFunction } from '@alaris/shared';
 import * as ImagePicker from 'expo-image-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
 
 import { supabase } from './supabase';
 
 export type PhotoKind = 'meal' | 'front' | 'side' | 'other';
+
+/** Bileşen dışından çeviri: kayıtlı dil (yoksa cihaz dili). */
+async function tr() {
+  const v = await AsyncStorage.getItem('alaris.locale');
+  return createT(isLocale(v) ? v : 'tr');
+}
 
 function randomId() {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
@@ -18,7 +25,7 @@ function randomId() {
 async function uploadFile(path: string, uri: string, contentType: string) {
   const { data } = await supabase.auth.getSession();
   const token = data.session?.access_token;
-  if (!token) throw new Error('Oturum bulunamadı, yeniden giriş yap.');
+  if (!token) throw new Error((await tr())('m.media.noSession'));
   const form = new FormData();
   form.append('cacheControl', '3600');
   form.append('', { uri, name: path.split('/').pop()!, type: contentType } as unknown as Blob);
@@ -33,30 +40,31 @@ async function uploadFile(path: string, uri: string, contentType: string) {
   });
   if (!res.ok) {
     const text = await res.text().catch(() => '');
-    throw new Error(`Fotoğraf yüklenemedi (${res.status}) ${text.slice(0, 120)}`);
+    throw new Error(`${(await tr())('m.media.uploadFailed')} (${res.status}) ${text.slice(0, 120)}`);
   }
 }
 
 /** Kamera mı galeri mi diye sorar; seçilen fotoğrafın yerel adresini döndürür. */
-function chooseSource(): Promise<'camera' | 'library' | null> {
+function chooseSource(t: TFunction): Promise<'camera' | 'library' | null> {
   return new Promise((resolve) =>
-    Alert.alert('Fotoğraf ekle', undefined, [
-      { text: 'Kamera', onPress: () => resolve('camera') },
-      { text: 'Galeri', onPress: () => resolve('library') },
-      { text: 'Vazgeç', style: 'cancel', onPress: () => resolve(null) },
+    Alert.alert(t('m.media.add'), undefined, [
+      { text: t('m.media.camera'), onPress: () => resolve('camera') },
+      { text: t('m.media.library'), onPress: () => resolve('library') },
+      { text: t('common.cancel'), style: 'cancel', onPress: () => resolve(null) },
     ]),
   );
 }
 
 async function pickImage() {
-  const source = await chooseSource();
+  const t = await tr();
+  const source = await chooseSource(t);
   if (!source) return null;
   const perm =
     source === 'camera'
       ? await ImagePicker.requestCameraPermissionsAsync()
       : await ImagePicker.requestMediaLibraryPermissionsAsync();
   if (!perm.granted) {
-    Alert.alert('İzin gerekli', 'Ayarlar’dan Alaris için izin verebilirsin.');
+    Alert.alert(t('m.media.permTitle'), t('m.media.permBody'));
     return null;
   }
   const opts: ImagePicker.ImagePickerOptions = { mediaTypes: ['images'], quality: 0.6, exif: false };

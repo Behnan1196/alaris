@@ -1,6 +1,5 @@
 import {
   DOMAINS,
-  TASK_TYPE_LABELS,
   activeWeeks,
   localDate,
   programDay,
@@ -8,6 +7,7 @@ import {
   type DomainKey,
   type ProgramRepeat,
   type TaskTypeKey,
+  type TFunction,
 } from '@alaris/shared';
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
@@ -19,7 +19,9 @@ import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
+import { LanguagePicker } from '@/components/language-picker';
 import { useAuth } from '@/lib/auth';
+import { useI18n } from '@/lib/i18n';
 import { loadHabits, type HabitView } from '@/lib/habits';
 import { syncHabitReminders, unregisterPushToken } from '@/lib/notifications';
 import { supabase } from '@/lib/supabase';
@@ -35,18 +37,18 @@ type Widget = {
   today: { id: string; type: string; title: string; status: string | null }[];
 };
 
-const dateFmt = new Intl.DateTimeFormat('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' });
-const shortDate = new Intl.DateTimeFormat('tr-TR', { day: 'numeric', month: 'long' });
-
-function greeting() {
+function greeting(t: TFunction) {
   const h = new Date().getHours();
-  if (h < 12) return 'Günaydın';
-  if (h < 18) return 'İyi günler';
-  return 'İyi akşamlar';
+  if (h < 12) return t('greet.morning');
+  if (h < 18) return t('greet.day');
+  return t('greet.evening');
 }
 
 export default function KocluklarimScreen() {
   const { session } = useAuth();
+  const { t, intl } = useI18n();
+  const dateFmt = new Intl.DateTimeFormat(intl, { weekday: 'long', day: 'numeric', month: 'long' });
+  const shortDate = new Intl.DateTimeFormat(intl, { day: 'numeric', month: 'long' });
   const [name, setName] = useState('');
   const [widgets, setWidgets] = useState<Widget[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -90,13 +92,13 @@ export default function KocluklarimScreen() {
         const pos = program?.start_date ? programDay(program.start_date, total) : null;
         const today = pos
           ? program!.program_tasks
-              .filter((t) => tasksForDay(program!.program_tasks, pos.week, pos.dayOfWeek).includes(t))
+              .filter((x) => tasksForDay(program!.program_tasks, pos.week, pos.dayOfWeek).includes(x))
               .sort((a, b) => a.sort_order - b.sort_order)
-              .map((t) => ({ id: t.id, type: t.task_type_key, title: t.title, status: statusOf.get(t.id) ?? null }))
+              .map((x) => ({ id: x.id, type: x.task_type_key, title: x.title, status: statusOf.get(x.id) ?? null }))
           : [];
         const startsLater =
           program?.start_date && new Date(program.start_date + 'T00:00:00') > new Date()
-            ? shortDate.format(new Date(program.start_date + 'T00:00:00'))
+            ? program.start_date
             : null;
         list.push({
           key: `${c.id}:${domain_key}`,
@@ -113,7 +115,7 @@ export default function KocluklarimScreen() {
     const order = Object.keys(DOMAINS);
     list.sort((a, b) => order.indexOf(a.domainKey) - order.indexOf(b.domainKey));
     setWidgets(list);
-  }, [session?.user.id]);
+  }, [session?.user.id, setError, setHabits]);
 
   useFocusEffect(
     useCallback(() => {
@@ -128,12 +130,12 @@ export default function KocluklarimScreen() {
           {dateFmt.format(new Date())}
         </ThemedText>
         <ThemedText style={styles.hello}>
-          {greeting()}
+          {greeting(t)}
           {name ? `, ${name}` : ''}
         </ThemedText>
         {widgets && (
           <ThemedText type="small" themeColor="textSecondary">
-            {widgets.length ? `${widgets.length} aktif koçluk alanı` : 'Henüz bir koçun yok'}
+            {widgets.length ? t('m.home.activeAreas', { n: widgets.length }) : t('m.home.noCoach')}
           </ThemedText>
         )}
       </View>
@@ -146,49 +148,49 @@ export default function KocluklarimScreen() {
         return (
           <View key={w.key} style={[styles.widget, { backgroundColor: d?.color ?? '#333' }]}>
             <ThemedText type="smallBold" style={styles.widgetMuted}>
-              {d?.name ?? w.domainKey}
+              {t(`domain.${w.domainKey as DomainKey}`)}
             </ThemedText>
             <ThemedText style={styles.widgetTitle}>
-              {w.programName ?? 'Program bekleniyor'}
+              {w.programName ?? t('m.home.awaitingProgram')}
             </ThemedText>
             <ThemedText type="small" style={styles.widgetMuted}>
               {w.coachName}
-              {w.week && w.weeks ? ` · Hafta ${w.week} / ${w.weeks}` : ''}
+              {w.week && w.weeks ? ` · ${t('m.home.weekOf', { week: w.week, weeks: w.weeks })}` : ''}
             </ThemedText>
             {!w.programName && (
               <ThemedText type="small" style={styles.widgetMuted}>
-                Koçun programı gönderince bugünün işi burada görünecek.
+                {t('m.home.awaitingHint')}
               </ThemedText>
             )}
             {w.programName && w.startsLater && (
               <ThemedText type="small" style={styles.widgetMuted}>
-                Program {w.startsLater} tarihinde başlıyor.
+                {t('m.home.startsOn', { date: shortDate.format(new Date(w.startsLater + 'T00:00:00')) })}
               </ThemedText>
             )}
             {w.programName && !w.startsLater && w.today.length === 0 && (
               <ThemedText type="small" style={styles.widgetMuted}>
-                Bugün bu alanda görev yok. Dinlenme günü.
+                {t('m.home.restDay')}
               </ThemedText>
             )}
             {w.today.length > 0 && (
               <View style={styles.todayList}>
                 <ThemedText type="smallBold" style={styles.widgetMuted}>
-                  Bugün
+                  {t('common.today')}
                 </ThemedText>
-                {w.today.map((t) => (
+                {w.today.map((x) => (
                   <Pressable
-                    key={t.id}
-                    onPress={() => router.push({ pathname: '/gorev/[id]', params: { id: t.id } })}
+                    key={x.id}
+                    onPress={() => router.push({ pathname: '/gorev/[id]', params: { id: x.id } })}
                     style={({ pressed }) => [styles.todayRow, pressed && { opacity: 0.7 }]}>
                     <View style={{ flex: 1 }}>
                       <ThemedText type="small" style={styles.widgetMuted}>
-                        {TASK_TYPE_LABELS[t.type as TaskTypeKey] ?? t.type}
+                        {t(`taskType.${x.type as TaskTypeKey}`)}
                       </ThemedText>
-                      <ThemedText style={styles.todayTitle}>{t.title}</ThemedText>
+                      <ThemedText style={styles.todayTitle}>{x.title}</ThemedText>
                     </View>
                     <View style={styles.action}>
                       <ThemedText type="smallBold" style={{ color: '#111' }}>
-                        {t.status === 'done' ? '✓ Tamamlandı' : t.status === 'in_progress' ? 'Devam et' : 'Başla'}
+                        {x.status === 'done' ? `✓ ${t('m.task.completed')}` : x.status === 'in_progress' ? t('m.task.continue') : t('m.task.start')}
                       </ThemedText>
                     </View>
                   </Pressable>
@@ -201,9 +203,9 @@ export default function KocluklarimScreen() {
 
       <ThemedView type="backgroundElement" style={styles.habits}>
         <View style={styles.habitsHead}>
-          <ThemedText type="smallBold">Alışkanlıklarım</ThemedText>
+          <ThemedText type="smallBold">{t('m.habits.title')}</ThemedText>
           <ThemedText type="small" themeColor="textSecondary">
-            Bugün {habits.filter((h) => h.due && h.doneToday).length} / {habits.filter((h) => h.due).length} tamam
+            {t('m.habits.todayCount', { done: habits.filter((h) => h.due && h.doneToday).length, total: habits.filter((h) => h.due).length })}
           </ThemedText>
         </View>
         <HabitList
@@ -212,23 +214,24 @@ export default function KocluklarimScreen() {
           onError={setError}
         />
         <Pressable onPress={() => router.push('/aliskanliklar')}>
-          <ThemedText type="linkPrimary">Alışkanlıkları yönet ve yeni ekle</ThemedText>
+          <ThemedText type="linkPrimary">{t('m.habits.manage')}</ThemedText>
         </Pressable>
       </ThemedView>
 
       <Pressable onPress={() => router.push('/koc-ekle')}>
         {({ pressed }) => (
           <ThemedView type="backgroundElement" style={[styles.addCoach, pressed && { opacity: 0.7 }]}>
-            <ThemedText type="smallBold">+ Davet koduyla koç ekle</ThemedText>
+            <ThemedText type="smallBold">{t('m.home.addCoach')}</ThemedText>
           </ThemedView>
         )}
       </Pressable>
 
       <Pressable onPress={() => unregisterPushToken().finally(() => supabase.auth.signOut())}>
         <ThemedText type="small" themeColor="textSecondary" style={styles.signOut}>
-          Çıkış yap
+          {t('common.signOut')}
         </ThemedText>
       </Pressable>
+      <LanguagePicker align="center" />
     </Screen>
   );
 }

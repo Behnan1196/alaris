@@ -1,9 +1,10 @@
-import { DOMAINS, HABIT_FREQUENCY_LABELS, type DomainKey } from '@alaris/shared';
+import { DOMAINS, type DomainKey } from '@alaris/shared';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { Spacing } from '@/constants/theme';
 import { setHabitValue, type HabitView } from '@/lib/habits';
+import { useI18n } from '@/lib/i18n';
 
 const ACCENT = '#18181B';
 
@@ -21,6 +22,7 @@ export function HabitList({
   showAll?: boolean;
   onDelete?: (h: HabitView) => void;
 }) {
+  const { t } = useI18n();
   const list = showAll ? habits : habits.filter((h) => h.due);
 
   async function change(h: HabitView, value: number) {
@@ -38,12 +40,12 @@ export function HabitList({
       {list.map((h) => {
         const color = h.domain_key ? (DOMAINS[h.domain_key as DomainKey]?.color ?? ACCENT) : ACCENT;
         const sub = [
-          h.coaching_id ? 'Koçundan' : 'Kendi alışkanlığın',
-          HABIT_FREQUENCY_LABELS[h.frequency],
+          h.coaching_id ? t('m.habits.fromCoach') : t('m.habits.own'),
+          t(`freq.${h.frequency}`),
           h.frequency === 'three_per_week'
-            ? `bu hafta ${h.weekCount}/3`
+            ? t('m.habits.weekCount', { n: h.weekCount })
             : h.show_streak && h.streak > 0
-              ? `${h.streak} gün seri`
+              ? t('m.habits.streak', { n: h.streak })
               : null,
         ]
           .filter(Boolean)
@@ -58,7 +60,7 @@ export function HabitList({
               {onDelete && !h.coaching_id && (
                 <Pressable onPress={() => onDelete(h)}>
                   <ThemedText type="small" style={{ color: '#B91C1C' }}>
-                    Kaldır
+                    {t('common.remove')}
                   </ThemedText>
                 </Pressable>
               )}

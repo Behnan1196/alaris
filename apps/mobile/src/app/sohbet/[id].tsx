@@ -9,15 +9,17 @@ import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { useAuth } from '@/lib/auth';
+import { useI18n } from '@/lib/i18n';
 import { supabase } from '@/lib/supabase';
 
 type ChatMessage = { id: string; sender_id: string; body: string; created_at: string; read_at: string | null };
 
-const timeFmt = new Intl.DateTimeFormat('tr-TR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
 
 export default function SohbetScreen() {
   const { id, name } = useLocalSearchParams<{ id: string; name?: string }>();
   const { session } = useAuth();
+  const { t, intl } = useI18n();
+  const timeFmt = new Intl.DateTimeFormat(intl, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
   const me = session?.user.id;
   const theme = useTheme();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -76,7 +78,7 @@ export default function SohbetScreen() {
 
   return (
     <ThemedView style={{ flex: 1 }}>
-      <Stack.Screen options={{ title: name ?? 'Sohbet', headerShown: true, headerBackTitle: 'Geri' }} />
+      <Stack.Screen options={{ title: name ?? t('m.chat.title'), headerShown: true, headerBackTitle: t('common.back') }} />
       <SafeAreaView style={{ flex: 1 }} edges={['bottom', 'left', 'right']}>
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined} keyboardVerticalOffset={90}>
           <FlatList
@@ -87,7 +89,7 @@ export default function SohbetScreen() {
             onContentSizeChange={() => list.current?.scrollToEnd({ animated: false })}
             ListEmptyComponent={
               <ThemedText themeColor="textSecondary" style={{ textAlign: 'center' }}>
-                Koçuna ilk mesajını yaz.
+                {t('m.chat.empty')}
               </ThemedText>
             }
             renderItem={({ item }) => {
@@ -99,7 +101,7 @@ export default function SohbetScreen() {
                   </View>
                   <ThemedText type="small" themeColor="textSecondary" style={styles.meta}>
                     {timeFmt.format(new Date(item.created_at))}
-                    {mine ? (item.read_at ? ' · Okundu' : ' · Gönderildi') : ''}
+                    {mine ? ` · ${item.read_at ? t('msg.read') : t('msg.sent')}` : ''}
                   </ThemedText>
                 </View>
               );
@@ -109,14 +111,14 @@ export default function SohbetScreen() {
           <View style={styles.composer}>
             <TextInput
               style={[styles.input, { color: theme.text, backgroundColor: theme.backgroundElement }]}
-              placeholder="Mesaj yaz"
+              placeholder={t('m.chat.placeholder')}
               placeholderTextColor={theme.textSecondary}
               value={text}
               onChangeText={setText}
               multiline
             />
             <Pressable onPress={send} disabled={sending || !text.trim()} style={[styles.send, (sending || !text.trim()) && { opacity: 0.4 }]}>
-              <ThemedText style={{ color: '#fff', fontWeight: '700' }}>Gönder</ThemedText>
+              <ThemedText style={{ color: '#fff', fontWeight: '700' }}>{t('b.sendShort')}</ThemedText>
             </Pressable>
           </View>
         </KeyboardAvoidingView>

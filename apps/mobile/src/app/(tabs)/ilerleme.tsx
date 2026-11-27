@@ -1,12 +1,12 @@
 import {
   DOMAINS,
-  MEASURE_METRIC_LABELS,
-  WEEKDAYS_SHORT,
   activeWeeks,
   localDate,
   programDay,
   tasksForDay,
+  weekdayName,
   type DomainKey,
+  type TFunction,
   type MealPayload,
   type MealProgress,
   type MeasureMetric,
@@ -22,6 +22,7 @@ import { Chip, Panel } from '@/components/tasks/common';
 import { ThemedText } from '@/components/themed-text';
 import { Spacing } from '@/constants/theme';
 import { useAuth } from '@/lib/auth';
+import { useI18n } from '@/lib/i18n';
 import { supabase } from '@/lib/supabase';
 
 type Area = { key: string; coachingId: string; domain: DomainKey; coachName: string };
@@ -51,7 +52,7 @@ async function plannedThisWeek(coachingId: string, domain: string, type: string)
   }, 0);
 }
 
-async function loadArea(a: Area): Promise<AreaData> {
+async function loadArea(a: Area, t: TFunction, intl: string): Promise<AreaData> {
   const days = weekDays();
   const from = localDate(days[0]);
   const [{ data: instances }, { data: comment }] = await Promise.all([
@@ -73,7 +74,7 @@ async function loadArea(a: Area): Promise<AreaData> {
       return (pr?.eaten ?? []).reduce((s, idx) => s + (p.meals?.[idx]?.kcal ?? 0), 0);
     };
     const bars = days.map((d, i) => ({
-      label: WEEKDAYS_SHORT[i],
+      label: weekdayName(intl, i, 'short'),
       value: meals.filter((m) => m.date === localDate(d)).reduce((s, m) => s + kcalOf(m), 0),
     }));
     const logged = bars.filter((b) => b.value > 0);
@@ -81,10 +82,10 @@ async function loadArea(a: Area): Promise<AreaData> {
     const planned = await plannedThisWeek(a.coachingId, a.domain, 'meal');
     return {
       boxes: [
-        { label: 'Tüm öğünler tamam', value: `${meals.filter((m) => m.status === 'done').length} gün`, hint: planned ? `bu hafta ${planned} planlı gün` : undefined },
-        { label: 'Ortalama kalori', value: avg ? `${avg} kcal` : '–', hint: 'kayıt girilen günlerde' },
+        { label: t('m.prog.allMeals'), value: t('m.prog.days', { n: meals.filter((m) => m.status === 'done').length }), hint: planned ? t('m.prog.plannedDays', { n: planned }) : undefined },
+        { label: t('m.prog.avgKcal'), value: avg ? `${avg} kcal` : '–', hint: t('m.prog.loggedDays') },
       ],
-      chartTitle: 'Bu hafta günlük kalori',
+      chartTitle: t('m.prog.dailyKcal'),
       bars,
       unit: 'kcal',
       comment: commentText,
@@ -103,26 +104,26 @@ async function loadArea(a: Area): Promise<AreaData> {
   const w = weights ?? [];
   const last = w.at(-1);
   const diff = last && w.length > 1 ? Number(last.value) - Number(w[0].value) : null;
-  const shortDate = new Intl.DateTimeFormat('tr-TR', { day: 'numeric', month: 'short' });
+  const shortDate = new Intl.DateTimeFormat(intl, { day: 'numeric', month: 'short' });
   return {
     boxes: [
-      { label: 'Bu hafta antrenman', value: `${done} / ${planned || '–'}` },
+      { label: t('m.prog.workouts'), value: `${done} / ${planned || '–'}` },
       {
-        label: MEASURE_METRIC_LABELS.weight,
+        label: t('metric.weight'),
         value: last ? String(last.value) : '–',
-        hint: diff !== null ? `${diff > 0 ? '+' : ''}${diff.toFixed(1)} kg, ilk ölçümden beri` : undefined,
+        hint: diff !== null ? t('m.prog.weightDiff', { diff: `${diff > 0 ? '+' : ''}${diff.toFixed(1)}` }) : undefined,
       },
     ],
-    chartTitle: 'Kilo',
+    chartTitle: t('metricShort.weight'),
     bars: w.slice(-10).map((m) => ({ label: shortDate.format(new Date(m.measured_on + 'T00:00:00')), value: Number(m.value) })),
     unit: 'kg',
     comment: commentText,
   };
 }
 
-function Bars({ bars, color, unit }: { bars: Bar[]; color: string; unit: string }) {
+function Bars({ bars, color, unit, empty }: { bars: Bar[]; color: string; unit: string; empty: string }) {
   const values = bars.map((b) => b.value).filter((v) => v > 0);
-  if (!values.length) return <ThemedText type="small" themeColor="textSecondary">Henüz veri yok.</ThemedText>;
+  if (!values.length) return <ThemedText type="small" themeColor="textSecondary">{empty}</ThemedText>;
   const max = Math.max(...values);
   // Kilo gibi dar aralıklı değerlerde fark görünsün diye alt sınır kaydırılır.
   const min = unit === 'kg' ? Math.min(...values) * 0.97 : 0;
@@ -144,6 +145,7 @@ function Bars({ bars, color, unit }: { bars: Bar[]; color: string; unit: string 
 
 export default function IlerlemeScreen() {
   const { session } = useAuth();
+  const { t, intl } = useI18n();
   const uid = session?.user.id;
   const [areas, setAreas] = useState<Area[] | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
@@ -173,9 +175,9 @@ export default function IlerlemeScreen() {
     const current = list.find((a) => a.key === selected) ?? list[0];
     if (current) {
       setSelected(current.key);
-      setData(await loadArea(current).catch((e: Error) => (setError(e.message), null)));
+      setData(await loadArea(current, t, intl).catch((e: Error) => (setError(e.message), null)));
     }
-  }, [uid, selected]);
+  }, [uid, selected, t, intl]);
 
   useFocusEffect(
     useCallback(() => {
@@ -188,17 +190,17 @@ export default function IlerlemeScreen() {
 
   return (
     <Screen tabs>
-      <ThemedText style={styles.title}>İlerleme</ThemedText>
+      <ThemedText style={styles.title}>{t('web.progress.title')}</ThemedText>
       {error && <Message kind="error" text={error} />}
       {!areas && !error && <ActivityIndicator />}
-      {areas?.length === 0 && <ThemedText themeColor="textSecondary">Bir koça bağlanınca ilerlemen burada görünür.</ThemedText>}
+      {areas?.length === 0 && <ThemedText themeColor="textSecondary">{t('m.prog.empty')}</ThemedText>}
 
       {!!areas?.length && (
         <View style={styles.chips}>
           {areas.map((a) => (
             <Chip
               key={a.key}
-              label={DOMAINS[a.domain]?.name ?? a.domain}
+              label={t(`domain.${a.domain}`)}
               color={DOMAINS[a.domain]?.color ?? '#18181B'}
               active={a.key === selected}
               onPress={() => {
@@ -224,12 +226,12 @@ export default function IlerlemeScreen() {
           </View>
           <Panel>
             <ThemedText type="smallBold">{data.chartTitle}</ThemedText>
-            <Bars bars={data.bars} color={color} unit={data.unit} />
+            <Bars bars={data.bars} color={color} unit={data.unit} empty={t('m.prog.noData')} />
           </Panel>
           <Panel>
-            <ThemedText type="smallBold">Koçunun yorumu</ThemedText>
+            <ThemedText type="smallBold">{t('m.prog.comment')}</ThemedText>
             <ThemedText themeColor={data.comment ? 'text' : 'textSecondary'}>
-              {data.comment ?? `${area.coachName} henüz yorum yazmadı.`}
+              {data.comment ?? t('m.prog.noComment', { coach: area.coachName || t('common.coach') })}
             </ThemedText>
             {data.comment && <ThemedText type="small" themeColor="textSecondary">{area.coachName}</ThemedText>}
           </Panel>

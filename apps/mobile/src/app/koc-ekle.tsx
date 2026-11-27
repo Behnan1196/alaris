@@ -1,4 +1,4 @@
-import { COACH_SHARE_VERSION, DOMAINS, HEALTH_DATA_VERSION, type DomainKey } from '@alaris/shared';
+import { COACH_SHARE_VERSION, DOMAINS, HEALTH_DATA_VERSION, type DomainKey, translateError } from '@alaris/shared';
 import { Redirect, router } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -9,12 +9,14 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { useAuth } from '@/lib/auth';
+import { useI18n } from '@/lib/i18n';
 import { supabase } from '@/lib/supabase';
 
 type Preview = { coach_name: string; coach_title: string | null; domain_keys: string[] };
 
 export default function KocEkleScreen() {
   const { session } = useAuth();
+  const { t } = useI18n();
   const [code, setCode] = useState('');
   const [preview, setPreview] = useState<Preview | null>(null);
   const [share, setShare] = useState(false);
@@ -27,8 +29,8 @@ export default function KocEkleScreen() {
     setError(null);
     const { data, error } = await supabase.rpc('invite_preview', { p_code: code });
     setLoading(false);
-    if (error) return setError(error.message);
-    if (!data?.length) return setError('Kod bulunamadı, kullanılmış ya da süresi dolmuş.');
+    if (error) return setError(translateError(error.message, t));
+    if (!data?.length) return setError(t('err.inviteInvalid'));
     setPreview(data[0]);
   }
 
@@ -41,7 +43,7 @@ export default function KocEkleScreen() {
     });
     if (error) {
       setLoading(false);
-      return setError(error.message);
+      return setError(translateError(error.message, t));
     }
     await supabase.from('consents').insert({
       client_id: session!.user.id,
@@ -59,19 +61,19 @@ export default function KocEkleScreen() {
     return (
       <Screen>
         <ThemedText themeColor="textSecondary">
-          Koçundan aldığın 8 karakterlik davet kodunu yaz.
+          {t('m.addCoach.intro')}
         </ThemedText>
         <TextField
-          label="Davet kodu"
+          label={t('web.invite.code')}
           value={code}
-          onChangeText={(t) => setCode(t.toUpperCase())}
+          onChangeText={(v) => setCode(v.toUpperCase())}
           autoCapitalize="characters"
           autoCorrect={false}
           maxLength={8}
           style={styles.code}
         />
         {error && <Message kind="error" text={error} />}
-        <PrimaryButton title="Devam" onPress={check} loading={loading} disabled={code.length !== 8} />
+        <PrimaryButton title={t('common.continue')} onPress={check} loading={loading} disabled={code.length !== 8} />
       </Screen>
     );
   }
@@ -81,7 +83,7 @@ export default function KocEkleScreen() {
     <Screen>
       <ThemedView type="backgroundElement" style={styles.card}>
         <ThemedText type="smallBold" themeColor="textSecondary">
-          Davet eden koç
+          {t('m.addCoach.invitedBy')}
         </ThemedText>
         <ThemedText style={styles.coachName}>{coachName}</ThemedText>
         <View style={styles.tags}>
@@ -90,7 +92,7 @@ export default function KocEkleScreen() {
             return (
               <View key={k} style={[styles.tag, { backgroundColor: d?.color ?? '#555' }]}>
                 <ThemedText type="smallBold" style={{ color: '#fff' }}>
-                  {d?.name ?? k}
+                  {t(`domain.${k as DomainKey}`)}
                 </ThemedText>
               </View>
             );
@@ -100,22 +102,20 @@ export default function KocEkleScreen() {
 
       <SwitchRow value={share} onValueChange={setShare}>
         <ThemedText type="small">
-          {coachName} ile programlarımı, kayıtlarımı ve mesajlarımı paylaşmayı kabul ediyorum.
-          Koçluğu bitirdiğimde bu izin sona erer.
+          {t('m.addCoach.share', { coach: coachName })}
         </ThemedText>
       </SwitchRow>
       <SwitchRow value={health} onValueChange={setHealth}>
         <ThemedText type="small">
-          Kilo, vücut ölçüleri, beslenme kayıtları ve fotoğraflar gibi sağlık verilerimin bu koçluk için
-          işlenmesine açık rıza veriyorum.
+          {t('m.addCoach.health')}
         </ThemedText>
       </SwitchRow>
       <ThemedText type="small" themeColor="textSecondary">
-        Diğer koçların bu koçluğun ayrıntılarını görmesi ayrıca senin iznine bağlı.
+        {t('m.addCoach.otherCoaches')}
       </ThemedText>
       {error && <Message kind="error" text={error} />}
       <PrimaryButton
-        title="Koçu ekle"
+        title={t('m.addCoach.submit')}
         onPress={accept}
         loading={loading}
         disabled={!share || !health}

@@ -11,24 +11,27 @@ import { Pressable, PressableProps, useColorScheme, View, StyleSheet } from 'rea
 
 import { Colors, MaxContentWidth, Spacing } from '@/constants/theme';
 
+import { useI18n } from '@/lib/i18n';
+
 import { ExternalLink } from './external-link';
 import { ThemedText } from './themed-text';
 import { ThemedView } from './themed-view';
 
 export default function AppTabs() {
+  const { t } = useI18n();
   return (
     <Tabs>
       <TabSlot style={{ height: '100%' }} />
       <TabList asChild>
         <CustomTabList>
           <TabTrigger name="home" href="/" asChild>
-            <TabButton>Koçluklarım</TabButton>
+            <TabButton>{t('m.tab.home')}</TabButton>
           </TabTrigger>
           <TabTrigger name="mesajlar" href="/mesajlar" asChild>
-            <TabButton>Mesajlar</TabButton>
+            <TabButton>{t('nav.messages')}</TabButton>
           </TabTrigger>
           <TabTrigger name="ilerleme" href="/ilerleme" asChild>
-            <TabButton>İlerleme</TabButton>
+            <TabButton>{t('web.progress.title')}</TabButton>
           </TabTrigger>
         </CustomTabList>
       </TabList>

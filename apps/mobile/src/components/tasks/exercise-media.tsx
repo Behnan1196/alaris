@@ -4,6 +4,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { Spacing } from '@/constants/theme';
+import { useI18n } from '@/lib/i18n';
 import { signedUrls } from '@/lib/media';
 import { supabase } from '@/lib/supabase';
 
@@ -23,6 +24,7 @@ function LoopingVideo({ url }: { url: string }) {
 
 /** Kütüphanedeki hareketin videosu, çalışan kasları ve "Nasıl yapılır" adımları. */
 export function ExerciseMedia({ exerciseId }: { exerciseId?: string | null }) {
+  const { t } = useI18n();
   const [info, setInfo] = useState<Info | null>(null);
 
   useEffect(() => {
@@ -56,7 +58,7 @@ export function ExerciseMedia({ exerciseId }: { exerciseId?: string | null }) {
       )}
       {info.steps.length > 0 && (
         <Panel>
-          <ThemedText type="smallBold">Nasıl yapılır</ThemedText>
+          <ThemedText type="smallBold">{t('m.ex.howTo')}</ThemedText>
           {info.steps.map((s, i) => (
             <ThemedText key={i} type="small">
               {i + 1}. {s}

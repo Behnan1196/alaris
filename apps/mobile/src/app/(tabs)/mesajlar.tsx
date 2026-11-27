@@ -1,4 +1,4 @@
-import { DOMAINS, type DomainKey } from '@alaris/shared';
+import { type DomainKey } from '@alaris/shared';
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
@@ -9,27 +9,28 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { useAuth } from '@/lib/auth';
+import { useI18n } from '@/lib/i18n';
 import { supabase } from '@/lib/supabase';
 
 type Row = {
   id: string;
   coachName: string;
   initials: string;
-  domains: string;
+  domains: string[];
   last: { body: string; created_at: string } | null;
   unread: number;
 };
 
-const timeFmt = new Intl.DateTimeFormat('tr-TR', { hour: '2-digit', minute: '2-digit' });
-const dayFmt = new Intl.DateTimeFormat('tr-TR', { day: 'numeric', month: 'short' });
-
-function when(iso: string) {
+function when(iso: string, intl: string) {
+  const timeFmt = new Intl.DateTimeFormat(intl, { hour: '2-digit', minute: '2-digit' });
+  const dayFmt = new Intl.DateTimeFormat(intl, { day: 'numeric', month: 'short' });
   const d = new Date(iso);
   return d.toDateString() === new Date().toDateString() ? timeFmt.format(d) : dayFmt.format(d);
 }
 
 export default function MesajlarScreen() {
   const { session } = useAuth();
+  const { t, intl } = useI18n();
   const uid = session?.user.id;
   const [rows, setRows] = useState<Row[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -44,7 +45,7 @@ export default function MesajlarScreen() {
       supabase.from('coachings').select('coach_id, coaching_domains(domain_key)').eq('client_id', uid).neq('status', 'ended'),
     ]);
     if (threads.error) return setError(threads.error.message);
-    const ids = threads.data.map((t) => t.id);
+    const ids = threads.data.map((x) => x.id);
     const [recent, unread] = ids.length
       ? await Promise.all([
           supabase.from('messages').select('thread_id, body, created_at').in('thread_id', ids).order('created_at', { ascending: false }).limit(200),
@@ -59,18 +60,18 @@ export default function MesajlarScreen() {
 
     setRows(
       threads.data
-        .map((t) => {
-          const name = t.coach?.profile?.full_name ?? 'Koç';
+        .map((th) => {
+          const name = th.coach?.profile?.full_name ?? '';
           const domains = (coachings.data ?? [])
-            .filter((c) => c.coach_id === t.coach_id)
-            .flatMap((c) => c.coaching_domains.map((d) => DOMAINS[d.domain_key as DomainKey]?.name ?? d.domain_key));
+            .filter((c) => c.coach_id === th.coach_id)
+            .map((c) => c.coaching_domains.map((d) => d.domain_key));
           return {
-            id: t.id,
-            coachName: [t.coach?.title, name].filter(Boolean).join(' '),
+            id: th.id,
+            coachName: [th.coach?.title, name].filter(Boolean).join(' '),
             initials: name.split(' ').map((p) => p[0]).slice(0, 2).join('').toUpperCase(),
-            domains: domains.join(' ve '),
-            last: lastOf.get(t.id) ?? null,
-            unread: unreadOf.get(t.id) ?? 0,
+            domains: domains.flat(),
+            last: lastOf.get(th.id) ?? null,
+            unread: unreadOf.get(th.id) ?? 0,
           };
         })
         .sort((a, b) => (b.last?.created_at ?? '').localeCompare(a.last?.created_at ?? '')),
@@ -85,14 +86,14 @@ export default function MesajlarScreen() {
 
   return (
     <Screen tabs>
-      <ThemedText style={styles.title}>Mesajlar</ThemedText>
+      <ThemedText style={styles.title}>{t('nav.messages')}</ThemedText>
       {error && <Message kind="error" text={error} />}
       {!rows && !error && <ActivityIndicator />}
       {rows?.length === 0 && (
-        <ThemedText themeColor="textSecondary">Bir koça bağlandığında sohbetin burada açılır.</ThemedText>
+        <ThemedText themeColor="textSecondary">{t('m.msg.empty')}</ThemedText>
       )}
       {rows?.map((r) => (
-        <Pressable key={r.id} onPress={() => router.push({ pathname: '/sohbet/[id]', params: { id: r.id, name: r.coachName } })}>
+        <Pressable key={r.id} onPress={() => router.push({ pathname: '/sohbet/[id]', params: { id: r.id, name: r.coachName || t('common.coach') } })}>
           {({ pressed }) => (
             <ThemedView type="backgroundElement" style={[styles.row, pressed && { opacity: 0.7 }]}>
               <View style={styles.avatar}>
@@ -100,21 +101,21 @@ export default function MesajlarScreen() {
               </View>
               <View style={{ flex: 1 }}>
                 <View style={styles.rowHead}>
-                  <ThemedText type="smallBold">{r.coachName}</ThemedText>
+                  <ThemedText type="smallBold">{r.coachName || t('common.coach')}</ThemedText>
                   {r.last && (
                     <ThemedText type="small" themeColor="textSecondary">
-                      {when(r.last.created_at)}
+                      {when(r.last.created_at, intl)}
                     </ThemedText>
                   )}
                 </View>
-                {r.domains ? (
+                {r.domains.length ? (
                   <ThemedText type="small" themeColor="textSecondary">
-                    {r.domains}
+                    {r.domains.map((d) => t(`domain.${d as DomainKey}`)).join(' · ')}
                   </ThemedText>
                 ) : null}
                 <View style={styles.rowHead}>
                   <ThemedText type="small" numberOfLines={1} style={{ flex: 1 }}>
-                    {r.last?.body ?? 'Henüz mesaj yok'}
+                    {r.last?.body ?? t('msg.noMessages')}
                   </ThemedText>
                   {r.unread > 0 && (
                     <View style={styles.badge}>

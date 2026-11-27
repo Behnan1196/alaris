@@ -7,6 +7,7 @@ import { Message } from '@/components/form';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { Spacing } from '@/constants/theme';
+import { useI18n } from '@/lib/i18n';
 import { addPhoto, photosOfInstance } from '@/lib/media';
 import { addLog, ensureInstance, saveProgress, type Instance } from '@/lib/tasks';
 
@@ -33,6 +34,7 @@ function Bar({ label, value, target, color }: { label: string; value: number; ta
 type Photo = { id: string; url: string | null; meta: unknown };
 
 export function MealDay({ task, instance: initial, color, clientId }: TaskProps & { clientId: string }) {
+  const { t } = useI18n();
   const payload = task.payload as unknown as MealPayload;
   const options = task.options as unknown as MealOptions;
   const meals = payload.meals ?? [];
@@ -103,7 +105,7 @@ export function MealDay({ task, instance: initial, color, clientId }: TaskProps 
 
   return (
     <Screen>
-      {allDone && <DoneBanner color={color} text="Bugünün öğünleri tamam" />}
+      {allDone && <DoneBanner color={color} text={t('m.meal.allDone')} />}
       <Panel>
         <View style={styles.kcalRow}>
           <ThemedText style={styles.kcal}>{eatenKcal}</ThemedText>
@@ -111,8 +113,8 @@ export function MealDay({ task, instance: initial, color, clientId }: TaskProps 
         </View>
         <View style={styles.bars}>
           <Bar label="Protein" value={(payload.protein_g ?? 0) * ratio} target={payload.protein_g} color={color} />
-          <Bar label="Karb." value={(payload.carb_g ?? 0) * ratio} target={payload.carb_g} color={color} />
-          <Bar label="Yağ" value={(payload.fat_g ?? 0) * ratio} target={payload.fat_g} color={color} />
+          <Bar label={t('m.meal.carbs')} value={(payload.carb_g ?? 0) * ratio} target={payload.carb_g} color={color} />
+          <Bar label={t('m.meal.fat')} value={(payload.fat_g ?? 0) * ratio} target={payload.fat_g} color={color} />
         </View>
       </Panel>
 
@@ -135,7 +137,7 @@ export function MealDay({ task, instance: initial, color, clientId }: TaskProps 
                 onPress={() => toggle(i)}
                 style={[styles.eatBtn, { borderColor: color, backgroundColor: eaten ? color : 'transparent' }]}>
                 <ThemedText type="smallBold" style={{ color: eaten ? '#fff' : color }}>
-                  {eaten ? '✓ Yedim' : 'Yedim'}
+                  {eaten ? `✓ ${t('m.meal.ate')}` : t('m.meal.ate')}
                 </ThemedText>
               </Pressable>
             </View>
@@ -147,7 +149,7 @@ export function MealDay({ task, instance: initial, color, clientId }: TaskProps 
                   .map((p) => (p.url ? <Image key={p.id} source={{ uri: p.url }} style={styles.thumb} /> : null))}
                 <Pressable onPress={() => photo(i)} style={[styles.eatBtn, { borderColor: color }]}>
                   <ThemedText type="smallBold" style={{ color }}>
-                    {uploading === i ? 'Yükleniyor…' : '+ Fotoğraf'}
+                    {uploading === i ? t('common.loading') : t('m.meal.addPhoto')}
                   </ThemedText>
                 </Pressable>
               </View>
@@ -160,7 +162,7 @@ export function MealDay({ task, instance: initial, color, clientId }: TaskProps 
         <Panel>
           <View style={styles.mealHead}>
             <ThemedText type="smallBold" style={{ flex: 1 }}>
-              Su: {progress.water ?? 0} bardak
+              {t('m.meal.water', { n: progress.water ?? 0 })}
             </ThemedText>
             <Pressable onPress={() => water(-1)} style={[styles.eatBtn, { borderColor: color }]}>
               <ThemedText type="smallBold" style={{ color }}>−</ThemedText>
@@ -174,7 +176,7 @@ export function MealDay({ task, instance: initial, color, clientId }: TaskProps 
 
       {options.allow_alternative && (
         <ThemedText type="small" themeColor="textSecondary">
-          Alternatif öğün seçimi yakında eklenecek. Şimdilik koçuna mesajla sorabilirsin.
+          {t('m.meal.altSoon')}
         </ThemedText>
       )}
     </Screen>

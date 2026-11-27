@@ -1,4 +1,4 @@
-import { MEASURE_METRIC_LABELS, localDate, type MeasureOptions, type MeasurePayload } from '@alaris/shared';
+import { localDate, type MeasureOptions, type MeasurePayload } from '@alaris/shared';
 import { router } from 'expo-router';
 import { Image } from 'expo-image';
 import { useEffect, useState } from 'react';
@@ -7,6 +7,7 @@ import { Pressable, View } from 'react-native';
 import { Message, PrimaryButton, TextField } from '@/components/form';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
+import { useI18n } from '@/lib/i18n';
 import { addPhoto } from '@/lib/media';
 import { supabase } from '@/lib/supabase';
 import { ensureInstance, saveProgress } from '@/lib/tasks';
@@ -14,6 +15,7 @@ import { ensureInstance, saveProgress } from '@/lib/tasks';
 import { CoachNote, DoneBanner, Panel, type TaskProps } from './common';
 
 export function MeasureEntry({ task, instance, color, clientId }: TaskProps & { clientId: string }) {
+  const { t } = useI18n();
   const payload = task.payload as unknown as MeasurePayload;
   const options = task.options as unknown as MeasureOptions;
   const metrics = payload.metrics ?? [];
@@ -53,8 +55,8 @@ export function MeasureEntry({ task, instance, color, clientId }: TaskProps & { 
     const rows = metrics
       .filter((m) => values[m])
       .map((m) => ({ metric: m, value: Number(values[m].replace(',', '.')) }));
-    if (rows.some((r) => !(r.value > 0))) return setError('Değerleri sayı olarak gir.');
-    if (rows.length === 0) return setError('En az bir değer gir.');
+    if (rows.some((r) => !(r.value > 0))) return setError(t('m.measure.numbers'));
+    if (rows.length === 0) return setError(t('m.measure.atLeastOne'));
     setBusy(true);
     setError(null);
     try {
@@ -82,21 +84,21 @@ export function MeasureEntry({ task, instance, color, clientId }: TaskProps & { 
   if (done) {
     return (
       <Screen>
-        <DoneBanner color={color} text="Ölçüm kaydedildi" />
-        <PrimaryButton title="Koçluklarım'a dön" color={color} onPress={() => router.back()} />
+        <DoneBanner color={color} text={t('m.measure.saved')} />
+        <PrimaryButton title={t('m.task.backHome')} color={color} onPress={() => router.back()} />
       </Screen>
     );
   }
 
   return (
     <Screen>
-      {payload.when ? <ThemedText themeColor="textSecondary">Ne zaman: {payload.when}</ThemedText> : null}
+      {payload.when ? <ThemedText themeColor="textSecondary">{t('m.measure.when', { when: payload.when })}</ThemedText> : null}
       <CoachNote text={task.client_note} />
       <Panel>
         {metrics.map((m) => (
           <TextField
             key={m}
-            label={MEASURE_METRIC_LABELS[m] + (last[m] ? `  (son: ${last[m]})` : '')}
+            label={t(`metric.${m}`) + (last[m] ? `  (${t('m.measure.last', { v: last[m] })})` : '')}
             keyboardType="decimal-pad"
             value={values[m] ?? ''}
             onChangeText={(t) => setValues({ ...values, [m]: t })}
@@ -105,7 +107,7 @@ export function MeasureEntry({ task, instance, color, clientId }: TaskProps & { 
       </Panel>
       {options.ask_photos && (
         <Panel>
-          <ThemedText type="smallBold">Fotoğraflar</ThemedText>
+          <ThemedText type="smallBold">{t('web.photos.title')}</ThemedText>
           <View style={{ flexDirection: 'row', gap: 12 }}>
             {(['front', 'side'] as const).map((k) => (
               <Pressable key={k} onPress={() => shoot(k)} style={{ flex: 1, alignItems: 'center', gap: 6 }}>
@@ -116,15 +118,15 @@ export function MeasureEntry({ task, instance, color, clientId }: TaskProps & { 
                     <ThemedText style={{ color, fontWeight: '700' }}>+</ThemedText>
                   </View>
                 )}
-                <ThemedText type="small">{k === 'front' ? 'Önden' : 'Yandan'}</ThemedText>
+                <ThemedText type="small">{k === 'front' ? t('photo.front') : t('photo.side')}</ThemedText>
               </Pressable>
             ))}
           </View>
-          <ThemedText type="small" themeColor="textSecondary">Fotoğraflar yalnızca koçunla paylaşılır.</ThemedText>
+          <ThemedText type="small" themeColor="textSecondary">{t('m.measure.photosPrivate')}</ThemedText>
         </Panel>
       )}
       {error && <Message kind="error" text={error} />}
-      <PrimaryButton title="Kaydet" color={color} loading={busy} onPress={save} />
+      <PrimaryButton title={t('common.save')} color={color} loading={busy} onPress={save} />
     </Screen>
   );
 }

@@ -4,6 +4,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
+import { useI18n } from '@/lib/i18n';
 import type { Instance, ProgramTask } from '@/lib/tasks';
 
 export type TaskProps = { task: ProgramTask; instance: Instance | null; color: string };
@@ -17,21 +18,23 @@ export function Panel({ children, style }: { children: ReactNode; style?: object
 }
 
 export function CoachNote({ text }: { text: string | null | undefined }) {
+  const { t } = useI18n();
   if (!text) return null;
   return (
     <Panel>
       <ThemedText type="smallBold" themeColor="textSecondary">
-        Koçunun notu
+        {t('m.task.coachNote')}
       </ThemedText>
       <ThemedText>{text}</ThemedText>
     </Panel>
   );
 }
 
-export function DoneBanner({ color, text = 'Tamamlandı' }: { color: string; text?: string }) {
+export function DoneBanner({ color, text }: { color: string; text?: string }) {
+  const { t } = useI18n();
   return (
     <View style={[styles.done, { backgroundColor: color }]}>
-      <ThemedText style={styles.doneText}>✓ {text}</ThemedText>
+      <ThemedText style={styles.doneText}>✓ {text ?? t('m.task.completed')}</ThemedText>
     </View>
   );
 }

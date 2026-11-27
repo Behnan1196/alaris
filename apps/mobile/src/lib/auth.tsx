@@ -41,12 +41,3 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
-export function translateAuthError(message: string) {
-  if (/invalid login credentials/i.test(message)) return 'E-posta veya şifre hatalı.';
-  if (/email not confirmed/i.test(message))
-    return 'E-posta adresin henüz onaylanmadı. Gelen kutunu kontrol et.';
-  if (/already registered/i.test(message)) return 'Bu e-posta ile zaten bir hesap var.';
-  if (/password should be at least/i.test(message)) return 'Şifre en az 8 karakter olmalı.';
-  if (/rate limit/i.test(message)) return 'Çok fazla deneme yapıldı. Biraz sonra tekrar dene.';
-  return 'Bir hata oluştu: ' + message;
-}

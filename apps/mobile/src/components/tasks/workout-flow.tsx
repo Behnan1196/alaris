@@ -1,9 +1,9 @@
 import {
-  INTENSITY_LABELS,
   type WorkoutExercise,
   type WorkoutOptions,
   type WorkoutPayload,
   type WorkoutProgress,
+  type TFunction,
 } from '@alaris/shared';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -14,6 +14,7 @@ import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { useI18n } from '@/lib/i18n';
 import { addLog, ensureInstance, previousSets, saveProgress, type Instance } from '@/lib/tasks';
 
 import { Chip, CoachNote, DoneBanner, Panel, type TaskProps } from './common';
@@ -21,14 +22,15 @@ import { ExerciseMedia } from './exercise-media';
 
 type Phase = 'summary' | 'exercise' | 'rpe' | 'done';
 
-function target(e: WorkoutExercise) {
-  const amount = e.duration_sec ? `${e.duration_sec} sn` : e.reps ? `${e.reps} tekrar` : '';
+function target(e: WorkoutExercise, t: TFunction) {
+  const amount = e.duration_sec ? t('m.wo.sec', { n: e.duration_sec }) : e.reps ? t('m.wo.reps', { n: e.reps }) : '';
   return [amount, e.weight_kg ? `${e.weight_kg} kg` : null].filter(Boolean).join(' · ');
 }
 
 const emptyProgress = (): WorkoutProgress => ({ exercise_index: 0, done: {} });
 
 export function WorkoutFlow({ task, instance: initial, color }: TaskProps) {
+  const { t } = useI18n();
   const payload = task.payload as unknown as WorkoutPayload;
   const options = task.options as unknown as WorkoutOptions;
   const exercises = payload.exercises ?? [];
@@ -91,14 +93,14 @@ export function WorkoutFlow({ task, instance: initial, color }: TaskProps) {
   if (phase === 'rpe') {
     return (
       <Screen>
-        <ThemedText type="subtitle">Ne kadar zorlandın?</ThemedText>
-        <ThemedText themeColor="textSecondary">1 çok kolay, 10 en zor.</ThemedText>
+        <ThemedText type="subtitle">{t('m.wo.rpeTitle')}</ThemedText>
+        <ThemedText themeColor="textSecondary">{t('m.wo.rpeHint')}</ThemedText>
         <View style={styles.rpe}>
           {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
             <Chip key={n} label={String(n)} color={color} onPress={() => finish(n)} />
           ))}
         </View>
-        {busy && <ThemedText themeColor="textSecondary">Kaydediliyor…</ThemedText>}
+        {busy && <ThemedText themeColor="textSecondary">{t('common.saving')}</ThemedText>}
       </Screen>
     );
   }
@@ -108,10 +110,10 @@ export function WorkoutFlow({ task, instance: initial, color }: TaskProps) {
 
   return (
     <Screen>
-      {phase === 'done' && <DoneBanner color={color} text="Antrenman tamamlandı" />}
+      {phase === 'done' && <DoneBanner color={color} text={t('m.wo.done')} />}
       <Panel>
         <ThemedText type="smallBold" themeColor="textSecondary">
-          {[`${exercises.length} hareket`, `${totalSets} set`, payload.duration_min ? `~${payload.duration_min} dk` : null, INTENSITY_LABELS[payload.intensity]]
+          {[t('b.meta.exercises', { n: exercises.length }), t('m.wo.setsN', { n: totalSets }), payload.duration_min ? `~${t('b.meta.minutes', { n: payload.duration_min })}` : null, t(`intensity.${payload.intensity}`)]
             .filter(Boolean)
             .join(' · ')}
         </ThemedText>
@@ -119,10 +121,10 @@ export function WorkoutFlow({ task, instance: initial, color }: TaskProps) {
           <View key={i} style={styles.summaryRow}>
             <ThemedText style={{ flex: 1 }}>
               {e.superset ? "↳ " : ""}
-              {e.name || `Hareket ${i + 1}`}
+              {e.name || t('m.wo.exerciseN', { n: i + 1 })}
             </ThemedText>
             <ThemedText type="small" themeColor="textSecondary">
-              {e.sets} × {target(e)}
+              {e.sets} × {target(e, t)}
             </ThemedText>
           </View>
         ))}
@@ -130,12 +132,12 @@ export function WorkoutFlow({ task, instance: initial, color }: TaskProps) {
       <CoachNote text={task.client_note} />
       {error && <Message kind="error" text={error} />}
       {phase === 'done' ? (
-        <PrimaryButton title="Koçluklarım'a dön" color={color} onPress={() => router.back()} />
+        <PrimaryButton title={t('m.task.backHome')} color={color} onPress={() => router.back()} />
       ) : exercises.length === 0 ? (
-        <Message kind="info" text="Koçun bu antrenmana henüz hareket eklemedi." />
+        <Message kind="info" text={t('m.wo.empty')} />
       ) : (
         <PrimaryButton
-          title={doneSets > 0 ? `Devam et (${doneSets}/${totalSets} set)` : 'Başla'}
+          title={doneSets > 0 ? `${t('m.task.continue')} (${doneSets}/${totalSets})` : t('m.task.start')}
           color={color}
           loading={busy}
           onPress={begin}
@@ -164,6 +166,7 @@ function ExerciseStep({
   onProgress: (p: WorkoutProgress) => Promise<void>;
   onFinish: () => void;
 }) {
+  const { t } = useI18n();
   const theme = useTheme();
   const e = exercises[index];
   const done = progress.done[index] ?? {};
@@ -177,8 +180,8 @@ function ExerciseStep({
 
   useEffect(() => {
     if (rest === null) return;
-    const t = setTimeout(() => setRest((r) => (r === null || r <= 1 ? null : r - 1)), 1000);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setRest((r) => (r === null || r <= 1 ? null : r - 1)), 1000);
+    return () => clearTimeout(timer);
   }, [rest]);
 
   async function completeSet(s: number) {
@@ -207,25 +210,25 @@ function ExerciseStep({
   return (
     <Screen>
       <ThemedText type="small" themeColor="textSecondary">
-        Hareket {index + 1} / {exercises.length}
-        {e.superset ? " · önceki hareketle süperset" : exercises[index + 1]?.superset ? " · sonraki hareketle süperset" : ""}
+        {t('m.wo.progress', { n: index + 1, total: exercises.length })}
+        {e.superset ? ` · ${t('m.wo.supersetPrev')}` : exercises[index + 1]?.superset ? ` · ${t('m.wo.supersetNext')}` : ''}
       </ThemedText>
-      <ThemedText type="subtitle">{e.name || `Hareket ${index + 1}`}</ThemedText>
+      <ThemedText type="subtitle">{e.name || t('m.wo.exerciseN', { n: index + 1 })}</ThemedText>
       <ExerciseMedia exerciseId={e.exercise_id} />
       {e.note ? <CoachNote text={e.note} /> : null}
 
       {rest !== null && (
         <View style={[styles.rest, { backgroundColor: color }]}>
-          <ThemedText style={styles.restLabel}>Dinlenme</ThemedText>
+          <ThemedText style={styles.restLabel}>{t('m.wo.rest')}</ThemedText>
           <ThemedText style={styles.restTime}>
             {Math.floor(rest / 60)}:{String(rest % 60).padStart(2, '0')}
           </ThemedText>
           <View style={styles.restButtons}>
             <Pressable onPress={() => setRest((r) => (r ?? 0) + 15)} style={styles.restBtn}>
-              <ThemedText style={styles.restBtnText}>+15 sn</ThemedText>
+              <ThemedText style={styles.restBtnText}>{`+${t('m.wo.sec', { n: 15 })}`}</ThemedText>
             </Pressable>
             <Pressable onPress={() => setRest(null)} style={styles.restBtn}>
-              <ThemedText style={styles.restBtnText}>Atla</ThemedText>
+              <ThemedText style={styles.restBtnText}>{t('m.wo.skip')}</ThemedText>
             </Pressable>
           </View>
         </View>
@@ -233,10 +236,10 @@ function ExerciseStep({
 
       <Panel>
         <View style={styles.tableRow}>
-          <ThemedText type="smallBold" style={styles.colSet}>Set</ThemedText>
-          <ThemedText type="smallBold" style={styles.colTarget}>Hedef</ThemedText>
-          <ThemedText type="smallBold" style={styles.colPrev}>Önceki</ThemedText>
-          <ThemedText type="smallBold" style={styles.colDo}>Yap</ThemedText>
+          <ThemedText type="smallBold" style={styles.colSet}>{t('m.wo.colSet')}</ThemedText>
+          <ThemedText type="smallBold" style={styles.colTarget}>{t('m.wo.colTarget')}</ThemedText>
+          <ThemedText type="smallBold" style={styles.colPrev}>{t('m.wo.colPrev')}</ThemedText>
+          <ThemedText type="smallBold" style={styles.colDo}>{t('m.wo.colDo')}</ThemedText>
         </View>
         {Array.from({ length: e.sets }, (_, s) => {
           const d = done[s];
@@ -244,7 +247,7 @@ function ExerciseStep({
           return (
             <View key={s} style={styles.tableRow}>
               <ThemedText style={styles.colSet}>{s + 1}</ThemedText>
-              <ThemedText type="small" style={styles.colTarget}>{target(e)}</ThemedText>
+              <ThemedText type="small" style={styles.colTarget}>{target(e, t)}</ThemedText>
               <ThemedText type="small" themeColor="textSecondary" style={styles.colPrev}>
                 {p ? `${p.kg ?? '-'} kg × ${p.reps ?? '-'}` : '–'}
               </ThemedText>
@@ -257,15 +260,15 @@ function ExerciseStep({
                       placeholderTextColor={theme.textSecondary}
                       keyboardType="decimal-pad"
                       value={inputs[s]?.kg ?? ''}
-                      onChangeText={(t) => setInputs({ ...inputs, [s]: { kg: t, reps: inputs[s]?.reps ?? '' } })}
+                      onChangeText={(v) => setInputs({ ...inputs, [s]: { kg: v, reps: inputs[s]?.reps ?? '' } })}
                     />
                     <TextInput
                       style={[styles.smallInput, { color: theme.text, backgroundColor: theme.background }]}
-                      placeholder={e.reps ? String(e.reps) : 'tkr'}
+                      placeholder={e.reps ? String(e.reps) : t('m.wo.repsShort')}
                       placeholderTextColor={theme.textSecondary}
                       keyboardType="number-pad"
                       value={inputs[s]?.reps ?? ''}
-                      onChangeText={(t) => setInputs({ ...inputs, [s]: { kg: inputs[s]?.kg ?? '', reps: t } })}
+                      onChangeText={(v) => setInputs({ ...inputs, [s]: { kg: inputs[s]?.kg ?? '', reps: v } })}
                     />
                   </>
                 )}
@@ -284,19 +287,19 @@ function ExerciseStep({
           );
         })}
         <ThemedText type="small" themeColor="textSecondary">
-          Dinlenme: {e.rest_sec} sn
+          {t('m.wo.restInfo', { n: e.rest_sec })}
         </ThemedText>
       </Panel>
 
       <View style={styles.nav}>
         {index > 0 && (
           <View style={{ flex: 1 }}>
-            <PrimaryButton title="Önceki" color="#71717A" onPress={() => go(index - 1)} />
+            <PrimaryButton title={t('m.wo.prev')} color="#71717A" onPress={() => go(index - 1)} />
           </View>
         )}
         <View style={{ flex: 2 }}>
           <PrimaryButton
-            title={index === exercises.length - 1 ? 'Antrenmanı bitir' : allDone ? 'Sonraki hareket' : 'Bu hareketi geç'}
+            title={index === exercises.length - 1 ? t('m.wo.finish') : allDone ? t('m.wo.next') : t('m.wo.skipExercise')}
             color={allDone ? color : '#71717A'}
             onPress={() => go(index + 1)}
           />

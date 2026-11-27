@@ -4,6 +4,9 @@ import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import { Platform } from 'react-native';
 
+import { createT, isLocale } from '@alaris/shared';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import type { HabitView } from './habits';
 import { supabase } from './supabase';
 
@@ -19,11 +22,17 @@ Notifications.setNotificationHandler({
 
 const REMINDER_CHANNEL = 'reminders';
 
+async function currentT() {
+  const v = await AsyncStorage.getItem('alaris.locale');
+  return createT(isLocale(v) ? v : 'tr');
+}
+
 async function ensurePermission() {
   if (Platform.OS === 'web') return false;
+  const t = await currentT();
   if (Platform.OS === 'android') {
     await Notifications.setNotificationChannelAsync(REMINDER_CHANNEL, {
-      name: 'Hatırlatmalar',
+      name: t('m.notif.channel'),
       importance: AndroidImportance.DEFAULT,
     });
   }
@@ -41,6 +50,7 @@ async function ensurePermission() {
 export async function syncHabitReminders(habits: HabitView[]) {
   try {
     if (Platform.OS === 'web') return;
+    const t = await currentT();
     const withReminder = habits.filter((h) => h.reminder_time);
 
     const scheduled = await Notifications.getAllScheduledNotificationsAsync();
@@ -55,7 +65,7 @@ export async function syncHabitReminders(habits: HabitView[]) {
       const [hour, minute] = h.reminder_time!.split(':').map(Number);
       const content = {
         title: h.title,
-        body: h.target ? `Bugünkü hedefin: ${h.target}${h.unit ? ' ' + h.unit : ''}` : 'Bugün yapmayı unutma.',
+        body: h.target ? t('m.notif.target', { target: `${h.target}${h.unit ? ' ' + h.unit : ''}` }) : t('m.notif.dontForget'),
         data: { kind: 'habit', habitId: h.id },
       };
       if (h.frequency === 'weekdays') {
