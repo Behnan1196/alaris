@@ -15,7 +15,7 @@ export function DomainCheckboxes({
         return (
           <label
             key={key}
-            className="flex cursor-pointer items-center gap-2 rounded-full border border-zinc-300 px-3 py-1.5 text-sm has-checked:border-zinc-900 has-checked:bg-zinc-900 has-checked:text-white"
+            className="flex cursor-pointer items-center gap-2 rounded-full border border-line px-3 py-1.5 text-sm has-checked:border-ink has-checked:bg-ink has-checked:text-white"
           >
             <input
               type="checkbox"

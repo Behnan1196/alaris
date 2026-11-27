@@ -9,15 +9,15 @@ export function InviteForm({ domainKeys }: { domainKeys: string[] }) {
   const [state, action, pending] = useActionState(createInvite, undefined);
   return (
     <form action={action} className="flex flex-col gap-4">
-      <p className="text-sm text-zinc-600">
+      <p className="text-sm text-muted">
         Danışana hangi alanlarda koçluk vereceksin? Kodu danışanla paylaş; uygulamada
         &quot;Davet koduyla koç ekle&quot; bölümüne yazacak. Kod 14 gün geçerli ve tek kullanımlık.
       </p>
       <DomainCheckboxes keys={domainKeys} defaultChecked={domainKeys} />
       {state?.error && <Notice kind="error">{state.error}</Notice>}
       {state?.code && (
-        <div className="rounded-lg bg-zinc-100 px-4 py-3">
-          <p className="text-xs text-zinc-500">Davet kodu</p>
+        <div className="rounded-lg bg-soft px-4 py-3">
+          <p className="text-xs text-muted">Davet kodu</p>
           <p className="font-mono text-2xl font-semibold tracking-[0.3em]">{state.code}</p>
         </div>
       )}

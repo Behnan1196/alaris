@@ -24,9 +24,9 @@ export function SetupForm({
         maxLength={30}
       />
       <div className="flex flex-col gap-2 text-sm">
-        <span className="font-medium text-zinc-700">Hangi alanlarda koçluk veriyorsun?</span>
+        <span className="font-medium text-ink-2">Hangi alanlarda koçluk veriyorsun?</span>
         <DomainCheckboxes keys={enabledKeys} defaultChecked={defaultDomains} />
-        <span className="text-zinc-500">Sınav ve Gitar yakında.</span>
+        <span className="text-muted">Sınav ve Gitar yakında.</span>
       </div>
       {state?.error && <Notice kind="error">{state.error}</Notice>}
       <Button type="submit" disabled={pending}>

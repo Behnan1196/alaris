@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
+import { PageBody, PageHeader } from "@/components/ui";
 import { requireCoach } from "@/lib/coach";
 import { loadThreads } from "@/lib/messages";
 import { Chat } from "./chat";
@@ -23,15 +24,10 @@ async function Content({ searchParams }: { searchParams: PageProps<"/panel/mesaj
     : { data: [] };
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-6 py-10">
-      <div>
-        <Link href="/panel" className="text-sm text-zinc-500 underline">
-          ← Genel bakış
-        </Link>
-        <h1 className="mt-2 text-2xl font-semibold tracking-tight">Mesajlar</h1>
-      </div>
+    <PageBody>
+      <PageHeader crumb={`${threads.reduce((n, t) => n + t.unread, 0)} okunmamış`} title="Mesajlar" />
       {threads.length === 0 ? (
-        <p className="text-sm text-zinc-500">Henüz sohbet yok. Danışan davet koduyla bağlanınca sohbet açılır.</p>
+        <p className="text-sm text-muted">Henüz sohbet yok. Danışan davet koduyla bağlanınca sohbet açılır.</p>
       ) : (
         <div className="grid gap-6 md:grid-cols-[300px_1fr]">
           <ul className="flex flex-col gap-1">
@@ -39,8 +35,8 @@ async function Content({ searchParams }: { searchParams: PageProps<"/panel/mesaj
               <li key={th.id}>
                 <Link
                   href={`/panel/mesajlar?t=${th.id}`}
-                  className={`flex flex-col rounded-lg px-3 py-2 text-sm ${
-                    th.id === selected?.id ? "bg-zinc-900 text-white" : "hover:bg-zinc-100"
+                  className={`flex flex-col rounded-xl border border-line px-3 py-2.5 text-sm ${
+                    th.id === selected?.id ? "bg-ink text-white" : "bg-surface hover:bg-soft"
                   }`}
                 >
                   <span className="flex items-center justify-between font-medium">
@@ -49,7 +45,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/panel/mesaj
                       <span className="rounded-full bg-red-600 px-1.5 text-xs text-white">{th.unread}</span>
                     )}
                   </span>
-                  <span className={`truncate text-xs ${th.id === selected?.id ? "text-zinc-300" : "text-zinc-500"}`}>
+                  <span className={`truncate text-xs ${th.id === selected?.id ? "text-line" : "text-muted"}`}>
                     {th.last ? `${timeFmt.format(new Date(th.last.created_at))} · ${th.last.body}` : "Henüz mesaj yok"}
                   </span>
                 </Link>
@@ -67,16 +63,14 @@ async function Content({ searchParams }: { searchParams: PageProps<"/panel/mesaj
           )}
         </div>
       )}
-    </div>
+    </PageBody>
   );
 }
 
 export default function Page({ searchParams }: PageProps<"/panel/mesajlar">) {
   return (
-    <main className="flex-1 bg-zinc-50">
-      <Suspense fallback={<p className="p-10 text-sm text-zinc-500">Yükleniyor…</p>}>
-        <Content searchParams={searchParams} />
-      </Suspense>
-    </main>
+    <Suspense fallback={<p className="p-10 text-sm text-muted">Yükleniyor…</p>}>
+      <Content searchParams={searchParams} />
+    </Suspense>
   );
 }

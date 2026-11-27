@@ -15,11 +15,11 @@ import {
 import type { ReactNode } from "react";
 
 export const inputCls =
-  "w-full rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm outline-none focus:border-zinc-900";
+  "w-full rounded-md border border-line bg-white px-2 py-1.5 text-sm outline-none focus:border-ink";
 
 export function Label({ text, children }: { text: string; children: ReactNode }) {
   return (
-    <label className="flex flex-col gap-1 text-xs font-medium text-zinc-600">
+    <label className="flex flex-col gap-1 text-xs font-medium text-muted">
       {text}
       {children}
     </label>
@@ -36,7 +36,7 @@ export function Toggle({
   onChange: (v: boolean) => void;
 }) {
   return (
-    <label className="flex items-center gap-2 text-sm text-zinc-700">
+    <label className="flex items-center gap-2 text-sm text-ink-2">
       <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} />
       {label}
     </label>
@@ -88,14 +88,14 @@ export function WorkoutEditor({
       </div>
 
       <div className="flex flex-col gap-2">
-        <p className="text-xs font-medium text-zinc-600">Hareketler</p>
+        <p className="text-xs font-medium text-muted">Hareketler</p>
         <datalist id="exercise-library">
           {exercises.map((e) => (
             <option key={e.id} value={e.name} />
           ))}
         </datalist>
         {payload.exercises.map((e, i) => (
-          <div key={i} className="flex flex-col gap-2 rounded-lg border border-zinc-200 p-2">
+          <div key={i} className="flex flex-col gap-2 rounded-lg border border-line p-2">
             <div className="flex gap-2">
               <input
                 className={inputCls}
@@ -109,7 +109,7 @@ export function WorkoutEditor({
               />
               <button
                 type="button"
-                className="px-2 text-zinc-400 hover:text-red-600"
+                className="px-2 text-muted hover:text-red-600"
                 onClick={() => set({ exercises: payload.exercises.filter((_, j) => j !== i) })}
                 aria-label="Hareketi kaldır"
               >
@@ -149,7 +149,7 @@ export function WorkoutEditor({
         ))}
         <button
           type="button"
-          className="self-start text-sm font-medium text-zinc-700 underline"
+          className="self-start text-sm font-medium text-ink-2 underline"
           onClick={() =>
             set({
               exercises: [
@@ -211,11 +211,11 @@ export function MealEditor({
       </div>
 
       <div className="flex flex-col gap-2">
-        <p className="text-xs font-medium text-zinc-600">
-          Öğünler {totalKcal > 0 && <span className="text-zinc-400">· toplam {totalKcal} kcal</span>}
+        <p className="text-xs font-medium text-muted">
+          Öğünler {totalKcal > 0 && <span className="text-muted">· toplam {totalKcal} kcal</span>}
         </p>
         {payload.meals.map((m, i) => (
-          <div key={i} className="flex flex-col gap-2 rounded-lg border border-zinc-200 p-2">
+          <div key={i} className="flex flex-col gap-2 rounded-lg border border-line p-2">
             <div className="grid grid-cols-[80px_1fr_90px_auto] gap-2">
               <input className={inputCls} type="time" value={m.time}
                 onChange={(e) => setMeal(i, { time: e.target.value })} />
@@ -223,7 +223,7 @@ export function MealEditor({
                 onChange={(e) => setMeal(i, { name: e.target.value })} />
               <input className={inputCls} type="number" min={0} placeholder="kcal" value={m.kcal ?? ""}
                 onChange={(e) => setMeal(i, { kcal: num(e.target.value) })} />
-              <button type="button" className="px-2 text-zinc-400 hover:text-red-600" aria-label="Öğünü kaldır"
+              <button type="button" className="px-2 text-muted hover:text-red-600" aria-label="Öğünü kaldır"
                 onClick={() => set({ meals: payload.meals.filter((_, j) => j !== i) })}>
                 ✕
               </button>
@@ -232,7 +232,7 @@ export function MealEditor({
               value={m.items} onChange={(e) => setMeal(i, { items: e.target.value })} />
           </div>
         ))}
-        <button type="button" className="self-start text-sm font-medium text-zinc-700 underline"
+        <button type="button" className="self-start text-sm font-medium text-ink-2 underline"
           onClick={() => set({ meals: [...payload.meals, { time: "16:00", name: "Ara öğün", items: "", kcal: null }] })}>
           + Öğün ekle
         </button>
@@ -267,7 +267,7 @@ export function MeasureEditor({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-1.5">
-        <p className="text-xs font-medium text-zinc-600">Ölçülecekler</p>
+        <p className="text-xs font-medium text-muted">Ölçülecekler</p>
         {(Object.keys(MEASURE_METRIC_LABELS) as MeasureMetric[]).map((m) => (
           <Toggle key={m} label={MEASURE_METRIC_LABELS[m]} checked={payload.metrics.includes(m)}
             onChange={(v) => toggleMetric(m, v)} />

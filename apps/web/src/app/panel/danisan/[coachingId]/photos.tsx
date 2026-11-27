@@ -12,7 +12,7 @@ export function Photos({
   return (
     <Card title="Fotoğraflar">
       {photos.length === 0 ? (
-        <p className="text-sm text-zinc-500">Danışan henüz fotoğraf eklemedi.</p>
+        <p className="text-sm text-muted">Danışan henüz fotoğraf eklemedi.</p>
       ) : (
         <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-6">
           {photos.map((p) => {
@@ -22,9 +22,9 @@ export function Photos({
                 {p.url ? (
                   <img src={p.url} alt={KIND[p.kind]} className="aspect-square w-full rounded-lg object-cover" />
                 ) : (
-                  <div className="aspect-square w-full rounded-lg bg-zinc-100" />
+                  <div className="aspect-square w-full rounded-lg bg-soft" />
                 )}
-                <span className="text-xs text-zinc-500">
+                <span className="text-xs text-muted">
                   {KIND[p.kind]}
                   {meal ? ` · ${meal}` : ""} · {dateFmt.format(new Date(p.taken_on))}
                 </span>
@@ -33,7 +33,7 @@ export function Photos({
           })}
         </div>
       )}
-      <p className="mt-3 text-xs text-zinc-500">Bağlantılar bir saat geçerlidir.</p>
+      <p className="mt-3 text-xs text-muted">Bağlantılar bir saat geçerlidir.</p>
     </Card>
   );
 }

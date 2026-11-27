@@ -2,7 +2,7 @@ import { DOMAINS, type DomainKey } from "@alaris/shared";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { Button, Field } from "@/components/ui";
+import { Button, Field, PageHeader } from "@/components/ui";
 import { requireCoach } from "@/lib/coach";
 import { createProgram } from "@/app/panel/program-actions";
 import { Builder } from "./builder";
@@ -33,22 +33,26 @@ async function Content({ params }: { params: Params }) {
   const program = programs?.find((p) => p.status === "active") ?? programs?.[0];
 
   const header = (
-    <div>
-      <Link href={`/panel/danisan/${coachingId}`} className="text-sm text-zinc-500 underline">
-        ← {coaching.client?.full_name || "Danışan"}
-      </Link>
-      <h1 className="mt-2 flex items-center gap-2 text-2xl font-semibold tracking-tight">
-        <span className="h-3 w-3 rounded-full" style={{ backgroundColor: d.color }} />
-        {d.name} programı
-      </h1>
-    </div>
+    <PageHeader
+      crumb={
+        <Link href={`/panel/danisan/${coachingId}`} className="hover:underline">
+          {coaching.client?.full_name || "Danışan"}
+        </Link>
+      }
+      title={
+        <span className="flex items-center gap-3">
+          <span className="h-3.5 w-3.5 rounded-full" style={{ backgroundColor: d.color }} />
+          {d.name} programı
+        </span>
+      }
+    />
   );
 
   if (!program) {
     return (
-      <div className="mx-auto flex w-full max-w-md flex-col gap-6 px-6 py-10">
+      <div className="mx-auto flex w-full max-w-md flex-col gap-6 px-8 py-8">
         {header}
-        <form action={createProgram} className="flex flex-col gap-4 rounded-xl border border-zinc-200 bg-white p-5">
+        <form action={createProgram} className="flex flex-col gap-4 rounded-2xl border border-line bg-surface p-5">
           <input type="hidden" name="coaching_id" value={coachingId} />
           <input type="hidden" name="domain_key" value={domain} />
           <Field label="Program adı" name="name" placeholder={`ör. ${d.key === "fitness" ? "Güç ve kondisyon" : "Yağ kaybı planı"}`} required />
@@ -78,7 +82,7 @@ async function Content({ params }: { params: Params }) {
   ]);
 
   return (
-    <div className="flex w-full flex-col gap-6 px-6 py-8">
+    <div className="flex w-full flex-col gap-6 px-8 py-8">
       {header}
       <Builder
         path={`/panel/danisan/${coachingId}/program/${domain}`}
@@ -97,10 +101,8 @@ async function Content({ params }: { params: Params }) {
 
 export default function Page({ params }: PageProps<"/panel/danisan/[coachingId]/program/[domain]">) {
   return (
-    <main className="flex-1 bg-zinc-50">
-      <Suspense fallback={<p className="p-10 text-sm text-zinc-500">Yükleniyor…</p>}>
-        <Content params={params} />
-      </Suspense>
-    </main>
+    <Suspense fallback={<p className="p-10 text-sm text-muted">Yükleniyor…</p>}>
+      <Content params={params} />
+    </Suspense>
   );
 }

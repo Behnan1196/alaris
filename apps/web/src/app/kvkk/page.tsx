@@ -2,9 +2,9 @@ import { KVKK_VERSION } from "@alaris/shared";
 
 export default function Page() {
   return (
-    <main className="mx-auto w-full max-w-2xl px-6 py-16 text-zinc-800">
+    <main className="mx-auto w-full max-w-2xl px-6 py-16 text-ink-2">
       <h1 className="text-2xl font-semibold">Aydınlatma metni ve açık rıza</h1>
-      <p className="mt-2 text-sm text-zinc-500">Sürüm: {KVKK_VERSION}</p>
+      <p className="mt-2 text-sm text-muted">Sürüm: {KVKK_VERSION}</p>
       <div className="mt-6 rounded-lg bg-amber-50 p-4 text-sm text-amber-900">
         Taslak metin. Yayından önce bir KVKK danışmanı veya avukat tarafından hazırlanacak.
       </div>

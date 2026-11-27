@@ -12,7 +12,7 @@ export function NoteForm({ coachingId, initial }: { coachingId: string; initial:
   return (
     <div className="flex flex-col gap-2">
       <textarea
-        className="min-h-28 w-full rounded-lg border border-zinc-300 p-2 text-sm outline-none focus:border-zinc-900"
+        className="min-h-28 w-full rounded-lg border border-line p-2 text-sm outline-none focus:border-ink"
         placeholder="Sakatlık geçmişi, tercihleri, hedefleri… Danışan bu notu görmez."
         value={body}
         onChange={(e) => setBody(e.target.value)}
@@ -30,7 +30,7 @@ export function NoteForm({ coachingId, initial }: { coachingId: string; initial:
               }
             })
           }
-          className="rounded-lg bg-zinc-900 px-3 py-1.5 text-sm font-medium text-white disabled:opacity-40"
+          className="rounded-lg bg-ink px-3 py-1.5 text-sm font-medium text-white disabled:opacity-40"
         >
           {pending ? "Kaydediliyor…" : body === saved ? "Kaydedildi" : "Notu kaydet"}
         </button>

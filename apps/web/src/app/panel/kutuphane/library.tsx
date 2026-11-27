@@ -17,7 +17,7 @@ export type Exercise = {
 
 type Draft = { id?: string; name: string; muscles: string; equipment: string; steps: string; video_path: string | null };
 
-const input = "w-full rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm outline-none focus:border-zinc-900";
+const input = "w-full rounded-md border border-line bg-white px-2 py-1.5 text-sm outline-none focus:border-ink";
 const MAX_VIDEO_MB = 50;
 
 export function Library({ coachId, exercises }: { coachId: string; exercises: Exercise[] }) {
@@ -98,11 +98,11 @@ export function Library({ coachId, exercises }: { coachId: string; exercises: Ex
       <div className="flex flex-col gap-3">
         <div className="flex gap-2">
           <input className={input} placeholder="Hareket ara" value={query} onChange={(e) => setQuery(e.target.value)} />
-          <button onClick={() => open()} className="shrink-0 rounded-lg bg-zinc-900 px-3 text-sm font-medium text-white">
+          <button onClick={() => open()} className="shrink-0 rounded-lg bg-ink px-3 text-sm font-medium text-white">
             + Yeni hareket
           </button>
         </div>
-        <ul className="flex flex-col divide-y divide-zinc-100 rounded-xl border border-zinc-200 bg-white">
+        <ul className="flex flex-col divide-y divide-line rounded-xl border border-line bg-white">
           {list.map((e) => {
             const mine = e.owner_coach_id === coachId;
             return (
@@ -111,10 +111,10 @@ export function Library({ coachId, exercises }: { coachId: string; exercises: Ex
                   <p className="font-medium">
                     {e.name}
                     {Object.keys(e.video_paths ?? {}).length > 0 && (
-                      <span className="ml-2 rounded bg-zinc-100 px-1.5 py-0.5 text-xs text-zinc-600">video</span>
+                      <span className="ml-2 rounded bg-soft px-1.5 py-0.5 text-xs text-muted">video</span>
                     )}
                   </p>
-                  <p className="text-xs text-zinc-500">
+                  <p className="text-xs text-muted">
                     {[e.muscles.join(", "), e.equipment, mine ? "Senin" : "Sistem"].filter(Boolean).join(" · ")}
                   </p>
                 </div>
@@ -129,42 +129,42 @@ export function Library({ coachId, exercises }: { coachId: string; exercises: Ex
               </li>
             );
           })}
-          {list.length === 0 && <li className="px-4 py-3 text-sm text-zinc-500">Sonuç yok.</li>}
+          {list.length === 0 && <li className="px-4 py-3 text-sm text-muted">Sonuç yok.</li>}
         </ul>
       </div>
 
       {draft && (
-        <div className="flex flex-col gap-3 self-start rounded-xl border border-zinc-200 bg-white p-4 lg:sticky lg:top-6">
-          <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+        <div className="flex flex-col gap-3 self-start rounded-xl border border-line bg-white p-4 lg:sticky lg:top-6">
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted">
             {draft.id ? "Hareketi düzenle" : "Yeni hareket"}
           </p>
-          <label className="text-xs font-medium text-zinc-600">
+          <label className="text-xs font-medium text-muted">
             Ad
             <input className={input} value={draft.name} onChange={(e) => setDraft({ ...draft, name: e.target.value })} />
           </label>
-          <label className="text-xs font-medium text-zinc-600">
+          <label className="text-xs font-medium text-muted">
             Çalışan kaslar (virgülle)
             <input className={input} placeholder="göğüs, triceps" value={draft.muscles}
               onChange={(e) => setDraft({ ...draft, muscles: e.target.value })} />
           </label>
-          <label className="text-xs font-medium text-zinc-600">
+          <label className="text-xs font-medium text-muted">
             Ekipman
             <input className={input} placeholder="Dambıl" value={draft.equipment}
               onChange={(e) => setDraft({ ...draft, equipment: e.target.value })} />
           </label>
-          <label className="text-xs font-medium text-zinc-600">
+          <label className="text-xs font-medium text-muted">
             Nasıl yapılır (her satır bir adım)
             <textarea className={input} rows={4} value={draft.steps} onChange={(e) => setDraft({ ...draft, steps: e.target.value })} />
           </label>
-          <label className="text-xs font-medium text-zinc-600">
+          <label className="text-xs font-medium text-muted">
             Video (MP4/MOV, en fazla {MAX_VIDEO_MB} MB, sessiz ve döngüde oynatılır)
             <input type="file" accept="video/mp4,video/quicktime" className="mt-1 block text-sm"
               onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
-            {draft.video_path && !file && <span className="text-zinc-500">Kayıtlı bir video var; yenisini seçersen değişir.</span>}
+            {draft.video_path && !file && <span className="text-muted">Kayıtlı bir video var; yenisini seçersen değişir.</span>}
           </label>
           {error && <p className="rounded bg-red-50 px-2 py-1 text-sm text-red-800">{error}</p>}
           <div className="flex gap-2">
-            <button disabled={busy} onClick={save} className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50">
+            <button disabled={busy} onClick={save} className="rounded-lg bg-ink px-4 py-2 text-sm font-medium text-white disabled:opacity-50">
               {busy ? (file ? "Video yükleniyor…" : "Kaydediliyor…") : "Kaydet"}
             </button>
             <button onClick={() => setDraft(null)} className="text-sm underline">Vazgeç</button>

@@ -17,7 +17,7 @@ export function LoginForm({ next, confirmed }: { next?: string; confirmed?: bool
       <Button type="submit" disabled={pending}>
         {pending ? "Giriş yapılıyor…" : "Giriş yap"}
       </Button>
-      <p className="text-sm text-zinc-600">
+      <p className="text-sm text-muted">
         Hesabın yok mu?{" "}
         <Link href="/kayit" className="font-medium underline">
           Koç olarak kaydol

@@ -164,7 +164,7 @@ export function Builder({
   return (
     <div className="flex flex-col gap-6">
       {/* Üst çubuk */}
-      <div className="flex flex-wrap items-end gap-3 rounded-xl border border-zinc-200 bg-white p-4">
+      <div className="flex flex-wrap items-end gap-3 rounded-xl border border-line bg-white p-4">
         <Label text="Program adı">
           <input className={`${inputCls} w-64`} value={meta.name} onChange={(e) => setMeta({ ...meta, name: e.target.value })}
             onBlur={() => meta.name !== program.name && run(() => updateProgramMeta(program.id, meta, path))} />
@@ -174,7 +174,7 @@ export function Builder({
             onChange={(e) => setMeta({ ...meta, weeks: Number(e.target.value) || 1 })}
             onBlur={() => meta.weeks !== program.weeks && run(() => updateProgramMeta(program.id, meta, path))} />
         </Label>
-        <p className="flex-1 pb-2 text-sm text-zinc-500">{status}</p>
+        <p className="flex-1 pb-2 text-sm text-muted">{status}</p>
         <button
           onClick={() => setSendOpen((v) => !v)}
           className="rounded-lg px-4 py-2 text-sm font-medium text-white"
@@ -205,7 +205,7 @@ export function Builder({
         <div className="flex flex-col gap-6">
           {/* Haftalık takvim */}
           <div>
-            <p className="mb-2 text-xs text-zinc-500">
+            <p className="mb-2 text-xs text-muted">
               Haftalık şablon. Gönderirken seçtiğin tekrar biçimine göre her hafta uygulanır.
             </p>
             <div className="grid grid-cols-7 gap-2">
@@ -213,8 +213,8 @@ export function Builder({
                 const day = i + 1;
                 const dayTasks = tasks.filter((t) => t.day_of_week === day);
                 return (
-                  <div key={day} className="flex min-h-56 flex-col gap-2 rounded-xl border border-zinc-200 bg-white p-2">
-                    <p className="text-xs font-semibold text-zinc-500" title={dayName}>
+                  <div key={day} className="flex min-h-56 flex-col gap-2 rounded-xl border border-line bg-white p-2">
+                    <p className="text-xs font-semibold text-muted" title={dayName}>
                       {WEEKDAYS_SHORT[i]}
                     </p>
                     {dayTasks.map((t) => (
@@ -224,15 +224,15 @@ export function Builder({
                           setHabitDraft(null);
                           setDraft({ ...t, client_note: t.client_note ?? "" });
                         }}
-                        className={`rounded-md border border-l-4 border-zinc-200 bg-zinc-50 p-2 text-left text-xs hover:bg-zinc-100 ${
+                        className={`rounded-md border border-l-4 border-line bg-page p-2 text-left text-xs hover:bg-soft ${
                           TYPE_STYLE[t.task_type_key] ?? ""
-                        } ${draft?.id === t.id ? "ring-2 ring-zinc-900" : ""}`}
+                        } ${draft?.id === t.id ? "ring-2 ring-ink" : ""}`}
                       >
-                        <span className="block text-[10px] uppercase tracking-wide text-zinc-500">
+                        <span className="block text-[10px] uppercase tracking-wide text-muted">
                           {TASK_TYPE_LABELS[t.task_type_key as TaskTypeKey]}
                         </span>
                         <span className="block font-medium">{t.title}</span>
-                        <span className="block text-zinc-500">{taskMeta(t)}</span>
+                        <span className="block text-muted">{taskMeta(t)}</span>
                       </button>
                     ))}
                     <AddMenu types={taskTypes} onPick={(type) => newTask(day, type)} />
@@ -243,7 +243,7 @@ export function Builder({
           </div>
 
           {/* Alışkanlık şeridi */}
-          <div className="rounded-xl border border-zinc-200 bg-white p-4">
+          <div className="rounded-xl border border-line bg-white p-4">
             <div className="mb-3 flex items-center justify-between">
               <h3 className="text-sm font-semibold">Alışkanlıklar</h3>
               <button
@@ -257,7 +257,7 @@ export function Builder({
               </button>
             </div>
             {habits.length === 0 ? (
-              <p className="text-sm text-zinc-500">Haftaya bağlı alışkanlık yok (ör. günde 8 bardak su).</p>
+              <p className="text-sm text-muted">Haftaya bağlı alışkanlık yok (ör. günde 8 bardak su).</p>
             ) : (
               <div className="flex flex-wrap gap-2">
                 {habits.map((h) => (
@@ -267,10 +267,10 @@ export function Builder({
                       setDraft(null);
                       setHabitDraft(h);
                     }}
-                    className="rounded-full border border-zinc-300 px-3 py-1 text-sm hover:bg-zinc-50"
+                    className="rounded-full border border-line px-3 py-1 text-sm hover:bg-soft"
                   >
                     {h.title}
-                    <span className="text-zinc-500">
+                    <span className="text-muted">
                       {" "}
                       · {HABIT_FREQUENCY_LABELS[h.frequency]}
                       {h.target ? ` · ${h.target}${h.unit ? " " + h.unit : ""}` : ""}
@@ -324,7 +324,7 @@ export function Builder({
               }
             />
           ) : (
-            <div className="rounded-xl border border-dashed border-zinc-300 p-6 text-sm text-zinc-500">
+            <div className="rounded-xl border border-dashed border-line p-6 text-sm text-muted">
               Bir güne görev eklemek için &quot;+ Görev&quot;e, düzenlemek için bir karta tıkla.
             </div>
           )}
@@ -338,15 +338,15 @@ function AddMenu({ types, onPick }: { types: BuilderTaskType[]; onPick: (t: Buil
   const [open, setOpen] = useState(false);
   return (
     <div className="relative mt-auto">
-      <button onClick={() => setOpen((v) => !v)} className="w-full rounded-md py-1 text-xs text-zinc-500 hover:bg-zinc-100">
+      <button onClick={() => setOpen((v) => !v)} className="w-full rounded-md py-1 text-xs text-muted hover:bg-soft">
         + Görev
       </button>
       {open && (
-        <div className="absolute z-10 mt-1 w-40 rounded-lg border border-zinc-200 bg-white p-1 shadow-lg">
+        <div className="absolute z-10 mt-1 w-40 rounded-lg border border-line bg-white p-1 shadow-lg">
           {types.map((t) => (
             <button
               key={t}
-              className="block w-full rounded px-2 py-1.5 text-left text-sm hover:bg-zinc-100"
+              className="block w-full rounded px-2 py-1.5 text-left text-sm hover:bg-soft"
               onClick={() => {
                 setOpen(false);
                 onPick(t);
@@ -385,12 +385,12 @@ function TaskPanel({
     setD({ ...d, payload: payload as Json, options: options as Json });
 
   return (
-    <div className="flex flex-col gap-4 rounded-xl border border-zinc-200 bg-white p-4">
+    <div className="flex flex-col gap-4 rounded-xl border border-line bg-white p-4">
       <div className="flex items-center justify-between">
-        <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted">
           {TASK_TYPE_LABELS[d.task_type_key as TaskTypeKey]}
         </p>
-        <button onClick={onClose} className="text-zinc-400 hover:text-zinc-900" aria-label="Kapat">
+        <button onClick={onClose} className="text-muted hover:text-ink" aria-label="Kapat">
           ✕
         </button>
       </div>
@@ -439,13 +439,13 @@ function TaskPanel({
         <button
           disabled={pending}
           onClick={() => onSave(d)}
-          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+          className="rounded-lg bg-ink px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
         >
           {pending ? "Kaydediliyor…" : "Kaydet"}
         </button>
         {onCopy && (
           <select
-            className="rounded-lg border border-zinc-300 px-2 py-2 text-sm"
+            className="rounded-lg border border-line px-2 py-2 text-sm"
             value=""
             onChange={(e) => e.target.value && onCopy(Number(e.target.value))}
           >
@@ -471,7 +471,7 @@ function TaskPanel({
 function Preview({ draft, color }: { draft: Draft; color: string }) {
   return (
     <div>
-      <p className="mb-1 text-xs font-medium text-zinc-500">Danışan uygulamasında böyle görünür</p>
+      <p className="mb-1 text-xs font-medium text-muted">Danışan uygulamasında böyle görünür</p>
       <div className="rounded-2xl p-4 text-white" style={{ backgroundColor: color }}>
         <p className="text-xs opacity-80">{TASK_TYPE_LABELS[draft.task_type_key as TaskTypeKey]}</p>
         <p className="text-lg font-bold leading-6">{draft.title || "Görev"}</p>
@@ -506,10 +506,10 @@ function HabitPanel({
     show_streak: habit.show_streak ?? true,
   });
   return (
-    <div className="flex flex-col gap-4 rounded-xl border border-zinc-200 bg-white p-4">
+    <div className="flex flex-col gap-4 rounded-xl border border-line bg-white p-4">
       <div className="flex items-center justify-between">
-        <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">Alışkanlık</p>
-        <button onClick={onClose} className="text-zinc-400 hover:text-zinc-900" aria-label="Kapat">
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted">Alışkanlık</p>
+        <button onClick={onClose} className="text-muted hover:text-ink" aria-label="Kapat">
           ✕
         </button>
       </div>
@@ -547,7 +547,7 @@ function HabitPanel({
         <button
           disabled={pending || !h.title.trim()}
           onClick={() => onSave(h)}
-          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+          className="rounded-lg bg-ink px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
         >
           {pending ? "Kaydediliyor…" : "Kaydet"}
         </button>
@@ -577,7 +577,7 @@ function SendPanel({
   const [startDate, setStartDate] = useState(defaultStart);
   const [repeat, setRepeat] = useState<ProgramRepeat>(defaultRepeat);
   return (
-    <div className="flex flex-wrap items-end gap-4 rounded-xl border border-zinc-900 bg-white p-4">
+    <div className="flex flex-wrap items-end gap-4 rounded-xl border border-ink bg-white p-4">
       <p className="w-full text-sm">
         <span className="font-medium">{clientName || "Danışan"}</span> bu programı uygulamasında görecek. Aynı alandaki
         önceki aktif program tamamlandı olarak kapanır.
@@ -597,11 +597,11 @@ function SendPanel({
       <button
         disabled={pending}
         onClick={() => onSend(startDate, repeat)}
-        className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+        className="rounded-lg bg-ink px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
       >
         {pending ? "Gönderiliyor…" : "Gönder"}
       </button>
-      <p className="w-full text-xs text-zinc-400">Bildirim gönderme 6. adımda (mesajlar ve bildirimler) eklenecek.</p>
+      <p className="w-full text-xs text-muted">Bildirim gönderme 6. adımda (mesajlar ve bildirimler) eklenecek.</p>
     </div>
   );
 }

@@ -7,7 +7,7 @@ const STATUS_STYLE: Record<string, { cls: string; label: string }> = {
   done: { cls: "bg-emerald-50 border-emerald-300 text-emerald-900", label: "Tamam" },
   in_progress: { cls: "bg-sky-50 border-sky-300 text-sky-900", label: "Devam ediyor" },
   missed: { cls: "bg-red-50 border-red-300 text-red-900", label: "Kaçırıldı" },
-  pending: { cls: "bg-zinc-50 border-zinc-200 text-zinc-700", label: "Bekliyor" },
+  pending: { cls: "bg-page border-line text-ink-2", label: "Bekliyor" },
 };
 
 export function ThisWeek({ week, days }: { week: CoachingWeek; days: Date[] }) {
@@ -18,8 +18,8 @@ export function ThisWeek({ week, days }: { week: CoachingWeek; days: Date[] }) {
         {days.map((d, i) => {
           const tasks = week.tasks.filter((t) => t.dayIndex === i);
           return (
-            <div key={i} className={`flex min-h-24 flex-col gap-1.5 rounded-lg p-1.5 ${d.toDateString() === today ? "bg-zinc-100" : ""}`}>
-              <p className="text-xs font-semibold text-zinc-500">
+            <div key={i} className={`flex min-h-24 flex-col gap-1.5 rounded-lg p-1.5 ${d.toDateString() === today ? "bg-soft" : ""}`}>
+              <p className="text-xs font-semibold text-muted">
                 {WEEKDAYS_SHORT[i]} {d.getDate()}
               </p>
               {tasks.map((t) => {
@@ -36,7 +36,7 @@ export function ThisWeek({ week, days }: { week: CoachingWeek; days: Date[] }) {
           );
         })}
       </div>
-      <p className="mt-3 text-xs text-zinc-500">Uyum: bugüne kadar planlanan görevler ve atadığın alışkanlıklar içinde tamamlananların oranı.</p>
+      <p className="mt-3 text-xs text-muted">Uyum: bugüne kadar planlanan görevler ve atadığın alışkanlıklar içinde tamamlananların oranı.</p>
     </Card>
   );
 }
@@ -72,7 +72,7 @@ export function Progress({ measurements }: { measurements: Measurement[] }) {
   return (
     <Card title="İlerleme">
       {metrics.length === 0 ? (
-        <p className="text-sm text-zinc-500">Henüz ölçüm yok. Programa bir ölçüm görevi ekleyebilirsin.</p>
+        <p className="text-sm text-muted">Henüz ölçüm yok. Programa bir ölçüm görevi ekleyebilirsin.</p>
       ) : (
         <div className="flex flex-col gap-5">
           {metrics.map((metric) => {
@@ -131,14 +131,14 @@ export function RecentLogs({ logs }: { logs: Log[] }) {
   return (
     <Card title="Son kayıtlar">
       {logs.length === 0 ? (
-        <p className="text-sm text-zinc-500">Danışan henüz kayıt girmedi.</p>
+        <p className="text-sm text-muted">Danışan henüz kayıt girmedi.</p>
       ) : (
         <ul className="flex flex-col gap-2 text-sm">
           {logs.map((l) => (
             <li key={l.id} className="flex gap-3">
-              <span className="w-28 shrink-0 text-xs text-zinc-500">{dateTime.format(new Date(l.created_at))}</span>
+              <span className="w-28 shrink-0 text-xs text-muted">{dateTime.format(new Date(l.created_at))}</span>
               <span>
-                <span className="text-zinc-500">{l.task_instances?.title} · </span>
+                <span className="text-muted">{l.task_instances?.title} · </span>
                 {describe(l)}
               </span>
             </li>

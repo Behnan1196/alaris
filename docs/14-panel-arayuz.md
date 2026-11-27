@@ -1,6 +1,6 @@
 # 14. Koç paneli arayüzü: Everfit / Hubfit'ten ne alıyoruz
 
-Durum: **öneri** [VARSAYIM], 27 Kasım 2026. Onaylanan maddeler `karar-gunlugu.md` dosyasına yazılır.
+Durum: **onaylandı** [KARAR], 27 Kasım 2026 (sıra §5). Onaylanan maddeler `karar-gunlugu.md` dosyasına yazılır.
 Kaynaklar: Everfit ve Hubfit yardım merkezi / ürün sayfaları (aşağıda), onaylı mockup `docs/mockups/koc-paneli.html`.
 
 ## 1. Sektörde standartlaşmış kalıplar

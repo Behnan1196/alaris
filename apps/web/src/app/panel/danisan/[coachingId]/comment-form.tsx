@@ -11,12 +11,12 @@ export function CommentForm({ coachingId, domain, initial }: { coachingId: strin
   const [pending, start] = useTransition();
   return (
     <div className="mt-4 flex flex-col gap-1.5">
-      <label className="text-xs font-medium text-zinc-600" htmlFor={`c-${domain}`}>
+      <label className="text-xs font-medium text-muted" htmlFor={`c-${domain}`}>
         Danışana ilerleme yorumun (İlerleme ekranında görür)
       </label>
       <textarea
         id={`c-${domain}`}
-        className="min-h-16 w-full rounded-lg border border-zinc-300 p-2 text-sm outline-none focus:border-zinc-900"
+        className="min-h-16 w-full rounded-lg border border-line p-2 text-sm outline-none focus:border-ink"
         value={body}
         onChange={(e) => setBody(e.target.value)}
       />
@@ -33,7 +33,7 @@ export function CommentForm({ coachingId, domain, initial }: { coachingId: strin
               }
             })
           }
-          className="rounded-md border border-zinc-300 px-2.5 py-1 text-xs font-medium disabled:opacity-40"
+          className="rounded-md border border-line px-2.5 py-1 text-xs font-medium disabled:opacity-40"
         >
           {pending ? "Kaydediliyor…" : body === saved ? "Kaydedildi" : "Yorumu kaydet"}
         </button>

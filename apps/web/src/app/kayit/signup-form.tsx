@@ -20,7 +20,7 @@ export function SignupForm() {
         minLength={8}
         required
       />
-      <label className="flex gap-2 text-sm text-zinc-700">
+      <label className="flex gap-2 text-sm text-ink-2">
         <input type="checkbox" name="kvkk" required className="mt-0.5" />
         <span>
           <Link href="/kvkk" target="_blank" className="underline">
@@ -29,7 +29,7 @@ export function SignupForm() {
           okudum, kişisel verilerimin işlenmesine açık rıza veriyorum.
         </span>
       </label>
-      <label className="flex gap-2 text-sm text-zinc-700">
+      <label className="flex gap-2 text-sm text-ink-2">
         <input type="checkbox" name="marketing" className="mt-0.5" />
         <span>Alaris&apos;ten haber ve kampanya e-postaları almak istiyorum (isteğe bağlı).</span>
       </label>
@@ -37,7 +37,7 @@ export function SignupForm() {
       <Button type="submit" disabled={pending}>
         {pending ? "Kaydediliyor…" : "Kaydol"}
       </Button>
-      <p className="text-sm text-zinc-600">
+      <p className="text-sm text-muted">
         Zaten hesabın var mı?{" "}
         <Link href="/giris" className="font-medium underline">
           Giriş yap
