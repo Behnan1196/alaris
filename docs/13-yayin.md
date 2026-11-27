@@ -34,7 +34,7 @@ Not: Production derlemesi JavaScript'i içinde taşır, bilgisayardaki dev serve
 
 ## Yayından önce açık konular
 
-- Supabase **Confirm email** geliştirme için kapalı; gerçek kullanıcılardan önce açılmalı ve e-posta gönderimi için özel SMTP (ör. Resend) ayarlanmalı.
+- Supabase **Confirm email** 27 Kasım 2026 tarihinde yeniden açıldı. Varsayılan e-posta gönderimi saatte birkaç e-postayla sınırlı; gerçek kullanıcılardan önce özel SMTP (ör. Resend) ayarlanmalı.
 - KVKK aydınlatma metni ve gizlilik politikası taslak; hukuki gözden geçirme ve herkese açık bir adres (App Store için gerekli).
 - Supabase projesi `ap-northeast-2` (Seul) bölgesinde; KVKK yurt dışı aktarım değerlendirmesi (açık soru 1).
 - Ödeme / koç aboneliği (8. adım) henüz yok.
