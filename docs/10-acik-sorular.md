@@ -4,7 +4,7 @@ Cevaplanınca soruyu buradan kaldır, kararı `karar-gunlugu.md` dosyasına ve i
 
 ## Teknik
 
-1. Barındırma ve verinin yurt içinde tutulması gerekiyor mu? Supabase projesi şu an Seul (ap-northeast-2) bölgesinde; Türkiye'den her sorgu ~200 ms. Öneri (27 Kasım 2026): veri azken projeyi Frankfurt (eu-central-1) bölgesine taşımak ve Vercel fonksiyonlarını fra1'e almak; KVKK açısından da AB daha uygun. Geçici olarak Vercel fonksiyonları Seul'e (icn1) alındı.
+1. ~~Barındırma bölgesi~~: AB'de (eu-west-1, İrlanda), 27 Kasım 2026. Verinin yurt içinde tutulması gerekip gerekmediği ve yurt dışı aktarım şartları KVKK danışmanıyla netleşmeli.
 2. Video barındırma (hareket videoları, koç yüklemeleri) hangi servisle?
 
 ## Ürün

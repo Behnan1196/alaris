@@ -7,7 +7,7 @@ Hazırlık: 27 Kasım 2026. Hesap adımlarını Behnan yapar; kod tarafı hazır
 1. https://vercel.com → **Add New → Project** → GitHub'dan `Behnan1196/alaris` deposunu seç (Vercel'in GitHub erişimi istenirse ver).
 2. **Root Directory:** `apps/web` (Edit ile seç). Framework otomatik **Next.js** gelir. Install / Build komutlarını değiştirme: Vercel kökteki `package-lock.json` ile npm workspaces'i kurar.
 3. **Environment Variables** (Production ve Preview):
-   - `NEXT_PUBLIC_SUPABASE_URL` = `https://wionwxwflclxtusvfdld.supabase.co`
+   - `NEXT_PUBLIC_SUPABASE_URL` = `https://smfmpedppxomwwhkhlef.supabase.co`
    - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` = `.env.local` içindeki `EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY` değeri (herkese açık anahtar; gizli **secret** anahtarı asla girme)
 4. **Deploy**. Bitince adres `https://<proje>.vercel.app` olur (ileride kendi alan adın eklenebilir).
 5. Supabase paneli → **Authentication → URL Configuration**:
@@ -36,5 +36,5 @@ Not: Production derlemesi JavaScript'i içinde taşır, bilgisayardaki dev serve
 
 - Supabase **Confirm email** 27 Kasım 2026 tarihinde yeniden açıldı. Varsayılan e-posta gönderimi saatte birkaç e-postayla sınırlı; gerçek kullanıcılardan önce özel SMTP (ör. Resend) ayarlanmalı.
 - KVKK aydınlatma metni ve gizlilik politikası taslak; hukuki gözden geçirme ve herkese açık bir adres (App Store için gerekli).
-- Supabase projesi `ap-northeast-2` (Seul) bölgesinde; KVKK yurt dışı aktarım değerlendirmesi (açık soru 1).
+- Supabase projesi `eu-west-1` (İrlanda), Vercel fonksiyonları `dub1`; KVKK yurt dışı aktarım değerlendirmesi (açık soru 1).
 - Ödeme / koç aboneliği (8. adım) henüz yok.
