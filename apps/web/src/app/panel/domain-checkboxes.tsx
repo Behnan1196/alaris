@@ -1,4 +1,7 @@
+"use client";
+
 import { DOMAINS, type DomainKey } from "@alaris/shared";
+import { useI18n } from "@/components/i18n";
 
 export function DomainCheckboxes({
   keys,
@@ -7,6 +10,7 @@ export function DomainCheckboxes({
   keys: readonly string[];
   defaultChecked?: readonly string[];
 }) {
+  const { t } = useI18n();
   return (
     <div className="flex flex-wrap gap-2">
       {keys.map((key) => {
@@ -25,7 +29,7 @@ export function DomainCheckboxes({
               className="sr-only"
             />
             <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: d.color }} />
-            {d.name}
+            {t(`domain.${d.key}`)}
           </label>
         );
       })}

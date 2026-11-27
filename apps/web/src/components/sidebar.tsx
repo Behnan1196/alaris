@@ -1,10 +1,12 @@
 "use client";
 
-import { DOMAINS, type DomainKey } from "@alaris/shared";
+import { DOMAINS, type DomainKey, type MessageKey } from "@alaris/shared";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, type ReactNode } from "react";
 import { signOut } from "@/app/auth-actions";
+import { useI18n } from "./i18n";
+import { LanguageSwitcher } from "./language-switcher";
 
 const I = {
   home: "M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z",
@@ -22,17 +24,18 @@ function Icon({ d }: { d: string }) {
   );
 }
 
-const NAV: { href: string; label: string; icon: string; match: (p: string) => boolean }[] = [
-  { href: "/panel", label: "Genel bakış", icon: I.home, match: (p) => p === "/panel" },
-  { href: "/panel/danisanlar", label: "Danışanlar", icon: I.users, match: (p) => p.startsWith("/panel/danisan") && !p.includes("/program/") },
-  { href: "/panel/program", label: "Program oluşturucu", icon: I.cal, match: (p) => p.startsWith("/panel/program") || p.includes("/program/") },
-  { href: "/panel/kutuphane", label: "Kütüphane", icon: I.lib, match: (p) => p.startsWith("/panel/kutuphane") },
-  { href: "/panel/mesajlar", label: "Mesajlar", icon: I.msg, match: (p) => p.startsWith("/panel/mesajlar") },
+const NAV: { href: string; label: MessageKey; icon: string; match: (p: string) => boolean }[] = [
+  { href: "/panel", label: "nav.overview", icon: I.home, match: (p) => p === "/panel" },
+  { href: "/panel/danisanlar", label: "nav.clients", icon: I.users, match: (p) => p.startsWith("/panel/danisan") && !p.includes("/program/") },
+  { href: "/panel/program", label: "nav.builder", icon: I.cal, match: (p) => p.startsWith("/panel/program") || p.includes("/program/") },
+  { href: "/panel/kutuphane", label: "nav.library", icon: I.lib, match: (p) => p.startsWith("/panel/kutuphane") },
+  { href: "/panel/mesajlar", label: "nav.messages", icon: I.msg, match: (p) => p.startsWith("/panel/mesajlar") },
 ];
 
 export type CoachSummary = { name: string; title: string | null; domainKeys: string[]; unread: number } | null;
 
 export function Sidebar({ coach }: { coach: CoachSummary }) {
+  const { t } = useI18n();
   const path = usePathname();
   const setup = path.startsWith("/panel/kurulum") || !coach;
 
@@ -42,7 +45,7 @@ export function Sidebar({ coach }: { coach: CoachSummary }) {
         <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-ink font-display text-lg font-bold text-white">A</span>
         <span className="leading-tight">
           <span className="block font-display text-base font-semibold">Alaris</span>
-          <span className="block text-xs text-muted">Koç paneli</span>
+          <span className="block text-xs text-muted">{t("nav.coachPanel")}</span>
         </span>
       </Link>
 
@@ -60,7 +63,7 @@ export function Sidebar({ coach }: { coach: CoachSummary }) {
                 }`}
               >
                 <Icon d={n.icon} />
-                <span className="flex-1">{n.label}</span>
+                <span className="flex-1">{t(n.label)}</span>
                 {n.href === "/panel/mesajlar" && coach.unread > 0 && (
                   <span className="rounded-full bg-accent px-1.5 text-xs font-semibold text-white">{coach.unread}</span>
                 )}
@@ -78,17 +81,18 @@ export function Sidebar({ coach }: { coach: CoachSummary }) {
               {coach.domainKeys.map((k) => (
                 <span key={k} className="flex items-center gap-1 text-xs text-muted">
                   <span className="h-2 w-2 rounded-full" style={{ backgroundColor: DOMAINS[k as DomainKey]?.color }} />
-                  {DOMAINS[k as DomainKey]?.name}
+                  {t(`domain.${k as DomainKey}`)}
                 </span>
               ))}
             </div>
             <Link href="/panel/kurulum" className="mt-2 block text-xs text-muted underline">
-              Profil ve alanlar
+              {t("nav.profile")}
             </Link>
           </div>
         )}
+        <LanguageSwitcher />
         <form action={signOut}>
-          <button className="px-1 text-sm text-muted hover:text-ink">Çıkış yap</button>
+          <button className="px-1 text-sm text-muted hover:text-ink">{t("common.signOut")}</button>
         </form>
       </div>
     </aside>
@@ -97,6 +101,7 @@ export function Sidebar({ coach }: { coach: CoachSummary }) {
 
 /** Üst çubuktaki danışan araması: Danışanlar sayfasına ?q= ile gider. */
 export function ClientSearch({ initial = "" }: { initial?: string }) {
+  const { t } = useI18n();
   const router = useRouter();
   const [q, setQ] = useState(initial);
   return (
@@ -115,8 +120,8 @@ export function ClientSearch({ initial = "" }: { initial?: string }) {
       <input
         value={q}
         onChange={(e) => setQ(e.target.value)}
-        placeholder="Danışan ara"
-        aria-label="Danışan ara"
+        placeholder={t("common.searchClient")}
+        aria-label={t("common.searchClient")}
         className="flex-1 bg-transparent outline-none"
       />
     </form>
@@ -124,12 +129,13 @@ export function ClientSearch({ initial = "" }: { initial?: string }) {
 }
 
 export function TopActions({ children }: { children?: ReactNode }) {
+  const { t } = useI18n();
   return (
     <>
       <ClientSearch />
       {children}
       <Link href="/panel/program" className="flex h-10 items-center gap-2 rounded-xl bg-ink px-4 text-sm font-medium text-white hover:bg-ink-2">
-        <span className="text-lg leading-none">+</span> Program oluştur
+        <span className="text-lg leading-none">+</span> {t("nav.createProgram")}
       </Link>
     </>
   );
@@ -137,20 +143,21 @@ export function TopActions({ children }: { children?: ReactNode }) {
 
 /** Veri gelene kadar gösterilen sade menü (usePathname kullanmaz; ön render'a uygun). */
 export function SidebarSkeleton() {
+  const { t } = useI18n();
   return (
     <aside className="sticky top-0 flex h-screen w-60 shrink-0 flex-col gap-6 border-r border-line bg-page px-4 py-5">
       <div className="flex items-center gap-3 px-1">
         <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-ink font-display text-lg font-bold text-white">A</span>
         <span className="leading-tight">
           <span className="block font-display text-base font-semibold">Alaris</span>
-          <span className="block text-xs text-muted">Koç paneli</span>
+          <span className="block text-xs text-muted">{t("nav.coachPanel")}</span>
         </span>
       </div>
       <nav className="flex flex-col gap-1">
         {NAV.map((n) => (
           <span key={n.href} className="flex h-10 items-center gap-3 rounded-xl px-3 text-sm font-medium text-ink/60">
             <Icon d={n.icon} />
-            {n.label}
+            {t(n.label)}
           </span>
         ))}
       </nav>

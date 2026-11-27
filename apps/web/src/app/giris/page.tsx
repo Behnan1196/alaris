@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { T } from "@/components/t";
 import { AuthCard } from "@/components/ui";
 import { LoginForm } from "./login-form";
 
@@ -10,7 +11,7 @@ async function Form({ searchParams }: { searchParams: PageProps<"/giris">["searc
 
 export default function Page({ searchParams }: PageProps<"/giris">) {
   return (
-    <AuthCard title="Giriş yap">
+    <AuthCard title={<T k="auth.signIn" />}>
       <Suspense>
         <Form searchParams={searchParams} />
       </Suspense>

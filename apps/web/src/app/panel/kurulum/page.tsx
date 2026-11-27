@@ -1,5 +1,6 @@
 import { DOMAINS } from "@alaris/shared";
 import { Suspense } from "react";
+import { T } from "@/components/t";
 import { AuthCard } from "@/components/ui";
 import { requireUser } from "@/lib/coach";
 import { SetupForm } from "./setup-form";
@@ -27,7 +28,7 @@ async function Content() {
 
 export default function Page() {
   return (
-    <AuthCard title="Koç profilini kur">
+    <AuthCard title={<T k="web.setup.heading" />}>
       <Suspense>
         <Content />
       </Suspense>

@@ -1,4 +1,5 @@
 import type { ComponentProps, ReactNode } from "react";
+import { BrandLine } from "./brand-line";
 
 export function Field({ label, ...props }: ComponentProps<"input"> & { label: string }) {
   return (
@@ -26,11 +27,11 @@ export function Notice({ kind, children }: { kind: "error" | "info"; children: R
   return <p className={`rounded-lg px-3 py-2 text-sm ${cls}`}>{children}</p>;
 }
 
-export function AuthCard({ title, children }: { title: string; children: ReactNode }) {
+export function AuthCard({ title, children }: { title: ReactNode; children: ReactNode }) {
   return (
     <main className="flex flex-1 items-center justify-center px-6 py-16">
       <div className="w-full max-w-sm">
-        <p className="mb-1 text-sm font-medium text-muted">Alaris · Koç paneli</p>
+        <BrandLine />
         <h1 className="mb-6 text-2xl font-semibold tracking-tight">{title}</h1>
         {children}
       </div>
@@ -38,7 +39,7 @@ export function AuthCard({ title, children }: { title: string; children: ReactNo
   );
 }
 
-export function Card({ title, children }: { title: string; children: ReactNode }) {
+export function Card({ title, children }: { title: ReactNode; children: ReactNode }) {
   return (
     <section className="rounded-2xl border border-line bg-surface p-5">
       <h2 className="mb-4 text-base font-semibold">{title}</h2>
