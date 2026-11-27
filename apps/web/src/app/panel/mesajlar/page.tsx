@@ -2,7 +2,7 @@ import { DOMAINS, type DomainKey } from "@alaris/shared";
 import Link from "next/link";
 import { Suspense } from "react";
 import { DomainTag } from "@/components/domain-tag";
-import { Card, PageBody, PageHeader } from "@/components/ui";
+import { Card, PageBody, PageHeader, Loading } from "@/components/ui";
 import { requireCoach } from "@/lib/coach";
 import { loadThreads, type ThreadSummary } from "@/lib/messages";
 import { loadWeek, pct } from "@/lib/tracking";
@@ -155,7 +155,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/panel/mesaj
 
 export default function Page({ searchParams }: PageProps<"/panel/mesajlar">) {
   return (
-    <Suspense fallback={<p className="p-10 text-sm text-muted">Yükleniyor…</p>}>
+    <Suspense fallback={<Loading />}>
       <Content searchParams={searchParams} />
     </Suspense>
   );

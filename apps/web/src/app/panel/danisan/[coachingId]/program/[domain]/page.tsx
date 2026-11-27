@@ -2,7 +2,7 @@ import { DOMAINS, type DomainKey } from "@alaris/shared";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { Button, Field, PageHeader } from "@/components/ui";
+import { Button, Field, PageHeader, Loading } from "@/components/ui";
 import { requireCoach } from "@/lib/coach";
 import { createProgram } from "@/app/panel/program-actions";
 import { Builder } from "./builder";
@@ -101,7 +101,7 @@ async function Content({ params }: { params: Params }) {
 
 export default function Page({ params }: PageProps<"/panel/danisan/[coachingId]/program/[domain]">) {
   return (
-    <Suspense fallback={<p className="p-10 text-sm text-muted">Yükleniyor…</p>}>
+    <Suspense fallback={<Loading />}>
       <Content params={params} />
     </Suspense>
   );

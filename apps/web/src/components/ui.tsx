@@ -1,5 +1,6 @@
 import type { ComponentProps, ReactNode } from "react";
 import { BrandLine } from "./brand-line";
+import { T } from "./t";
 
 export function Field({ label, ...props }: ComponentProps<"input"> & { label: string }) {
   return (
@@ -64,4 +65,12 @@ export function PageHeader({ crumb, title, actions }: { crumb?: ReactNode; title
 /** Sayfa içeriği kabı. */
 export function PageBody({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
   return <div className={`mx-auto flex w-full flex-col gap-6 px-8 py-8 ${wide ? "max-w-none" : "max-w-6xl"}`}>{children}</div>;
+}
+
+export function Loading() {
+  return (
+    <p className="p-10 text-sm text-muted">
+      <T k="common.loading" />
+    </p>
+  );
 }

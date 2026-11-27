@@ -2,9 +2,11 @@
 
 import { useState, useTransition } from "react";
 import { saveProgressComment } from "@/app/panel/program-actions";
+import { useI18n } from "@/components/i18n";
 
 /** Danışanın İlerleme ekranında görünen, alan başına koç yorumu. */
 export function CommentForm({ coachingId, domain, initial }: { coachingId: string; domain: string; initial: string }) {
+  const { t } = useI18n();
   const [body, setBody] = useState(initial);
   const [saved, setSaved] = useState(initial);
   const [error, setError] = useState<string | null>(null);
@@ -12,7 +14,7 @@ export function CommentForm({ coachingId, domain, initial }: { coachingId: strin
   return (
     <div className="mt-4 flex flex-col gap-1.5">
       <label className="text-xs font-medium text-muted" htmlFor={`c-${domain}`}>
-        Danışana ilerleme yorumun (İlerleme ekranında görür)
+        {t("web.comment.label")}
       </label>
       <textarea
         id={`c-${domain}`}
@@ -35,7 +37,7 @@ export function CommentForm({ coachingId, domain, initial }: { coachingId: strin
           }
           className="rounded-md border border-line px-2.5 py-1 text-xs font-medium disabled:opacity-40"
         >
-          {pending ? "Kaydediliyor…" : body === saved ? "Kaydedildi" : "Yorumu kaydet"}
+          {pending ? t("common.saving") : body === saved ? t("common.saved") : t("web.comment.save")}
         </button>
         {error && <span className="text-xs text-red-700">{error}</span>}
       </div>

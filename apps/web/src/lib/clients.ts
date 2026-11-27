@@ -1,4 +1,4 @@
-import { activeWeeks, localDate, programDay, type ProgramRepeat } from "@alaris/shared";
+import { activeWeeks, localDate, programDay, type MessageKey, type ProgramRepeat } from "@alaris/shared";
 import type { createClient } from "@/lib/supabase/server";
 import { currentWeekDays, loadWeek } from "@/lib/tracking";
 
@@ -6,13 +6,13 @@ type Supabase = Awaited<ReturnType<typeof createClient>>;
 
 export type ClientFlag = "message" | "attention" | "no_program" | "ending" | "inactive";
 
-export const FLAG_LABELS: Record<ClientFlag | "ok", string> = {
-  message: "Mesaj bekliyor",
-  attention: "Dikkat",
-  no_program: "Program yok",
-  ending: "Program bitiyor",
-  inactive: "Etkinlik yok",
-  ok: "Yolunda",
+export const FLAG_LABELS: Record<ClientFlag | "ok", MessageKey> = {
+  message: "flag.message",
+  attention: "flag.attention",
+  no_program: "flag.no_program",
+  ending: "flag.ending",
+  inactive: "flag.inactive",
+  ok: "flag.ok",
 };
 
 /** Öncelik sırası: listede tek bir durum gösterilirken ilk eşleşen kullanılır. */
@@ -135,7 +135,7 @@ export async function loadClientRows(supabase: Supabase, coachId: string): Promi
 
     return {
       id: c.id,
-      name: c.client?.full_name || "İsimsiz",
+      name: c.client?.full_name || "",
       status: c.status,
       startedAt: c.started_at,
       domains,

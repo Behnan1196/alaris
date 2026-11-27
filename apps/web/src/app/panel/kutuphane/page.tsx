@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { PageBody, PageHeader } from "@/components/ui";
+import { PageBody, PageHeader, Loading } from "@/components/ui";
 import { requireCoach } from "@/lib/coach";
 import { Library, type Exercise } from "./library";
 
@@ -24,7 +24,7 @@ async function Content() {
 
 export default function Page() {
   return (
-    <Suspense fallback={<p className="p-10 text-sm text-muted">Yükleniyor…</p>}>
+    <Suspense fallback={<Loading />}>
       <Content />
     </Suspense>
   );

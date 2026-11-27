@@ -1,19 +1,19 @@
-import { DOMAINS, type DomainKey } from "@alaris/shared";
+import { DOMAINS, intlLocale, type DomainKey, type MessageKey, type TFunction } from "@alaris/shared";
+import { T } from "@/components/t";
+import { getT } from "@/lib/i18n";
 import Link from "next/link";
 import { Suspense } from "react";
 import { DomainTag } from "@/components/domain-tag";
 import { TopActions } from "@/components/sidebar";
-import { Card, PageBody, PageHeader } from "@/components/ui";
+import { Card, PageBody, PageHeader, Loading } from "@/components/ui";
 import { FLAG_LABELS, FLAG_ORDER, loadClientRows, type ClientFlag, type ClientRow } from "@/lib/clients";
 import { requireCoach } from "@/lib/coach";
 import { pct } from "@/lib/tracking";
 import { InviteForm } from "../invite-form";
 
-const dateFmt = new Intl.DateTimeFormat("tr-TR", { day: "numeric", month: "long" });
-const rtf = new Intl.RelativeTimeFormat("tr-TR", { numeric: "auto" });
 
-const VIEWS: { key: "all" | ClientFlag; label: string }[] = [
-  { key: "all", label: "Tümü" },
+const VIEWS: { key: "all" | ClientFlag; label: MessageKey }[] = [
+  { key: "all", label: "web.clients.all" },
   { key: "attention", label: FLAG_LABELS.attention },
   { key: "message", label: FLAG_LABELS.message },
   { key: "no_program", label: FLAG_LABELS.no_program },
@@ -30,24 +30,24 @@ const FLAG_STYLE: Record<ClientFlag | "ok", string> = {
   ok: "bg-emerald-50 text-emerald-800",
 };
 
-function relative(iso: string | null) {
+function relative(iso: string | null, rtf: Intl.RelativeTimeFormat, t: TFunction) {
   if (!iso) return "–";
   const days = Math.round((new Date(iso).getTime() - Date.now()) / 86_400_000);
   if (days === 0) {
     const hours = Math.round((new Date(iso).getTime() - Date.now()) / 3_600_000);
-    return hours === 0 ? "az önce" : rtf.format(hours, "hour");
+    return hours === 0 ? t("time.justNow") : rtf.format(hours, "hour");
   }
   return rtf.format(days, "day");
 }
 
 /** Son 4 haftanın uyum eğilimi (küçük çubuklar). */
-function Trend({ values }: { values: (number | null)[] }) {
+function Trend({ values, label }: { values: (number | null)[]; label: string }) {
   return (
-    <span className="flex h-6 items-end gap-0.5" aria-label="Son 4 hafta uyum">
+    <span className="flex h-6 items-end gap-0.5" aria-label={label}>
       {values.map((v, i) => (
         <span
           key={i}
-          title={v === null ? "veri yok" : `%${Math.round(v * 100)}`}
+          title={v === null ? "–" : `%${Math.round(v * 100)}`}
           className={`w-1.5 rounded-sm ${v === null ? "bg-line" : v >= 0.8 ? "bg-emerald-600" : v >= 0.5 ? "bg-amber-500" : "bg-red-500"}`}
           style={{ height: `${v === null ? 3 : Math.max(3, Math.round(v * 24))}px` }}
         />
@@ -57,15 +57,19 @@ function Trend({ values }: { values: (number | null)[] }) {
 }
 
 function StatusChip({ row }: { row: ClientRow }) {
-  if (row.status === "ended") return <span className="text-xs text-muted">Koçluk bitti</span>;
+  if (row.status === "ended")
+    return (
+      <span className="text-xs text-muted">
+        <T k="web.clients.ended" />
+      </span>
+    );
   const top = FLAG_ORDER.find((f) => row.flags.includes(f)) ?? "ok";
   const extra = row.flags.length > 1 ? ` +${row.flags.length - 1}` : "";
   return (
     <span
-      title={row.flags.map((f) => FLAG_LABELS[f]).join(", ") || FLAG_LABELS.ok}
       className={`whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-medium ${FLAG_STYLE[top]}`}
     >
-      {FLAG_LABELS[top]}
+      <T k={FLAG_LABELS[top]} />
       {top === "message" && row.unread > 1 ? ` (${row.unread})` : ""}
       {extra}
     </span>
@@ -77,6 +81,9 @@ async function Content({ searchParams }: { searchParams: PageProps<"/panel/danis
   const query = typeof params.q === "string" ? params.q.trim() : "";
   const view = (typeof params.v === "string" ? params.v : "all") as "all" | ClientFlag;
   const { supabase, userId, domainKeys } = await requireCoach();
+  const { t, locale } = await getT();
+  const dateFmt = new Intl.DateTimeFormat(intlLocale(locale), { day: "numeric", month: "long" });
+  const rtf = new Intl.RelativeTimeFormat(intlLocale(locale), { numeric: "auto" });
 
   const [rows, { data: invites }] = await Promise.all([
     loadClientRows(supabase, userId),
@@ -96,7 +103,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/panel/danis
 
   return (
     <PageBody>
-      <PageHeader crumb={`${rows.filter((r) => r.status === "active").length} aktif danışan`} title="Danışanlar" actions={<TopActions />} />
+      <PageHeader crumb={t("web.clients.activeCount", { n: rows.filter((r) => r.status === "active").length })} title={t("nav.clients")} actions={<TopActions />} />
 
       <div className="flex flex-wrap items-center gap-2">
         {VIEWS.map((v) => {
@@ -109,14 +116,14 @@ async function Content({ searchParams }: { searchParams: PageProps<"/panel/danis
                 on ? "border-ink bg-ink text-white" : "border-line bg-surface hover:bg-soft"
               }`}
             >
-              {v.label}
+              {t(v.label)}
               <span className={on ? "text-white/70" : "text-muted"}>{count(v.key)}</span>
             </Link>
           );
         })}
         {query && (
           <Link href={href(view).replace(/([?&])q=[^&]*/, "$1")} className="text-sm text-muted underline">
-            “{query}” aramasını temizle
+            {t("web.clients.clearSearch", { q: query })}
           </Link>
         )}
       </div>
@@ -126,19 +133,19 @@ async function Content({ searchParams }: { searchParams: PageProps<"/panel/danis
           {!list.length ? (
             <p className="p-5 text-sm text-muted">
               {rows.length === 0
-                ? "Henüz danışanın yok. Sağdan bir davet kodu oluşturup danışanınla paylaş."
-                : "Bu görünümde danışan yok."}
+                ? t("web.clients.none")
+                : t("web.clients.noneInView")}
             </p>
           ) : (
             <table className="w-full text-sm">
               <thead className="border-b border-line text-left text-xs uppercase tracking-wide text-muted">
                 <tr>
-                  <th className="px-5 py-3 font-medium">Danışan</th>
-                  <th className="px-3 py-3 font-medium">Alanlar</th>
-                  <th className="px-3 py-3 font-medium">Hafta</th>
-                  <th className="px-3 py-3 font-medium">Uyum</th>
-                  <th className="px-3 py-3 font-medium">Son etkinlik</th>
-                  <th className="px-5 py-3 font-medium">Durum</th>
+                  <th className="px-5 py-3 font-medium">{t("web.col.client")}</th>
+                  <th className="px-3 py-3 font-medium">{t("web.col.areas")}</th>
+                  <th className="px-3 py-3 font-medium">{t("web.col.week")}</th>
+                  <th className="px-3 py-3 font-medium">{t("web.col.adherence")}</th>
+                  <th className="px-3 py-3 font-medium">{t("web.col.lastActivity")}</th>
+                  <th className="px-5 py-3 font-medium">{t("web.col.status")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -146,9 +153,9 @@ async function Content({ searchParams }: { searchParams: PageProps<"/panel/danis
                   <tr key={r.id} className="border-t border-line-soft hover:bg-page">
                     <td className="px-5 py-3">
                       <Link href={`/panel/danisan/${r.id}`} className="font-medium hover:underline">
-                        {r.name}
+                        {r.name || t("common.unnamed")}
                       </Link>
-                      <span className="block text-xs text-muted">{dateFmt.format(new Date(r.startedAt))} tarihinden beri</span>
+                      <span className="block text-xs text-muted">{t("web.clients.since", { date: dateFmt.format(new Date(r.startedAt)) })}</span>
                     </td>
                     <td className="px-3 py-3">
                       <div className="flex flex-wrap gap-1">
@@ -169,14 +176,14 @@ async function Content({ searchParams }: { searchParams: PageProps<"/panel/danis
                     </td>
                     <td className="px-3 py-3">
                       <div className="flex items-center gap-3">
-                        <Trend values={r.trend} />
+                        <Trend values={r.trend} label={t("web.clients.trend")} />
                         <span className="whitespace-nowrap text-xs text-muted">
                           {pct(r.adherence)}
                           {r.planned ? ` · ${r.done}/${r.planned}` : ""}
                         </span>
                       </div>
                     </td>
-                    <td className="whitespace-nowrap px-3 py-3 text-xs text-muted">{relative(r.lastActivity)}</td>
+                    <td className="whitespace-nowrap px-3 py-3 text-xs text-muted">{relative(r.lastActivity, rtf, t)}</td>
                     <td className="px-5 py-3">
                       <StatusChip row={r} />
                     </td>
@@ -188,11 +195,11 @@ async function Content({ searchParams }: { searchParams: PageProps<"/panel/danis
         </section>
 
         <div className="flex flex-col gap-6">
-          <Card title="Danışan davet et">
+          <Card title={t("web.invite.title")}>
             <InviteForm domainKeys={domainKeys} />
           </Card>
           {!!invites?.length && (
-            <Card title="Kullanılmamış davetler">
+            <Card title={t("web.invite.unused")}>
               <ul className="flex flex-col gap-3 text-sm">
                 {invites.map((i) => (
                   <li key={i.id} className="flex items-center justify-between gap-2">
@@ -202,7 +209,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/panel/danis
                         <DomainTag key={k} k={k} />
                       ))}
                     </span>
-                    <span className="text-xs text-muted">{dateFmt.format(new Date(i.expires_at))}e kadar</span>
+                    <span className="text-xs text-muted">{t("web.invite.until", { date: dateFmt.format(new Date(i.expires_at)) })}</span>
                   </li>
                 ))}
               </ul>
@@ -211,7 +218,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/panel/danis
         </div>
       </div>
       <p className="text-xs text-muted">
-        Dikkat: bu hafta kaçırılan görev ya da %50 altı uyum. Etkinlik yok: 5 günden uzun süredir kayıt yok. Program bitiyor: 7 gün içinde.
+        {t("web.clients.legend")}
       </p>
     </PageBody>
   );
@@ -219,7 +226,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/panel/danis
 
 export default function Page({ searchParams }: PageProps<"/panel/danisanlar">) {
   return (
-    <Suspense fallback={<p className="p-10 text-sm text-muted">Yükleniyor…</p>}>
+    <Suspense fallback={<Loading />}>
       <Content searchParams={searchParams} />
     </Suspense>
   );
