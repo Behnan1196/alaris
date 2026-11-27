@@ -2,9 +2,10 @@ import { DOMAINS, localDate, type DomainKey } from "@alaris/shared";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { DomainTag } from "@/components/domain-tag";
 import { Card, PageBody, PageHeader } from "@/components/ui";
 import { requireCoach } from "@/lib/coach";
-import { currentWeekDays, loadWeek } from "@/lib/tracking";
+import { currentWeekDays, loadWeek, pct } from "@/lib/tracking";
 import { CommentForm } from "./comment-form";
 import { NoteForm } from "./note-form";
 import { Photos } from "./photos";
@@ -29,8 +30,16 @@ function lastSevenDays() {
   return out;
 }
 
-async function Content({ params }: { params: PageProps<"/panel/danisan/[coachingId]">["params"] }) {
+async function Content({
+  params,
+  searchParams,
+}: {
+  params: PageProps<"/panel/danisan/[coachingId]">["params"];
+  searchParams: PageProps<"/panel/danisan/[coachingId]">["searchParams"];
+}) {
   const { coachingId } = await params;
+  const sp = await searchParams;
+  const tab = typeof sp.tab === "string" ? sp.tab : "genel";
   const { supabase, userId } = await requireCoach();
 
   const { data: coaching } = await supabase
@@ -96,146 +105,201 @@ async function Content({ params }: { params: PageProps<"/panel/danisan/[coaching
     .eq("client_id", coaching.client_id)
     .maybeSingle();
 
+  const tabHref = (t: string) => `/panel/danisan/${coaching.id}${t === "genel" ? "" : `?tab=${t}`}`;
+  const tabs: [string, string][] = [
+    ["genel", "Genel"],
+    ["ilerleme", "İlerleme"],
+    ["aliskanliklar", "Alışkanlıklar"],
+    ["kayitlar", "Son kayıtlar"],
+  ];
+  const startedFmt = new Intl.DateTimeFormat("tr-TR", { day: "numeric", month: "long", year: "numeric" });
+
   return (
     <PageBody>
       <PageHeader
         crumb={<Link href="/panel/danisanlar" className="hover:underline">Danışanlar</Link>}
         title={coaching.client?.full_name || "İsimsiz danışan"}
         actions={
-          thread && (
-            <Link href={`/panel/mesajlar?t=${thread.id}`} className="flex h-10 items-center rounded-xl border border-line bg-surface px-4 text-sm font-medium hover:bg-soft">
-              Mesaj gönder
+          <>
+            {thread && (
+              <Link href={`/panel/mesajlar?t=${thread.id}`} className="flex h-10 items-center rounded-xl border border-line bg-surface px-4 text-sm font-medium hover:bg-soft">
+                Mesaj gönder
+              </Link>
+            )}
+            <Link
+              href={`/panel/danisan/${coaching.id}/program/${coaching.coaching_domains[0]?.domain_key ?? "fitness"}`}
+              className="flex h-10 items-center rounded-xl bg-ink px-4 text-sm font-medium text-white hover:bg-ink-2"
+            >
+              Programı düzenle
             </Link>
-          )
+          </>
         }
       />
+      <div className="-mt-3 flex flex-wrap items-center gap-3 text-sm text-muted">
+        <span className="flex gap-1">
+          {coaching.coaching_domains.map(({ domain_key }) => (
+            <DomainTag key={domain_key} k={domain_key} />
+          ))}
+        </span>
+        <span>
+          Bu hafta uyum {pct(week.adherence)}
+          {week.planned ? ` (${week.done}/${week.planned})` : ""}
+        </span>
+        {week.missed > 0 && <span className="text-red-700">{week.missed} kaçırılan görev</span>}
+        <span>{startedFmt.format(new Date(coaching.started_at))} tarihinden beri</span>
+      </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        {coaching.coaching_domains.map(({ domain_key }) => {
-          const d = DOMAINS[domain_key as DomainKey];
-          const programs = coaching.programs
-            .filter((p) => p.domain_key === domain_key && p.status !== "archived")
-            .sort((a, b) => b.updated_at.localeCompare(a.updated_at));
-          const current = programs.find((p) => p.status === "active") ?? programs.find((p) => p.status === "draft");
-          return (
-            <section key={domain_key} className="rounded-2xl border border-line bg-surface p-5">
-              <div className="flex items-center gap-2">
-                <span className="h-3 w-3 rounded-full" style={{ backgroundColor: d?.color }} />
-                <h2 className="font-semibold">{d?.name ?? domain_key}</h2>
-              </div>
-              {current ? (
-                <p className="mt-3 text-sm">
-                  <span className="font-medium">{current.name}</span>
-                  <span className="text-muted"> · {PROGRAM_STATUS[current.status]}</span>
+      <nav className="flex gap-1 border-b border-line">
+        {tabs.map(([k, label]) => (
+          <Link
+            key={k}
+            href={tabHref(k)}
+            className={`-mb-px border-b-2 px-3 py-2 text-sm font-medium ${tab === k ? "border-ink text-ink" : "border-transparent text-muted hover:text-ink"}`}
+          >
+            {label}
+          </Link>
+        ))}
+      </nav>
+
+      <div className="grid gap-6 xl:grid-cols-[1fr_320px]">
+        <div className="flex min-w-0 flex-col gap-6">
+          {tab === "genel" && (
+            <>
+              <ThisWeek week={week} days={currentWeekDays()} />
+              <RecentLogs logs={(logs ?? []).slice(0, 8)} />
+            </>
+          )}
+          {tab === "ilerleme" && (
+            <>
+              <Progress measurements={(measurements ?? []).map((m) => ({ ...m, value: Number(m.value) }))} />
+              <Photos photos={photos} />
+              <Card title="İlerleme yorumların (danışan İlerleme ekranında görür)">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {coaching.coaching_domains.map(({ domain_key }) => (
+                    <div key={domain_key}>
+                      <DomainTag k={domain_key} />
+                      <CommentForm
+                        coachingId={coaching.id}
+                        domain={domain_key}
+                        initial={comments?.find((c) => c.domain_key === domain_key)?.body ?? ""}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            </>
+          )}
+          {tab === "aliskanliklar" && (
+            <Card title="Alışkanlıklar · son 7 gün">
+              {visibleHabits.length === 0 ? (
+                <p className="text-sm text-muted">
+                  Görebileceğin alışkanlık yok. Program oluşturucudan alışkanlık atayabilirsin; danışanın kendi
+                  alışkanlıkları yalnızca &quot;Koçlarım görebilsin&quot; derse burada görünür.
                 </p>
               ) : (
-                <p className="mt-3 text-sm text-muted">Bu alanda henüz program yok.</p>
-              )}
-              <Link
-                href={`/panel/danisan/${coaching.id}/program/${domain_key}`}
-                className="mt-4 inline-block rounded-lg bg-ink px-3 py-2 text-sm font-medium text-white"
-              >
-                {current ? "Programı düzenle" : "Program oluştur"}
-              </Link>
-              <CommentForm
-                coachingId={coaching.id}
-                domain={domain_key}
-                initial={comments?.find((c) => c.domain_key === domain_key)?.body ?? ""}
-              />
-            </section>
-          );
-        })}
-      </div>
-
-      <ThisWeek week={week} days={currentWeekDays()} />
-
-      <div className="grid gap-6 lg:grid-cols-2">
-        <Progress measurements={(measurements ?? []).map((m) => ({ ...m, value: Number(m.value) }))} />
-        <Card title="Koç notu (danışan görmez)">
-          <NoteForm coachingId={coaching.id} initial={note?.body ?? ""} />
-        </Card>
-      </div>
-
-      <RecentLogs logs={logs ?? []} />
-
-      <Photos photos={photos} />
-
-      <Card title="Alışkanlıklar · son 7 gün">
-        {visibleHabits.length === 0 ? (
-          <p className="text-sm text-muted">
-            Görebileceğin alışkanlık yok. Program oluşturucudan alışkanlık atayabilirsin; danışanın kendi
-            alışkanlıkları yalnızca &quot;Koçlarım görebilsin&quot; derse burada görünür.
-          </p>
-        ) : (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left text-xs text-muted">
-                <th className="pb-2 font-medium">Alışkanlık</th>
-                {days.map((d) => (
-                  <th key={d.key} className="pb-2 text-center font-medium">
-                    {d.label}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {visibleHabits.map((h) => {
-                const goal = h.target ?? 1;
-                return (
-                  <tr key={h.id} className="border-t border-line">
-                    <td className="py-2">
-                      <span className="font-medium">{h.title}</span>
-                      <span className="block text-xs text-muted">
-                        {h.coaching_id ? "Senin atadığın" : "Danışanın kendi alışkanlığı"}
-                        {h.target ? ` · hedef ${h.target}${h.unit ? " " + h.unit : ""}` : ""}
-                      </span>
-                    </td>
-                    {days.map((d) => {
-                      const v = Number(h.habit_logs.find((l) => l.date === d.key)?.value ?? 0);
-                      const ok = v >= goal;
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="text-left text-xs text-muted">
+                      <th className="pb-2 font-medium">Alışkanlık</th>
+                      {days.map((d) => (
+                        <th key={d.key} className="pb-2 text-center font-medium">
+                          {d.label}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {visibleHabits.map((h) => {
+                      const goal = h.target ?? 1;
                       return (
-                        <td key={d.key} className="py-2 text-center">
-                          <span
-                            title={h.target ? `${v} / ${h.target}` : ok ? "Yapıldı" : "Yapılmadı"}
-                            className={`inline-flex h-6 min-w-6 items-center justify-center rounded-full px-1 text-xs ${
-                              ok ? "bg-emerald-600 text-white" : v > 0 ? "bg-amber-200" : "bg-soft text-muted"
-                            }`}
-                          >
-                            {h.target ? v : ok ? "✓" : "·"}
-                          </span>
-                        </td>
+                        <tr key={h.id} className="border-t border-line">
+                          <td className="py-2">
+                            <span className="font-medium">{h.title}</span>
+                            <span className="block text-xs text-muted">
+                              {h.coaching_id ? "Senin atadığın" : "Danışanın kendi alışkanlığı"}
+                              {h.target ? ` · hedef ${h.target}${h.unit ? " " + h.unit : ""}` : ""}
+                            </span>
+                          </td>
+                          {days.map((d) => {
+                            const v = Number(h.habit_logs.find((l) => l.date === d.key)?.value ?? 0);
+                            const ok = v >= goal;
+                            return (
+                              <td key={d.key} className="py-2 text-center">
+                                <span
+                                  title={h.target ? `${v} / ${h.target}` : ok ? "Yapıldı" : "Yapılmadı"}
+                                  className={`inline-flex h-6 min-w-6 items-center justify-center rounded-full px-1 text-xs ${
+                                    ok ? "bg-emerald-600 text-white" : v > 0 ? "bg-amber-200" : "bg-soft text-muted"
+                                  }`}
+                                >
+                                  {h.target ? v : ok ? "✓" : "·"}
+                                </span>
+                              </td>
+                            );
+                          })}
+                        </tr>
                       );
                     })}
-                  </tr>
+                  </tbody>
+                </table>
+              )}
+            </Card>
+          )}
+          {tab === "kayitlar" && <RecentLogs logs={logs ?? []} />}
+        </div>
+
+        <aside className="flex flex-col gap-6 xl:sticky xl:top-6 xl:self-start">
+          <Card title="Programlar">
+            <ul className="flex flex-col gap-1">
+              {coaching.coaching_domains.map(({ domain_key }) => {
+                const d = DOMAINS[domain_key as DomainKey];
+                const programs = coaching.programs
+                  .filter((p) => p.domain_key === domain_key && p.status !== "archived")
+                  .sort((a, b) => b.updated_at.localeCompare(a.updated_at));
+                const current = programs.find((p) => p.status === "active") ?? programs.find((p) => p.status === "draft");
+                return (
+                  <li key={domain_key}>
+                    <Link href={`/panel/danisan/${coaching.id}/program/${domain_key}`} className="flex items-start gap-2 rounded-xl p-2 hover:bg-soft">
+                      <span className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: d?.color }} />
+                      <span className="text-sm">
+                        <span className="block font-medium">{current?.name ?? `${d?.name}: program yok`}</span>
+                        <span className="block text-xs text-muted">
+                          {d?.name}
+                          {current ? ` · ${PROGRAM_STATUS[current.status]}` : " · oluşturmak için tıkla"}
+                        </span>
+                      </span>
+                    </Link>
+                  </li>
                 );
               })}
-            </tbody>
-          </table>
-        )}
-      </Card>
-
-      <Card title="Başka koçlardan aldığı">
-        {otherDomains?.length ? (
-          <div className="flex gap-2">
-            {otherDomains.map(({ domain_key }) => (
-              <span key={domain_key} className="rounded-full bg-soft px-3 py-1 text-sm">
-                {DOMAINS[domain_key as DomainKey]?.name ?? domain_key}
-              </span>
-            ))}
-          </div>
-        ) : (
-          <p className="text-sm text-muted">Başka bir koçtan hizmet almıyor.</p>
-        )}
-        <p className="mt-3 text-xs text-muted">Ayrıntıları yalnızca danışan izin verirse görebilirsin.</p>
-      </Card>
+            </ul>
+          </Card>
+          <Card title="Koç notu (danışan görmez)">
+            <NoteForm coachingId={coaching.id} initial={note?.body ?? ""} />
+          </Card>
+          <Card title="Başka koçlardan aldığı">
+            {otherDomains?.length ? (
+              <div className="flex flex-wrap gap-2">
+                {otherDomains.map(({ domain_key }) => (
+                  <span key={domain_key} className="rounded-full bg-soft px-3 py-1 text-sm">
+                    {DOMAINS[domain_key as DomainKey]?.name ?? domain_key}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted">Başka bir koçtan hizmet almıyor.</p>
+            )}
+            <p className="mt-3 text-xs text-muted">Ayrıntıları yalnızca danışan izin verirse görebilirsin.</p>
+          </Card>
+        </aside>
+      </div>
     </PageBody>
   );
 }
 
-export default function Page({ params }: PageProps<"/panel/danisan/[coachingId]">) {
+export default function Page({ params, searchParams }: PageProps<"/panel/danisan/[coachingId]">) {
   return (
     <Suspense fallback={<p className="p-10 text-sm text-muted">Yükleniyor…</p>}>
-      <Content params={params} />
+      <Content params={params} searchParams={searchParams} />
     </Suspense>
   );
 }
